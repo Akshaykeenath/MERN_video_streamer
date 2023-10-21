@@ -9,7 +9,14 @@ const mongoose = require("mongoose");
 app.use(express.json());
 
 // Database connetion
-mongoose.connect(process.env.MONGO_URL);
+mongoose
+  .connect(process.env.MONGO_URL)
+  .then(() => {
+    console.log("connected to database");
+  })
+  .catch((err) => {
+    console.log("error", err);
+  });
 
 app.use("/", publicRoutes);
 app.use("/auth", authRoutes);
