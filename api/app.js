@@ -10,7 +10,7 @@ const session = require("express-session");
 app.use(express.json());
 app.use(
   session({
-    secret: "your-secret-key",
+    secret: process.env.SESSION_KEY,
     resave: false,
     saveUninitialized: false,
   })

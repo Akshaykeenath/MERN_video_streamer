@@ -54,11 +54,12 @@ router.get("/logout", (req, res) => {
   }
 });
 
-router.get("/session", (req, res) => {
-  const session = req.sessionID;
-  if (session) {
+router.post("/session", (req, res) => {
+  const userSessionID = req.body.sessionID;
+  const serverSessionID = req.sessionID;
+  if (userSessionID == serverSessionID) {
     res.status(200).json({
-      message: session,
+      message: "session available",
     });
   } else {
     res.status(401).json({
