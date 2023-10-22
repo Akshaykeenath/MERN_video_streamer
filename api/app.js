@@ -4,9 +4,17 @@ const app = express();
 const publicRoutes = require("./routes/public");
 const authRoutes = require("./routes/auth");
 const mongoose = require("mongoose");
+const session = require("express-session");
 
-// Add JSON parsing middleware
+//  middlewares
 app.use(express.json());
+app.use(
+  session({
+    secret: "your-secret-key",
+    resave: false,
+    saveUninitialized: false,
+  })
+);
 
 // Database connetion
 mongoose
@@ -18,8 +26,11 @@ mongoose
     console.log("error", err);
   });
 
+//  routes
 app.use("/", publicRoutes);
 app.use("/auth", authRoutes);
+
+// error handeling
 app.use((req, res, next) => {
   const error = new Error("Not found");
   error.status = 404;
