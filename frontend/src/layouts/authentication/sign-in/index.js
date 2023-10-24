@@ -41,11 +41,14 @@ import BasicLayout from "layouts/authentication/components/BasicLayout";
 // Images
 import bgImage from "assets/images/bg-sign-in-basic.jpeg";
 import { apiLogin } from "services/userManagement";
+import MDSnackbar from "components/MDSnackbar";
+import { useMaterialUIController, setNotification } from "context";
 
 function Basic() {
+  const [controller, dispatch] = useMaterialUIController();
   const navigate = useNavigate();
   const [rememberMe, setRememberMe] = useState(false);
-  const [password, setPassword] = useState("pass");
+  const [password, setPassword] = useState("passsss");
   const [email, setEmail] = useState("akshay@gmail.com");
 
   const handleSetRememberMe = () => setRememberMe(!rememberMe);
@@ -58,14 +61,43 @@ function Basic() {
     setEmail(e.target.value);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (password === "" || email === "") {
-      console.log("Cant sumbit");
+      const noti = {
+        message: "Enter username and password",
+        color: "error",
+      };
+      setNotification(dispatch, noti);
     } else {
       console.log("Form submitted");
-      if (apiLogin(email, password) === "success") {
-        navigate("/dashboard");
+      try {
+        const response = await apiLogin(email, password);
+        if (response === "success") {
+          const noti = {
+            message: "Logged in Successfully",
+            color: "success",
+          };
+          setNotification(dispatch, noti);
+
+          navigate("/dashboard");
+        } else {
+          // Handle login failure here
+          console.log(response);
+          const noti = {
+            message: response,
+            color: "error",
+          };
+          setNotification(dispatch, noti);
+        }
+      } catch (error) {
+        // Handle any API request error here
+        console.error("API request error:", error);
+        const noti = {
+          message: error,
+          color: "error",
+        };
+        setNotification(dispatch, noti);
       }
     }
   };

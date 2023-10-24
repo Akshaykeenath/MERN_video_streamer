@@ -50,6 +50,7 @@ import { useMaterialUIController, setMiniSidenav, setOpenConfigurator } from "co
 // Images
 import brandWhite from "assets/images/logo-ct.png";
 import brandDark from "assets/images/logo-ct-dark.png";
+import KEAlert from "components/KEAlert";
 
 export default function App() {
   const [controller, dispatch] = useMaterialUIController();
@@ -166,6 +167,7 @@ export default function App() {
         {getRoutes(routes)}
         <Route path="*" element={<Navigate to="/dashboard" />} />
       </Routes>
+      <KEAlert />
     </ThemeProvider>
   );
 }

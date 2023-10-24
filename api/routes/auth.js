@@ -2,24 +2,38 @@ const express = require("express");
 const router = express.Router();
 const userModel = require("../models/userModel");
 const mongoose = require("mongoose");
-const { hashPassword, verifyPassword } = require("../functions/encrypt");
+const {
+  hashPassword,
+  verifyPassword,
+  generateToken,
+  verifyToken,
+} = require("../functions/encrypt");
 
 router.post("/login", (req, res) => {
   const user = {
     uname: req.body.uname,
     pass: req.body.pass,
   };
+
   userModel
     .findOne({ uname: user.uname })
-    .then((existingUser) => {
-      if (existingUser && verifyPassword(user.pass, existingUser.password)) {
-        // User is authenticated
-        req.session.user = existingUser;
-        res.status(200).json({
-          message: "User authenticated",
-          session: req.sessionID,
-          user: req.session.user,
-        });
+    .then(async (existingUser) => {
+      if (existingUser) {
+        const isMatch = await verifyPassword(user.pass, existingUser.password);
+        if (isMatch) {
+          // User is authenticated
+          req.session.user = existingUser;
+          jwtToken = generateToken(existingUser);
+          res.status(200).json({
+            message: "success",
+            user: req.session.user,
+            token: jwtToken,
+          });
+        } else {
+          res.status(401).json({
+            message: "Invalid credentials",
+          });
+        }
       } else {
         res.status(401).json({
           message: "Invalid credentials",
@@ -27,11 +41,24 @@ router.post("/login", (req, res) => {
       }
     })
     .catch((err) => {
-      console.log(err);
       res.status(500).json({
         error: err,
       });
     });
+});
+
+router.get("/", (req, res) => {
+  const token = req.headers.authorization;
+  const response = verifyToken(token);
+  if (response.error) {
+    res.status(401).json({
+      error: "not authorised",
+    });
+  } else {
+    res.status(200).json({
+      message: "authorised",
+    });
+  }
 });
 
 router.get("/logout", (req, res) => {
@@ -50,20 +77,6 @@ router.get("/logout", (req, res) => {
   } else {
     res.status(401).json({
       error: "No session available",
-    });
-  }
-});
-
-router.post("/session", (req, res) => {
-  const userSessionID = req.body.sessionID;
-  const serverSessionID = req.sessionID;
-  if (userSessionID == serverSessionID) {
-    res.status(200).json({
-      message: "session available",
-    });
-  } else {
-    res.status(401).json({
-      error: "session not available",
     });
   }
 });
@@ -101,7 +114,7 @@ router.post("/register", async (req, res) => {
         uname: user.uname,
         mobile: user.mobile,
         email: user.email,
-        password: hashedPassword, // Store the hashed password in the database
+        password: hashedPassword,
       });
 
       await newUser.save();
