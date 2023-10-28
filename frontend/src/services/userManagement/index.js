@@ -1,4 +1,6 @@
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { useRouteRedirect } from "services/redirection";
 
 const url = process.env.REACT_APP_API_URL;
 
@@ -38,20 +40,25 @@ export function apiAuth() {
 export function apiDeAuth() {
   localStorage.removeItem("currentUserJWT");
 }
+
 // Function for registration
 export function apiRegister(e) {
   const data = {
+    fname: e.fname,
+    lname: e.lname,
+    uname: e.uname,
+    mobile: e.mobile,
     email: e.email,
+    pass: e.pass,
   };
 
   return axios
-    .post(`${url}auth/register`, data)
+    .post(`${url}/auth/register`, data)
     .then((response) => {
-      console.log(response.data);
-      return response.data;
+      return response;
     })
     .catch((error) => {
-      console.error(error);
-      throw error;
+      console.log(error);
+      return error.response;
     });
 }

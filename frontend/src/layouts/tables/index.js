@@ -30,10 +30,16 @@ import DataTable from "examples/Tables/DataTable";
 // Data
 import authorsTableData from "layouts/tables/data/authorsTableData";
 import projectsTableData from "layouts/tables/data/projectsTableData";
+import { useEffect } from "react";
+import { apiDeAuth } from "services/userManagement";
 
 function Tables() {
   const { columns, rows } = authorsTableData();
   const { columns: pColumns, rows: pRows } = projectsTableData();
+
+  useEffect(() => {
+    apiDeAuth();
+  }, []);
 
   return (
     <DashboardLayout>

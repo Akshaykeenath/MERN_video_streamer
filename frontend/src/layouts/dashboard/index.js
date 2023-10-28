@@ -34,31 +34,15 @@ import reportsLineChartData from "layouts/dashboard/data/reportsLineChartData";
 // Dashboard components
 import Projects from "layouts/dashboard/components/Projects";
 import OrdersOverview from "layouts/dashboard/components/OrdersOverview";
-import { apiAuth } from "services/userManagement";
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { apiDeAuth } from "services/userManagement";
+import { useRouteRedirect } from "services/redirection";
 
 function Dashboard() {
-  const navigate = useNavigate();
+  const redirect = useRouteRedirect();
   const { sales, tasks } = reportsLineChartData;
-  useEffect(() => {
-    // Define an async function to use await
-    const fetchData = async () => {
-      try {
-        const response = await apiAuth();
-        if (response === "not authorised") {
-          navigate("/authentication/sign-in");
-        }
-        // You can set the data to state if needed
-      } catch (error) {
-        console.error("Error:", error);
-      }
-    };
 
-    // Call the async function
-    fetchData();
-    apiDeAuth();
+  useEffect(() => {
+    redirect("checkAuth");
   }, []);
 
   return (

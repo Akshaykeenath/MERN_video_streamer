@@ -43,8 +43,10 @@ import bgImage from "assets/images/bg-sign-in-basic.jpeg";
 import { apiLogin } from "services/userManagement";
 import MDSnackbar from "components/MDSnackbar";
 import { useMaterialUIController, setNotification } from "context";
+import { useRouteRedirect } from "services/redirection";
 
 function Basic() {
+  const redirect = useRouteRedirect();
   const [controller, dispatch] = useMaterialUIController();
   const navigate = useNavigate();
   const [rememberMe, setRememberMe] = useState(false);
@@ -80,7 +82,7 @@ function Basic() {
           };
           setNotification(dispatch, noti);
 
-          navigate("/dashboard");
+          redirect("home");
         } else {
           // Handle login failure here
           console.log(response);

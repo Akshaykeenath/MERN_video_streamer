@@ -3,26 +3,18 @@ const publicRoutes = require("./routes/public");
 const authRoutes = require("./routes/auth");
 const privateRoutes = require("./routes/private");
 const mongoose = require("mongoose");
-const session = require("express-session");
 const cors = require("cors");
 const { verifyToken } = require("./functions/encrypt");
-
-const store = new session.MemoryStore();
 
 const app = express();
 
 //  middlewares
 app.use(cors());
 app.use(express.json());
-app.use(
-  session({
-    secret: process.env.SESSION_KEY,
-    cookie: { maxAge: 30000 },
-    resave: false,
-    saveUninitialized: false,
-    store: store,
-  })
-);
+app.use((req, res, next) => {
+  console.log(`Received a ${req.method} request at ${req.url}`);
+  next(); // Continue processing the request
+});
 
 // Database connetion
 mongoose

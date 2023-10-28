@@ -36,7 +36,7 @@ import MDInput from "components/MDInput";
 import Breadcrumbs from "examples/Breadcrumbs";
 import NotificationItem from "examples/Items/NotificationItem";
 
-// Custom styles for DashboardNavbar
+// Custom styles for StudioNavbar
 import {
   navbar,
   navbarContainer,
@@ -44,7 +44,7 @@ import {
   navbarIconButton,
   navbarMobileMenu,
   navbarDesktopMenu,
-} from "examples/Navbars/DashboardNavbar/styles";
+} from "examples/Navbars/StudioNavbar/styles";
 
 // Material Dashboard 2 React context
 import {
@@ -55,7 +55,7 @@ import {
 } from "context";
 import { useRouteRedirect } from "services/redirection";
 
-function DashboardNavbar({ absolute, light, isMini }) {
+function StudioNavbar({ absolute, light, isMini }) {
   const redirect = useRouteRedirect();
   const [navbarType, setNavbarType] = useState();
   const [controller, dispatch] = useMaterialUIController();
@@ -161,7 +161,6 @@ function DashboardNavbar({ absolute, light, isMini }) {
     >
       <Toolbar sx={(theme) => navbarContainer(theme)}>
         <MDBox color="inherit" mb={{ xs: 1, md: 0 }} sx={(theme) => navbarRow(theme, { isMini })}>
-          <Breadcrumbs icon="home" title={route[route.length - 1]} route={route} light={light} />
           <IconButton
             size="small"
             disableRipple
@@ -174,11 +173,11 @@ function DashboardNavbar({ absolute, light, isMini }) {
             </Icon>
           </IconButton>
         </MDBox>
+        <MDBox sx={{ width: "80%" }}>
+          <MDInput label="Search here" fullWidth />
+        </MDBox>
         {isMini ? null : (
           <MDBox sx={(theme) => navbarRow(theme, { isMini })}>
-            <MDBox pr={1}>
-              <MDInput label="Search here" />
-            </MDBox>
             <MDBox color={light ? "white" : "inherit"}>
               <IconButton
                 sx={navbarIconButton}
@@ -230,18 +229,18 @@ function DashboardNavbar({ absolute, light, isMini }) {
   );
 }
 
-// Setting default values for the props of DashboardNavbar
-DashboardNavbar.defaultProps = {
+// Setting default values for the props of StudioNavbar
+StudioNavbar.defaultProps = {
   absolute: false,
   light: false,
   isMini: false,
 };
 
-// Typechecking props for the DashboardNavbar
-DashboardNavbar.propTypes = {
+// Typechecking props for the StudioNavbar
+StudioNavbar.propTypes = {
   absolute: PropTypes.bool,
   light: PropTypes.bool,
   isMini: PropTypes.bool,
 };
 
-export default DashboardNavbar;
+export default StudioNavbar;

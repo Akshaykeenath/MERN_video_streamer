@@ -22,11 +22,9 @@ router.post("/login", (req, res) => {
         const isMatch = await verifyPassword(user.pass, existingUser.password);
         if (isMatch) {
           // User is authenticated
-          req.session.user = existingUser;
           jwtToken = generateToken(existingUser);
           res.status(200).json({
             message: "success",
-            user: req.session.user,
             token: jwtToken,
           });
         } else {
@@ -82,6 +80,7 @@ router.get("/logout", (req, res) => {
 });
 
 router.post("/register", async (req, res) => {
+  console.log("request : ", req.body);
   const user = {
     fname: req.body.fname,
     lname: req.body.lname,
@@ -102,8 +101,7 @@ router.post("/register", async (req, res) => {
 
     if (existingUser) {
       res.status(400).json({
-        message:
-          "User already exists with the same email or username or mobile.",
+        error: "User already exists with the same email or username or mobile.",
       });
     } else {
       const hashedPassword = await hashPassword(user.pass);
