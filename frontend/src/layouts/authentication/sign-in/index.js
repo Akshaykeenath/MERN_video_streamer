@@ -46,6 +46,7 @@ import { useMaterialUIController, setNotification } from "context";
 import { useRouteRedirect } from "services/redirection";
 
 function Basic() {
+  const [loading, setLoading] = useState(false);
   const redirect = useRouteRedirect();
   const [controller, dispatch] = useMaterialUIController();
   const navigate = useNavigate();
@@ -65,6 +66,7 @@ function Basic() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     if (password === "" || email === "") {
       const noti = {
         message: "Enter username and password",
@@ -102,6 +104,7 @@ function Basic() {
         setNotification(dispatch, noti);
       }
     }
+    setLoading(false);
   };
 
   return (
@@ -172,8 +175,14 @@ function Basic() {
               </MDTypography>
             </MDBox>
             <MDBox mt={4} mb={1}>
-              <MDButton variant="gradient" color="info" fullWidth type="submit">
-                sign in
+              <MDButton
+                variant="gradient"
+                color="info"
+                fullWidth
+                type="submit"
+                disabled={loading} // Disable the button if loading is true
+              >
+                {loading ? "Signing in..." : "Sign in"}
               </MDButton>
             </MDBox>
             <MDBox mt={3} mb={1} textAlign="center">

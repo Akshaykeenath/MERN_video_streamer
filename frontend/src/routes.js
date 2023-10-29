@@ -47,6 +47,7 @@ import SignUp from "layouts/authentication/sign-up";
 // @mui icons
 import Icon from "@mui/material/Icon";
 import Home from "layouts/home";
+import VerificationArea from "layouts/authentication/verification";
 
 const routes = [
   {
@@ -98,12 +99,19 @@ const routes = [
     component: <Profile />,
   },
   {
+    key: "signin",
     route: "/authentication/sign-in",
     component: <SignIn />,
   },
   {
+    key: "signup",
     route: "/authentication/sign-up",
     component: <SignUp />,
+  },
+  {
+    key: "verify",
+    route: "/authentication/verify",
+    component: <VerificationArea />,
   },
 ];
 

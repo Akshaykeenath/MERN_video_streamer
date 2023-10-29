@@ -8,6 +8,10 @@ const {
   generateToken,
   verifyToken,
 } = require("../functions/encrypt");
+const {
+  sendVerificationMail,
+} = require("../functions/verification/emailVerification");
+const { getUserDetails } = require("../functions/userManagement/userDetails");
 
 router.post("/login", (req, res) => {
   const user = {
@@ -22,11 +26,17 @@ router.post("/login", (req, res) => {
         const isMatch = await verifyPassword(user.pass, existingUser.password);
         if (isMatch) {
           // User is authenticated
-          jwtToken = generateToken(existingUser);
-          res.status(200).json({
-            message: "success",
-            token: jwtToken,
-          });
+          if (existingUser.verified) {
+            jwtToken = generateToken(existingUser);
+            res.status(200).json({
+              message: "success",
+              token: jwtToken,
+            });
+          } else {
+            res.status(401).json({
+              message: "Verify mail id first",
+            });
+          }
         } else {
           res.status(401).json({
             message: "Invalid credentials",
@@ -59,28 +69,54 @@ router.get("/", (req, res) => {
   }
 });
 
-router.get("/logout", (req, res) => {
-  if (req.session.user) {
-    req.session.destroy((err) => {
-      if (err) {
-        res.status(500).json({
-          error: "Logout error",
+router.post("/verify/email", async (req, res) => {
+  try {
+    const token = req.body.token;
+    const user = await getUserDetails(token);
+
+    if (!user) {
+      // Handle the case where the user is not found
+      return res.status(404).json({
+        message: "Invalid / Expired Link",
+      });
+    }
+
+    if (!user.verified) {
+      // Check if the 'verified' field is not already true
+      const updateStatus = await userModel.findByIdAndUpdate(
+        user._id,
+        { verified: true },
+        { new: true }
+      );
+
+      if (updateStatus) {
+        res.status(200).json({
+          message: "Mail ID Verified Successfully",
         });
       } else {
-        res.status(200).json({
-          message: "Logged out successfully",
+        // Handle the case where the update failed
+        res.status(500).json({
+          message: "Mail Id Verification Failed",
         });
       }
-    });
-  } else {
-    res.status(401).json({
-      error: "No session available",
+    } else {
+      // Handle the case where the user is already verified
+      res.status(200).json({
+        message: "Mail ID is already verified",
+      });
+    }
+  } catch (error) {
+    // Handle any unexpected errors
+    console.error(error);
+    res.status(500).json({
+      message: "Internal server error",
     });
   }
 });
 
 router.post("/register", async (req, res) => {
   console.log("request : ", req.body);
+  const frontendUrl = req.get("Referer");
   const user = {
     fname: req.body.fname,
     lname: req.body.lname,
@@ -113,11 +149,16 @@ router.post("/register", async (req, res) => {
         mobile: user.mobile,
         email: user.email,
         password: hashedPassword,
+        verified: false,
       });
 
       await newUser.save();
+      const response = await sendVerificationMail(newUser, frontendUrl);
+      if (response.status !== 200) {
+        throw new Error(response.message);
+      }
       res.status(200).json({
-        message: "User added",
+        message: "User added. Verify your mail ID",
       });
     }
   } catch (err) {

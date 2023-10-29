@@ -38,6 +38,7 @@ import { setNotification, useMaterialUIController } from "context";
 import { useRouteRedirect } from "services/redirection";
 
 function Cover() {
+  const [loading, setLoading] = useState(false);
   const redirect = useRouteRedirect();
   const [controller, dispatch] = useMaterialUIController();
   const [fname, setFname] = useState("");
@@ -65,6 +66,7 @@ function Cover() {
   }
 
   const handleSubmit = async (e) => {
+    setLoading(true);
     e.preventDefault();
     setFnameError("");
     setLnameError("");
@@ -150,6 +152,7 @@ function Cover() {
         // Handle the case where an error occurred during the API request.
       }
     }
+    setLoading(false);
   };
 
   return (
@@ -366,8 +369,14 @@ function Cover() {
               {checkboxError}
             </Typography>
             <MDBox mt={4} mb={1}>
-              <MDButton variant="gradient" color="info" type="submit" fullWidth>
-                sign in
+              <MDButton
+                variant="gradient"
+                color="info"
+                type="submit"
+                fullWidth
+                disabled={loading} // Disable the button if loading is true
+              >
+                {loading ? "Signing up..." : "Sign up"}
               </MDButton>
             </MDBox>
             <MDBox mt={3} mb={1} textAlign="center">

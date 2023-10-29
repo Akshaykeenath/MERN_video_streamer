@@ -1,8 +1,17 @@
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import { useRouteRedirect } from "services/redirection";
 
 const url = process.env.REACT_APP_API_URL;
+
+export function sendMailVerification(data) {
+  return axios
+    .post(`${url}/auth/verify/email`, data)
+    .then((response) => {
+      return response;
+    })
+    .catch((error) => {
+      return error.response;
+    });
+}
 
 export function apiLogin(uname, pass) {
   const data = {
