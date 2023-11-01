@@ -51,8 +51,8 @@ function Basic() {
   const [controller, dispatch] = useMaterialUIController();
   const navigate = useNavigate();
   const [rememberMe, setRememberMe] = useState(false);
-  const [password, setPassword] = useState("passsss");
-  const [email, setEmail] = useState("akshay@gmail.com");
+  const [password, setPassword] = useState("pass");
+  const [email, setEmail] = useState("akshaykeenath97@gmail.com");
 
   const handleSetRememberMe = () => setRememberMe(!rememberMe);
 

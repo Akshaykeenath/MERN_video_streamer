@@ -41,9 +41,9 @@ function Dashboard() {
   const redirect = useRouteRedirect();
   const { sales, tasks } = reportsLineChartData;
 
-  useEffect(() => {
-    redirect("checkAuth");
-  }, []);
+  // useEffect(() => {
+  //   redirect("checkAuth");
+  // }, []);
 
   return (
     <DashboardLayout>

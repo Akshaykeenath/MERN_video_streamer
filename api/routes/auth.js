@@ -115,7 +115,6 @@ router.post("/verify/email", async (req, res) => {
 });
 
 router.post("/register", async (req, res) => {
-  console.log("request : ", req.body);
   const frontendUrl = req.get("Referer");
   const user = {
     fname: req.body.fname,

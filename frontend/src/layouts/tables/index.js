@@ -37,9 +37,9 @@ function Tables() {
   const { columns, rows } = authorsTableData();
   const { columns: pColumns, rows: pRows } = projectsTableData();
 
-  useEffect(() => {
-    apiDeAuth();
-  }, []);
+  // useEffect(() => {
+  //   apiDeAuth();
+  // }, []);
 
   return (
     <DashboardLayout>
