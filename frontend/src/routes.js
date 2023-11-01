@@ -48,6 +48,7 @@ import SignUp from "layouts/authentication/sign-up";
 import Icon from "@mui/material/Icon";
 import Home from "layouts/home";
 import VerificationArea from "layouts/authentication/verification";
+import VideoUpload from "layouts/videoManagement/videoUploads";
 
 const routes = [
   {
@@ -57,6 +58,14 @@ const routes = [
     icon: <Icon fontSize="small">home</Icon>,
     route: "/",
     component: <Home />,
+  },
+  {
+    type: "collapse",
+    name: "Video",
+    key: "video/upload",
+    icon: <Icon fontSize="small">video_call</Icon>,
+    route: "/video/upload",
+    component: <VideoUpload />,
   },
   {
     type: "collapse",

@@ -10,25 +10,38 @@ const KEVideoPlayerHover = ({ video }) => {
   const [isHover, setIsHover] = useState(false);
 
   useEffect(() => {
-    playerRef.current = new Plyr(videoRef.current, {
-      controls: ["current-time", "progress", "duration"],
-      muted: true,
-      hideControls: false,
-    });
-    // Set initial control color
-    if (playerRef.current.elements.controls) {
-      playerRef.current.elements.controls.style.display = "none";
+    try {
+      playerRef.current = new Plyr(videoRef.current, {
+        controls: ["current-time", "progress", "duration"],
+        muted: true,
+        hideControls: false,
+      });
+      // Set initial control color
+      if (playerRef.current.elements.controls) {
+        playerRef.current.elements.controls.style.display = "none";
+      }
+    } catch (error) {
+      console.log("Error initializing Plyr:", error);
     }
+
     return () => {
       if (playerRef.current) {
-        playerRef.current.destroy();
+        try {
+          playerRef.current.destroy();
+        } catch (error) {
+          console.log("Error destroying Plyr:", error);
+        }
       }
     };
   }, []);
 
   const handleMouseEnter = () => {
-    if (playerRef.current.paused) {
-      playerRef.current.play();
+    if (playerRef.current && playerRef.current.paused) {
+      try {
+        playerRef.current.play();
+      } catch (error) {
+        console.log("Error playing video:", error);
+      }
     }
     setIsHover(true);
     // Set the control color to white (#fff)
@@ -38,11 +51,14 @@ const KEVideoPlayerHover = ({ video }) => {
   };
 
   const handleMouseLeave = () => {
-    if (playerRef.current.playing) {
-      playerRef.current.pause();
+    if (playerRef.current && playerRef.current.playing) {
+      try {
+        playerRef.current.pause();
+      } catch (error) {
+        console.log("Error pausing video:", error);
+      }
     }
     setIsHover(false);
-    console.log("poster ", playerRef.current.poster);
     // Set the control color to transparent
     if (playerRef.current.elements.controls) {
       playerRef.current.elements.controls.style.display = "none";

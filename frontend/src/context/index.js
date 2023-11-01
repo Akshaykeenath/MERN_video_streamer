@@ -86,7 +86,7 @@ function MaterialUIControllerProvider({ children }) {
     openConfigurator: false,
     direction: "ltr",
     layout: "dashboard",
-    darkMode: true,
+    darkMode: false,
     notification: false,
     sessionID: false,
   };
