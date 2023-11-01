@@ -3,10 +3,12 @@ import { useEffect, useState } from "react";
 import MDTypography from "components/MDTypography";
 import MDInput from "components/MDInput";
 import PropTypes from "prop-types";
+import { useMaterialUIController, setNotification } from "context";
 
 function VideoUploadArea({ onVideoData }) {
   const [uploadFile, setUploadFile] = useState(null);
   const [dragEnter, setDragEnter] = useState(false);
+  const [controller, dispatch] = useMaterialUIController();
 
   useEffect(() => {
     const fileInput = document.getElementById("file-input");
@@ -15,9 +17,18 @@ function VideoUploadArea({ onVideoData }) {
       const fileType = uploadFile.type;
       if (fileType.startsWith("video/")) {
         // Set the uploaded file to the file input
+        const noti = {
+          message: "Video Accepted",
+          color: "success",
+        };
+        setNotification(dispatch, noti);
         onVideoData(uploadFile);
       } else {
-        console.log("Not a video file:", uploadFile);
+        const noti = {
+          message: "Upload a video file",
+          color: "error",
+        };
+        setNotification(dispatch, noti);
         setUploadFile(null);
 
         // Clear the file input
