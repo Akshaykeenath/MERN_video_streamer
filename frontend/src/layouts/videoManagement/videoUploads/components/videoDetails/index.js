@@ -25,7 +25,7 @@ function VideoUploadDetailsArea({ videoDetails, url }) {
         borderRadius: "10px",
       }}
     >
-      <MDBox p={3} sx={{ maxWidth: "350px" }}>
+      <MDBox p={3} sx={{ maxWidth: "350px", maxHeight: "350px" }}>
         <KEVideoPlayer type="mini" video={video} />
       </MDBox>
       <MDBox
