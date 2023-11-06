@@ -1,7 +1,7 @@
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
-import { Card, Icon, Step, StepLabel, Stepper } from "@mui/material";
+import { Card, Icon, Step, StepLabel, Stepper, useMediaQuery } from "@mui/material";
 import MDBox from "components/MDBox";
 import { useEffect, useState } from "react";
 import MDButton from "components/MDButton";
@@ -14,6 +14,8 @@ function VideoUpload() {
   const [currentStep, setCurrentStep] = useState(0);
   const [videoFileState, setVideoFileState] = useState(false);
   const [videFileUrl, setVideoFileUrl] = useState(null);
+  const isXs = useMediaQuery((theme) => theme.breakpoints.down("md"));
+  const isMd = useMediaQuery((theme) => theme.breakpoints.up("md"));
 
   useEffect(() => {
     if (currentStep === 1 && !videoFileState) {
@@ -40,7 +42,7 @@ function VideoUpload() {
   return (
     <DashboardLayout>
       <DashboardNavbar />
-      <Card sx={{ height: "78vh" }}>
+      <Card sx={{ height: isXs ? "max-content" : "82vh" }}>
         <MDBox
           sx={{
             display: "flex",
@@ -94,7 +96,6 @@ function VideoUpload() {
           </MDBox>
         </MDBox>
       </Card>
-      <Footer />
     </DashboardLayout>
   );
 }
