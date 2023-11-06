@@ -43,11 +43,6 @@ function VideoUploadArea({ onVideoData }) {
     const droppedFile = e.dataTransfer.files[0];
     setUploadFile(droppedFile);
   };
-
-  const handleFileInputChange = (e) => {
-    const selectedFile = e.target.files[0];
-    setUploadFile(selectedFile);
-  };
   return (
     <MDBox
       bgColor={dragEnter ? "light" : "transparent"}

@@ -3,16 +3,35 @@ import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 import { Card, Icon, Step, StepLabel, Stepper } from "@mui/material";
 import MDBox from "components/MDBox";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import MDButton from "components/MDButton";
 import VideoUploadArea from "./components/uploadArea";
+import { useMaterialUIController, setNotification } from "context";
+import VideoUploadDetailsArea from "./components/videoDetails";
 
 function VideoUpload() {
+  const [controller, dispatch] = useMaterialUIController();
   const [currentStep, setCurrentStep] = useState(0);
+  const [videoFileState, setVideoFileState] = useState(false);
+  const [videFileUrl, setVideoFileUrl] = useState(null);
+
+  useEffect(() => {
+    if (currentStep === 1 && !videoFileState) {
+      setCurrentStep(currentStep - 1);
+      const noti = {
+        message: "Add a video first",
+        color: "error",
+      };
+      setNotification(dispatch, noti);
+    }
+  }, [currentStep]);
+
   const handleVideoData = (videoFile) => {
     // Handle the video file data here
+    setVideoFileState(videoFile);
+    setVideoFileUrl(URL.createObjectURL(videoFile));
+
     setCurrentStep(currentStep + 1);
-    console.log("Received video file:", videoFile);
     // You can set the file data in the state or perform any other necessary actions.
   };
 
@@ -41,6 +60,7 @@ function VideoUpload() {
           </MDBox>
 
           {currentStep === 0 && <VideoUploadArea onVideoData={handleVideoData} />}
+          {currentStep === 1 && <VideoUploadDetailsArea url={videFileUrl} />}
 
           <MDBox p={2}>
             <MDBox sx={{ display: "flex", justifyContent: "flex-end" }}>
