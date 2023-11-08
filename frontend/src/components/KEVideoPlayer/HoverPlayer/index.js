@@ -4,7 +4,7 @@ import "components/KEVideoPlayer/plyr.css";
 import PropTypes from "prop-types";
 import MDBox from "components/MDBox";
 
-const KEVideoPlayerHover = ({ video }) => {
+const KEVideoPlayerHover = ({ video, sx }) => {
   const videoRef = useRef(null);
   const playerRef = useRef(null);
   const [isHover, setIsHover] = useState(false);
@@ -88,7 +88,11 @@ const KEVideoPlayerHover = ({ video }) => {
         zIndex={1}
         display={isHover ? "none" : "flex"}
       />
-      <video ref={videoRef} poster={video.poster} style={{ display: isHover ? "flex" : "none" }}>
+      <video
+        ref={videoRef}
+        poster={video.poster}
+        style={{ display: isHover ? "flex" : "none", ...sx }}
+      >
         <source src={video.url} type="video/mp4" />
         Your browser does not support the video tag.
       </video>
@@ -96,11 +100,16 @@ const KEVideoPlayerHover = ({ video }) => {
   );
 };
 
+KEVideoPlayerHover.defaultProps = {
+  sx: {},
+};
+
 KEVideoPlayerHover.propTypes = {
   video: PropTypes.shape({
     url: PropTypes.string,
     poster: PropTypes.string,
   }),
+  sx: PropTypes.object,
 };
 
 export default KEVideoPlayerHover;

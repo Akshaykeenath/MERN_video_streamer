@@ -4,14 +4,14 @@ import KEVideoPlayerHover from "./HoverPlayer";
 import KEVideoPlayerReal from "./RealPlayer";
 import KEVideoPlayerMini from "./MiniPlayer";
 
-const KEVideoPlayer = ({ type, video }) => {
+const KEVideoPlayer = ({ type, video, sx }) => {
   const renderVideoPlayer = () => {
     if (type === "hover") {
-      return <KEVideoPlayerHover video={video} />;
+      return <KEVideoPlayerHover video={video} sx={sx} />;
     } else if (type === "mini") {
-      return <KEVideoPlayerMini video={video} />;
+      return <KEVideoPlayerMini video={video} sx={sx} />;
     } else {
-      return <KEVideoPlayerReal video={video} />;
+      return <KEVideoPlayerReal video={video} sx={sx} />;
     }
   };
 
@@ -25,6 +25,7 @@ KEVideoPlayer.defaultProps = {
 KEVideoPlayer.propTypes = {
   type: PropTypes.string,
   video: PropTypes.object,
+  sx: PropTypes.any,
 };
 
 export default KEVideoPlayer;

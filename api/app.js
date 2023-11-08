@@ -5,6 +5,7 @@ const privateRoutes = require("./routes/private");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const { verifyToken } = require("./functions/encrypt");
+const path = require("path");
 
 const app = express();
 
@@ -44,6 +45,8 @@ function isAuthenticated(req, res, next) {
 }
 
 app.use("/private", isAuthenticated, privateRoutes);
+// Serve uploaded files from the "/uploads" directory
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // error handeling
 app.use((req, res, next) => {

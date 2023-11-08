@@ -3,7 +3,7 @@ import Plyr from "plyr";
 import "components/KEVideoPlayer/plyr.css";
 import PropTypes from "prop-types";
 
-const KEVideoPlayerReal = ({ video }) => {
+const KEVideoPlayerReal = ({ video, sx }) => {
   const videoRef = useRef(null);
   const playerRef = useRef(null);
 
@@ -29,7 +29,7 @@ const KEVideoPlayerReal = ({ video }) => {
   }, []);
 
   return (
-    <video ref={videoRef} poster={video.poster || null}>
+    <video ref={videoRef} poster={video.poster || null} style={sx}>
       <source src={video.url || null} type="video/mp4" />
       Your browser does not support the video tag.
     </video>
@@ -41,6 +41,7 @@ KEVideoPlayerReal.propTypes = {
     url: PropTypes.string,
     poster: PropTypes.string,
   }),
+  sx: PropTypes.any,
 };
 
 KEVideoPlayerReal.defaultProps = {
@@ -48,6 +49,7 @@ KEVideoPlayerReal.defaultProps = {
     url: null,
     poster: null,
   },
+  sx: {},
 };
 
 export default KEVideoPlayerReal;

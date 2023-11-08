@@ -17,12 +17,21 @@ function VideoUploadArea({ onVideoData }) {
       const fileType = uploadFile.type;
       if (fileType.startsWith("video/")) {
         // Set the uploaded file to the file input
-        const noti = {
-          message: "Video Accepted",
-          color: "success",
-        };
-        setNotification(dispatch, noti);
-        onVideoData(uploadFile);
+        if (uploadFile.size > 20971520) {
+          const noti = {
+            message: "select a file less than 20MB",
+            color: "error",
+          };
+          setNotification(dispatch, noti);
+          fileInput.value = "";
+        } else {
+          const noti = {
+            message: "Video Accepted",
+            color: "success",
+          };
+          setNotification(dispatch, noti);
+          onVideoData(uploadFile);
+        }
       } else {
         const noti = {
           message: "Upload a video file",
