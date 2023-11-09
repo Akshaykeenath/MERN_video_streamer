@@ -11,6 +11,7 @@ import VideoUploadDetailsArea from "./components/videoDetails";
 import VideoPublishArea from "./components/publishArea";
 import { apiUploadVideo } from "services/videoManagement";
 import { useRouteRedirect } from "services/redirection";
+import UploadFinishArea from "./components/finishArea";
 
 function VideoUpload() {
   const redirect = useRouteRedirect();
@@ -26,6 +27,8 @@ function VideoUpload() {
   const [videFileUrl, setVideoFileUrl] = useState(null);
   const [videoData, setVideoData] = useState(defaultVideoData);
   const [videoPoster, setVideoPoster] = useState(null);
+  const [addingDetails, setAddingDetails] = useState(true);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const isXs = useMediaQuery((theme) => theme.breakpoints.down("md"));
   const isMd = useMediaQuery((theme) => theme.breakpoints.up("md"));
 
@@ -68,6 +71,10 @@ function VideoUpload() {
       setVideoPoster(videoPoster);
     }
   };
+  const handleUploadProgress = (progress) => {
+    // Update the UI or do something with the progress in the main area
+    setUploadProgress(progress);
+  };
 
   const handleVideoSubmit = async () => {
     if (!videoFileState) {
@@ -92,14 +99,13 @@ function VideoUpload() {
       setNotification(dispatch, noti);
       setCurrentStep(2);
     } else {
+      setAddingDetails(false);
       const videoSubmitData = {
         videoFile: videoFileState,
         details: videoData,
         poster: videoPoster,
       };
-      console.log("on Submit data ", videoSubmitData);
-      const response = await apiUploadVideo(videoSubmitData);
-      console.log("on Submit ", response);
+      const response = await apiUploadVideo(videoSubmitData, handleUploadProgress);
       if (response === "Unauthorized") {
         redirect("checkAuth");
       } else {
@@ -112,75 +118,79 @@ function VideoUpload() {
   return (
     <DashboardLayout>
       <DashboardNavbar />
-      <Card sx={{ height: isXs ? "max-content" : "82vh" }}>
-        <MDBox
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-between",
-            height: "100%",
-          }}
-        >
-          <MDBox>
-            <Stepper activeStep={currentStep} alternativeLabel>
-              {steps.map((label, index) => (
-                <Step key={index}>
-                  <StepLabel>{label}</StepLabel>
-                </Step>
-              ))}
-            </Stepper>
-          </MDBox>
+      {addingDetails && (
+        <Card sx={{ height: isXs ? "max-content" : "82vh" }}>
+          <MDBox
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "space-between",
+              height: "100%",
+            }}
+          >
+            <MDBox>
+              <Stepper activeStep={currentStep} alternativeLabel>
+                {steps.map((label, index) => (
+                  <Step key={index}>
+                    <StepLabel>{label}</StepLabel>
+                  </Step>
+                ))}
+              </Stepper>
+            </MDBox>
 
-          {currentStep === 0 && <VideoUploadArea onVideoData={handleVideoData} />}
-          {currentStep === 1 && (
-            <VideoUploadDetailsArea
-              onVideoDetails={handleVideoDetails}
-              url={videFileUrl}
-              videoDetails={videoData}
-            />
-          )}
-          {currentStep === 2 && (
-            <VideoPublishArea
-              videoFile={videoFileState}
-              onVideoPublish={handleVideoPoster}
-              url={videFileUrl}
-            />
-          )}
+            {currentStep === 0 && <VideoUploadArea onVideoData={handleVideoData} />}
+            {currentStep === 1 && (
+              <VideoUploadDetailsArea
+                onVideoDetails={handleVideoDetails}
+                url={videFileUrl}
+                videoDetails={videoData}
+              />
+            )}
+            {currentStep === 2 && (
+              <VideoPublishArea
+                videoFile={videoFileState}
+                onVideoPublish={handleVideoPoster}
+                url={videFileUrl}
+              />
+            )}
 
-          <MDBox p={2}>
-            <MDBox sx={{ display: "flex", justifyContent: "flex-end" }}>
-              <MDButton
-                variant="gradient"
-                color="info"
-                disabled={currentStep === 0}
-                onClick={() => {
-                  if (currentStep > 0) {
-                    setCurrentStep(currentStep - 1);
-                  }
-                }}
-              >
-                <Icon>navigate_before</Icon>&nbsp; Previous
-              </MDButton>
+            <MDBox p={2}>
+              <MDBox sx={{ display: "flex", justifyContent: "flex-end" }}>
+                <MDButton
+                  variant="gradient"
+                  color="info"
+                  disabled={currentStep === 0}
+                  sx={{ display: currentStep === 0 ? "none" : "block" }}
+                  onClick={() => {
+                    if (currentStep > 0) {
+                      setCurrentStep(currentStep - 1);
+                    }
+                  }}
+                >
+                  <Icon>navigate_before</Icon>&nbsp; Previous
+                </MDButton>
 
-              <MDButton
-                variant="gradient"
-                color="info"
-                sx={{ ml: "10px" }}
-                onClick={() => {
-                  if (currentStep < steps.length - 1) {
-                    setCurrentStep(currentStep + 1);
-                  } else {
-                    handleVideoSubmit();
-                  }
-                }}
-              >
-                {currentStep === steps.length - 1 ? "Submit" : "Next"} &nbsp;
-                {currentStep < steps.length - 1 && <Icon>navigate_next</Icon>}
-              </MDButton>
+                <MDButton
+                  variant="gradient"
+                  color="info"
+                  sx={{ ml: "10px" }}
+                  onClick={() => {
+                    if (currentStep < steps.length - 1) {
+                      setCurrentStep(currentStep + 1);
+                    } else {
+                      handleVideoSubmit();
+                    }
+                  }}
+                >
+                  {currentStep === steps.length - 1 ? "Submit" : "Next"} &nbsp;
+                  {currentStep < steps.length - 1 && <Icon>navigate_next</Icon>}
+                </MDButton>
+              </MDBox>
             </MDBox>
           </MDBox>
-        </MDBox>
-      </Card>
+        </Card>
+      )}
+      {!addingDetails && <UploadFinishArea progress={uploadProgress} />}
     </DashboardLayout>
   );
 }
