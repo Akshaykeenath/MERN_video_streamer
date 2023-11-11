@@ -38,6 +38,7 @@ const KEVideoPlayerHover = ({ video, sx }) => {
   const handleMouseEnter = () => {
     if (playerRef.current && playerRef.current.paused) {
       try {
+        playerRef.current.decreaseVolume(1);
         playerRef.current.play();
       } catch (error) {
         console.log("Error playing video:", error);

@@ -2,70 +2,117 @@
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import StudioNavbar from "examples/Navbars/StudioNavbar";
 import Footer from "examples/Footer";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouteRedirect } from "services/redirection";
 import MDTypography from "components/MDTypography";
 import VideoGridLayout from "examples/VideoLayouts/Grid";
 import KEVideoPlayer from "components/KEVideoPlayer";
+import { getHomeData } from "services/videoManagement";
+import { CircularProgress, Grid } from "@mui/material";
+import { useMaterialUIController, setNotification } from "context";
 
 function Home() {
   const redirect = useRouteRedirect();
-  // Create an array of video data
-  const videoData = [
-    {
-      video: {
-        url: "http://media.w3.org/2010/05/sintel/trailer.mp4",
-        poster: "https://picsum.photos/3000/1800",
-      },
-      title: "Sample Video Title",
-      channel: {
-        name: "Channel Name",
-        image: "https://picsum.photos/200",
-        route: "/channel",
-      },
-      views: "100 views",
-      time: "10 min ago",
-      action: {
-        type: "internal",
-        route: "/sample-video-url",
-      },
-    },
-    {
-      video: {
-        url: "http://media.w3.org/2010/05/sintel/trailer.mp4",
-        poster: "https://picsum.photos/300/180",
-      },
-      title: "Sample Video Title",
-      channel: {
-        name: "Channel Name",
-        image: "https://picsum.photos/200",
-        route: "/channel",
-      },
-      views: "100 views",
-      time: "10 min ago",
-      action: {
-        type: "external",
-        route: "/sample-video-url",
-      },
-    },
-    // Add more video data objects as needed
-  ];
+  const [controller, dispatch] = useMaterialUIController();
 
-  const video = {
-    url: "http://media.w3.org/2010/05/sintel/trailer.mp4",
-    poster: "https://picsum.photos/300/180",
-  };
-  // useEffect(() => {
-  //   redirect("checkAuth");
-  // }, []);
+  const { response, error } = getHomeData();
+  const [loading, setLoading] = useState(true);
+  const [videoData, setVideoData] = useState([]);
+  // const videoData = [
+  //   {
+  //     video: {
+  //       url: "http://media.w3.org/2010/05/sintel/trailer.mp4",
+  //       poster: "https://picsum.photos/3000/1800",
+  //     },
+  //     title: "Sample Video Title",
+  //     channel: {
+  //       name: "Channel Name",
+  //       image: "https://picsum.photos/200",
+  //       route: "/channel",
+  //     },
+  //     views: "100 views",
+  //     time: "10 min ago",
+  //     action: {
+  //       type: "internal",
+  //       route: "/sample-video-url",
+  //     },
+  //   },
+  //   {
+  //     video: {
+  //       url: "http://media.w3.org/2010/05/sintel/trailer.mp4",
+  //       poster: "https://picsum.photos/300/180",
+  //     },
+  //     title: "Sample Video Title",
+  //     channel: {
+  //       name: "Channel Name",
+  //       image: "https://picsum.photos/200",
+  //       route: "/channel",
+  //     },
+  //     views: "100 views",
+  //     time: "10 min ago",
+  //     action: {
+  //       type: "external",
+  //       route: "/sample-video-url",
+  //     },
+  //   },
+  //   // Add more video data objects as needed
+  // ];
+  useEffect(() => {
+    if (error) {
+      const noti = {
+        message: "Error in Fetching data",
+        color: "error",
+      };
+      setNotification(dispatch, noti);
+      setLoading(false);
+    } else if (response != null) {
+      const trendingVideos = response.trending;
+      const mappedVideoData = trendingVideos.map((currVideo, index) => {
+        const { title, uploader, video: videoArray, poster } = currVideo;
+        const videoUrl = videoArray[0].url;
+        const posterUrl = poster[0].url;
+
+        return {
+          video: {
+            url: videoUrl,
+            poster: posterUrl,
+          },
+          title: title,
+          channel: {
+            name: uploader.fname + " " + uploader.lname,
+            image: "https://picsum.photos/200", // Replace with actual channel image URL if available
+            route: "/channel", // Replace with actual channel route if available
+          },
+          views: "100 views", // You may replace this with actual view count
+          time: "10 min ago", // You may replace this with actual upload time
+          action: {
+            type: "internal", // Change to "external" if needed
+            route: "/sample-video-url", // Replace with actual video route if available
+          },
+        };
+      });
+
+      setVideoData(mappedVideoData);
+      setLoading(false);
+    }
+  }, [response, error]);
   return (
     <DashboardLayout>
       <StudioNavbar />
-      <VideoGridLayout
-        title={{ color: "success", text: "trending videos", variant: "h3" }}
-        videos={videoData}
-      />
-      {/* <KEVideoPlayer video={video} /> */}
+      {response ? (
+        <VideoGridLayout
+          title={{ color: "success", text: "trending videos", variant: "h3" }}
+          videos={videoData}
+        />
+      ) : (
+        loading && (
+          <Grid container alignItems="center" justifyContent="center" sx={{ height: "100vh" }}>
+            <Grid item>
+              <CircularProgress color="secondary" />
+            </Grid>
+          </Grid>
+        )
+      )}
 
       {/* <Footer /> */}
     </DashboardLayout>
