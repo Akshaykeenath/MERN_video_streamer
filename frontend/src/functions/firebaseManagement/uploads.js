@@ -29,6 +29,7 @@ export async function FirebaseUpload(file, path) {
       return {
         status: "success",
         message: url,
+        storagePath: storagePath,
       };
     } catch (error) {
       console.error("Error:", error);

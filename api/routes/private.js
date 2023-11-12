@@ -39,8 +39,20 @@ router.post("/video/upload", async (req, res, next) => {
       desc: data.desc,
       tags: data.tags,
       privacy: data.privacy,
-      video: [{ size: "1080p", url: videoUrl }],
-      poster: [{ size: "large", url: posterUrl }],
+      video: [
+        {
+          size: "1080p",
+          url: videoUrl.url,
+          firebaseUrl: videoUrl.url.firebaseUrl,
+        },
+      ],
+      poster: [
+        {
+          size: "large",
+          url: posterUrl.url,
+          firebaseUrl: posterUrl.url.firebaseUrl,
+        },
+      ],
       uploader: user._id,
     });
 

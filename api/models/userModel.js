@@ -8,6 +8,16 @@ const userSchema = mongoose.Schema({
   email: String,
   password: String,
   verified: Boolean,
+  channel: {
+    name: String,
+    img: [
+      {
+        size: String,
+        url: String,
+        firebaseUrl: String,
+      },
+    ],
+  },
 });
 
 module.exports = mongoose.model("userdata", userSchema);

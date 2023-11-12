@@ -1,4 +1,6 @@
 import axios from "axios";
+import myaxios from "config/axios";
+import { FirebaseDelete } from "functions/firebaseManagement/delete";
 import { FirebaseUpload } from "functions/firebaseManagement/uploads";
 import { useEffect, useState } from "react";
 
@@ -10,6 +12,8 @@ export async function apiUploadVideo(videoData, onProgress) {
   const vidPath = "/files/videos/high/";
   const postPath = "/files/poster/high/";
   let totalProgress = 0;
+  let posterResp;
+  let videoResp;
 
   const updateProgress = (progress) => {
     totalProgress += progress;
@@ -17,14 +21,14 @@ export async function apiUploadVideo(videoData, onProgress) {
   };
 
   try {
-    const posterResp = await FirebaseUpload(poster, postPath);
+    posterResp = await FirebaseUpload(poster, postPath);
     if (posterResp.status === "success") {
       updateProgress(33);
     } else {
       throw new Error("Failed to upload poster");
     }
 
-    const videoResp = await FirebaseUpload(videoFile, vidPath);
+    videoResp = await FirebaseUpload(videoFile, vidPath);
     if (videoResp.status === "success") {
       updateProgress(34);
     } else {
@@ -32,19 +36,21 @@ export async function apiUploadVideo(videoData, onProgress) {
     }
 
     if (videoResp.status === "success" && posterResp.status === "success") {
-      const { message: videoUrl } = videoResp;
-      const { message: posterUrl } = posterResp;
+      const videoUrlData = {
+        url: videoResp.message,
+        firebaseUrl: videoResp.storagePath,
+      };
+      const posterUrlData = {
+        url: posterResp.message,
+        firebaseUrl: posterResp.storagePath,
+      };
       const data = {
         data: videoData.details,
-        video: videoUrl,
-        poster: posterUrl,
+        video: videoUrlData,
+        poster: posterUrlData,
       };
 
-      const response = await axios.post(`${url}/private/video/upload`, data, {
-        headers: {
-          Authorization: token,
-        },
-      });
+      const response = await myaxios.post(`/private/video/upload`, data);
       if (response) {
         updateProgress(33);
       } else {
@@ -54,6 +60,12 @@ export async function apiUploadVideo(videoData, onProgress) {
     }
   } catch (error) {
     console.error("Error in apiUploadVideo", error);
+    if (videoResp.storagePath) {
+      FirebaseDelete(videoResp.storagePath);
+    }
+    if (posterResp.storagePath) {
+      FirebaseDelete(posterResp.storagePath);
+    }
 
     if (error.response && error.response.statusText === "Unauthorized") {
       return error.response.statusText;
@@ -66,8 +78,8 @@ export function getHomeData() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    axios
-      .get(`${url}/home`)
+    myaxios
+      .get(`home`)
       .then((res) => {
         setResponse(res.data);
       })

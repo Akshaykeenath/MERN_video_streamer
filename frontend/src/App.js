@@ -42,7 +42,7 @@ import { CacheProvider } from "@emotion/react";
 import createCache from "@emotion/cache";
 
 // Video Streamer React routes
-import routes from "routes";
+import { routes, studioRoutes } from "routes";
 
 // Video Streamer React contexts
 import { useMaterialUIController, setMiniSidenav, setOpenConfigurator } from "context";

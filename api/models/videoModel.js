@@ -10,12 +10,14 @@ const videoSchema = new mongoose.Schema({
     {
       size: String, // Size of the video (e.g., "1080p")
       url: String, // URL for the video
+      firebaseUrl: String,
     },
   ],
   poster: [
     {
       size: String, // Size of the poster (e.g., "small")
       url: String, // URL for the poster
+      firebaseUrl: String,
     },
   ],
   uploader: {

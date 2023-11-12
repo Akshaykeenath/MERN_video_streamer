@@ -65,8 +65,8 @@ function reducer(state, action) {
     case "NOTIFICATION": {
       return { ...state, notification: action.value };
     }
-    case "SESSIONID": {
-      return { ...state, sessionID: action.value };
+    case "AUTH": {
+      return { ...state, auth: action.value };
     }
     default: {
       throw new Error(`Unhandled action type: ${action.type}`);
@@ -88,7 +88,7 @@ function MaterialUIControllerProvider({ children }) {
     layout: "dashboard",
     darkMode: false,
     notification: false,
-    sessionID: false,
+    auth: false,
   };
 
   const [controller, dispatch] = useReducer(reducer, initialState);
@@ -128,7 +128,7 @@ const setDirection = (dispatch, value) => dispatch({ type: "DIRECTION", value })
 const setLayout = (dispatch, value) => dispatch({ type: "LAYOUT", value });
 const setDarkMode = (dispatch, value) => dispatch({ type: "DARKMODE", value });
 const setNotification = (dispatch, value) => dispatch({ type: "NOTIFICATION", value });
-const setSessionID = (dispatch, value) => dispatch({ type: "SESSIONID", value });
+const setAuth = (dispatch, value) => dispatch({ type: "AUTH", value });
 
 export {
   MaterialUIControllerProvider,
@@ -144,5 +144,5 @@ export {
   setLayout,
   setDarkMode,
   setNotification,
-  setSessionID,
+  setAuth,
 };

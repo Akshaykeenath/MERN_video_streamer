@@ -14,49 +14,11 @@ import { useMaterialUIController, setNotification } from "context";
 function Home() {
   const redirect = useRouteRedirect();
   const [controller, dispatch] = useMaterialUIController();
+  const { sidenavColor } = controller;
 
   const { response, error } = getHomeData();
   const [loading, setLoading] = useState(true);
   const [videoData, setVideoData] = useState([]);
-  // const videoData = [
-  //   {
-  //     video: {
-  //       url: "http://media.w3.org/2010/05/sintel/trailer.mp4",
-  //       poster: "https://picsum.photos/3000/1800",
-  //     },
-  //     title: "Sample Video Title",
-  //     channel: {
-  //       name: "Channel Name",
-  //       image: "https://picsum.photos/200",
-  //       route: "/channel",
-  //     },
-  //     views: "100 views",
-  //     time: "10 min ago",
-  //     action: {
-  //       type: "internal",
-  //       route: "/sample-video-url",
-  //     },
-  //   },
-  //   {
-  //     video: {
-  //       url: "http://media.w3.org/2010/05/sintel/trailer.mp4",
-  //       poster: "https://picsum.photos/300/180",
-  //     },
-  //     title: "Sample Video Title",
-  //     channel: {
-  //       name: "Channel Name",
-  //       image: "https://picsum.photos/200",
-  //       route: "/channel",
-  //     },
-  //     views: "100 views",
-  //     time: "10 min ago",
-  //     action: {
-  //       type: "external",
-  //       route: "/sample-video-url",
-  //     },
-  //   },
-  //   // Add more video data objects as needed
-  // ];
   useEffect(() => {
     if (error) {
       const noti = {
@@ -101,7 +63,7 @@ function Home() {
       <StudioNavbar />
       {response ? (
         <VideoGridLayout
-          title={{ color: "success", text: "trending videos", variant: "h3" }}
+          title={{ color: sidenavColor, text: "trending videos", variant: "h3" }}
           videos={videoData}
         />
       ) : (

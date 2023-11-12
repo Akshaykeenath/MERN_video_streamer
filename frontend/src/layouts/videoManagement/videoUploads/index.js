@@ -32,7 +32,15 @@ function VideoUpload() {
   const isXs = useMediaQuery((theme) => theme.breakpoints.down("md"));
   const isMd = useMediaQuery((theme) => theme.breakpoints.up("md"));
 
-  const redirectToLogin = () => {};
+  useEffect(() => {
+    // Set the title when the component mounts
+    document.title = "KeTube Studio";
+
+    // Optionally, you can return a cleanup function to reset the title when the component unmounts
+    return () => {
+      document.title = "KeTube";
+    };
+  }, []);
 
   useEffect(() => {
     if (currentStep === 1 && !videoFileState) {
@@ -77,6 +85,7 @@ function VideoUpload() {
   };
 
   const handleVideoSubmit = async () => {
+    redirect("checkAuth");
     if (!videoFileState) {
       const noti = {
         message: "Add a video first",
