@@ -31,6 +31,13 @@ axios.interceptors.request.use(
 // Add a response interceptor
 axios.interceptors.response.use(
   (response) => {
+    if (response.headers && response.headers.authorization) {
+      const newToken = response.headers.authorization;
+      if (newToken) {
+        localStorage.setItem("currentUserJWT", newToken);
+      }
+      // You can handle the new token as needed
+    }
     // Do something with the response data
     return response;
   },

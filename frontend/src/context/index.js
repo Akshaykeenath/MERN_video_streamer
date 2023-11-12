@@ -68,6 +68,9 @@ function reducer(state, action) {
     case "AUTH": {
       return { ...state, auth: action.value };
     }
+    case "APPDOMAIN": {
+      return { ...state, appDomain: action.value };
+    }
     default: {
       throw new Error(`Unhandled action type: ${action.type}`);
     }
@@ -89,6 +92,7 @@ function MaterialUIControllerProvider({ children }) {
     darkMode: false,
     notification: false,
     auth: false,
+    appDomain: "default",
   };
 
   const [controller, dispatch] = useReducer(reducer, initialState);
@@ -129,6 +133,7 @@ const setLayout = (dispatch, value) => dispatch({ type: "LAYOUT", value });
 const setDarkMode = (dispatch, value) => dispatch({ type: "DARKMODE", value });
 const setNotification = (dispatch, value) => dispatch({ type: "NOTIFICATION", value });
 const setAuth = (dispatch, value) => dispatch({ type: "AUTH", value });
+const setAppDomain = (dispatch, value) => dispatch({ type: "APPDOMAIN", value });
 
 export {
   MaterialUIControllerProvider,
@@ -145,4 +150,5 @@ export {
   setDarkMode,
   setNotification,
   setAuth,
+  setAppDomain,
 };

@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { apiDeAuth } from "services/userManagement";
 import { apiAuth } from "services/userManagement";
-import { useMaterialUIController, setNotification } from "context";
+import { useMaterialUIController, setNotification, setAppDomain } from "context";
 
 const checkAuth = async () => {
   try {
@@ -28,6 +28,10 @@ export function useRouteRedirect() {
       case "login":
         navigate("/authentication/sign-in");
         break;
+      case "profile":
+        setAppDomain(dispatch, "studio");
+        navigate("/profile");
+        break;
       case "logout":
         const noti = {
           message: "Logged out Successfully",
@@ -35,15 +39,19 @@ export function useRouteRedirect() {
         };
         setNotification(dispatch, noti);
         apiDeAuth();
+        setAppDomain(dispatch, "default");
         navigate("/authentication/sign-in");
         break;
       case "signup":
+        setAppDomain(dispatch, "default");
         navigate("/authentication/sign-up");
         break;
       case "dashboard":
+        setAppDomain(dispatch, "studio");
         navigate("/dashboard");
         break;
       case "home":
+        setAppDomain(dispatch, "default");
         navigate("/");
         break;
       case "checkAuth":
@@ -53,11 +61,13 @@ export function useRouteRedirect() {
             color: "warning",
           };
           setNotification(dispatch, noti);
+          setAppDomain(dispatch, "default");
           navigate("/authentication/sign-in");
         }
         break;
       default:
         console.log("redirect default");
+        setAppDomain(dispatch, "default");
         navigate("/authentication/sign-in");
     }
   };

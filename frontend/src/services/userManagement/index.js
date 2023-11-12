@@ -13,10 +13,11 @@ export function sendMailVerification(data) {
     });
 }
 
-export function apiLogin(uname, pass) {
+export function apiLogin(uname, pass, rememberMe) {
   const data = {
     uname: uname,
     pass: pass,
+    rememberMe: rememberMe,
   };
   return axios
     .post(`${url}/auth/login`, data)

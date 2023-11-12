@@ -1,18 +1,3 @@
-/**
-=========================================================
-* Video Streamer React - v2.2.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
 import { useState, useEffect, useMemo } from "react";
 
 // react-router components
@@ -45,11 +30,16 @@ import createCache from "@emotion/cache";
 import { routes, studioRoutes } from "routes";
 
 // Video Streamer React contexts
-import { useMaterialUIController, setMiniSidenav, setOpenConfigurator } from "context";
+import {
+  useMaterialUIController,
+  setMiniSidenav,
+  setOpenConfigurator,
+  setAppDomain,
+} from "context";
 
 // Images
-import brandWhite from "assets/images/logo-ct.png";
-import brandDark from "assets/images/logo-ct-dark.png";
+import brandWhite from "assets/images/brand_white.png";
+import brandDark from "assets/images/brand_dark.png";
 import KEAlert from "components/KEAlert";
 
 export default function App() {
@@ -63,6 +53,7 @@ export default function App() {
     transparentSidenav,
     whiteSidenav,
     darkMode,
+    appDomain,
   } = controller;
   const [onMouseEnter, setOnMouseEnter] = useState(false);
   const [rtlCache, setRtlCache] = useState(null);
@@ -93,9 +84,6 @@ export default function App() {
       setOnMouseEnter(false);
     }
   };
-
-  // Change the openConfigurator state
-  const handleConfiguratorOpen = () => setOpenConfigurator(dispatch, !openConfigurator);
 
   // Setting the dir attribute for the body element
   useEffect(() => {
@@ -129,8 +117,8 @@ export default function App() {
           <Sidenav
             color={sidenavColor}
             brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
-            brandName="Video Streamer"
-            routes={routes}
+            brandName={appDomain === "default" ? "KeTube" : "KeTube Studio"}
+            routes={appDomain === "default" ? routes : studioRoutes}
             onMouseEnter={handleOnMouseEnter}
             onMouseLeave={handleOnMouseLeave}
           />
@@ -139,8 +127,11 @@ export default function App() {
       )}
       {layout === "vr" && <Configurator />}
       <Routes>
-        {getRoutes(routes)}
-        <Route path="*" element={<Navigate to="/" />} />
+        {appDomain === "default" ? getRoutes(routes) : getRoutes(studioRoutes)}
+        <Route
+          path="*"
+          element={appDomain === "default" ? <Navigate to="/" /> : <Navigate to="/dashboard" />}
+        />
       </Routes>
       <KEAlert />
     </ThemeProvider>

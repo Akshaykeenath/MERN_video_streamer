@@ -4,15 +4,32 @@ const authRoutes = require("./routes/auth");
 const privateRoutes = require("./routes/private");
 const mongoose = require("mongoose");
 const cors = require("cors");
-const { verifyToken } = require("./functions/encrypt");
+const { verifyToken, generateToken } = require("./functions/encrypt");
+const { getUserDetails } = require("./functions/userManagement/userDetails");
 
 const app = express();
 
 //  middlewares
-app.use(cors());
+const corsOptions = {
+  origin: process.env.APP_URL,
+  credentials: true,
+  exposedHeaders: ["Authorization"],
+};
+app.use(cors(corsOptions));
 app.use(express.json());
-app.use((req, res, next) => {
+app.use(async (req, res, next) => {
   console.log(`Received a ${req.method} request at ${req.url}`);
+  const token = req.headers.authorization;
+  const response = verifyToken(token);
+  const current_time = Math.floor(Date.now() / 1000);
+  if (response.iat && response.exp) {
+    if (response.exp - current_time < (response.exp - response.iat) / 4) {
+      const rememberMe = response.rememberMe;
+      const user = await getUserDetails(token);
+      const newToken = generateToken(user, rememberMe);
+      res.setHeader("Authorization", newToken);
+    }
+  }
   next(); // Continue processing the request
 });
 

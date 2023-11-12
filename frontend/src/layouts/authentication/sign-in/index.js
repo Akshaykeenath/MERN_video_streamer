@@ -74,9 +74,8 @@ function Basic() {
       };
       setNotification(dispatch, noti);
     } else {
-      console.log("Form submitted");
       try {
-        const response = await apiLogin(email, password);
+        const response = await apiLogin(email, password, rememberMe);
         if (response === "success") {
           const noti = {
             message: "Logged in Successfully",

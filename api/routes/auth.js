@@ -17,6 +17,7 @@ router.post("/login", (req, res) => {
   const user = {
     uname: req.body.uname,
     pass: req.body.pass,
+    rememberMe: req.body.rememberMe,
   };
 
   userModel
@@ -27,7 +28,7 @@ router.post("/login", (req, res) => {
         if (isMatch) {
           // User is authenticated
           if (existingUser.verified) {
-            jwtToken = generateToken(existingUser);
+            jwtToken = generateToken(existingUser, user.rememberMe);
             res.status(200).json({
               message: "success",
               token: jwtToken,

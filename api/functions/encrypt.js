@@ -13,15 +13,18 @@ async function verifyPassword(password, hashedPassword) {
 }
 
 // Generate JWT
-function generateToken(user) {
+function generateToken(user, rememberMe = false) {
   const payload = {
     userId: user._id,
     username: user.uname,
+    rememberMe: rememberMe,
   };
 
   secretKey = process.env.SESSION_KEY;
+  const expiresIn = rememberMe ? "7d" : "1h"; // Set expiration based on rememberMe value
+
   const token = jwt.sign(payload, secretKey, {
-    expiresIn: "1h",
+    expiresIn,
   });
 
   return token;

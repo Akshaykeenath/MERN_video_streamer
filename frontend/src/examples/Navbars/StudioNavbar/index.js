@@ -37,6 +37,7 @@ import {
   setTransparentNavbar,
   setMiniSidenav,
   setOpenConfigurator,
+  setAppDomain,
 } from "context";
 import { useRouteRedirect } from "services/redirection";
 
@@ -44,7 +45,8 @@ function StudioNavbar({ absolute, light, isMini }) {
   const redirect = useRouteRedirect();
   const [navbarType, setNavbarType] = useState();
   const [controller, dispatch] = useMaterialUIController();
-  const { miniSidenav, transparentNavbar, fixedNavbar, openConfigurator, darkMode } = controller;
+  const { miniSidenav, transparentNavbar, fixedNavbar, openConfigurator, darkMode, appDomain } =
+    controller;
   const [openMenu, setOpenMenu] = useState(false);
   const [openProfile, setOpenProfile] = useState(false);
 
@@ -82,9 +84,12 @@ function StudioNavbar({ absolute, light, isMini }) {
   const handleOpenProfile = (event) => setOpenProfile(event.currentTarget);
   const handleCloseProfile = () => setOpenProfile(false);
   const handleCloseMenu = () => setOpenMenu(false);
-
-  const handleLogout = () => {
-    redirect("logout");
+  const handleStudioClick = () => {
+    if (appDomain === "default") {
+      setAppDomain(dispatch, "studio");
+    } else {
+      setAppDomain(dispatch, "default");
+    }
   };
 
   // Render the notifications menu
@@ -118,10 +123,21 @@ function StudioNavbar({ absolute, light, isMini }) {
       onClose={handleCloseProfile}
       sx={{ mt: 2 }}
     >
-      <Link to="/profile">
-        <NotificationItem icon={<Icon>person</Icon>} title="Profile" />
-      </Link>
-      <NotificationItem icon={<Icon>logout</Icon>} onClick={handleLogout} title="Logout" />
+      <NotificationItem
+        icon={<Icon>person</Icon>}
+        title="Profile"
+        onClick={() => redirect("profile")}
+      />
+      <NotificationItem
+        icon={appDomain === "default" ? <Icon>video_call</Icon> : <Icon>ondemand_video</Icon>}
+        onClick={handleStudioClick}
+        title={appDomain === "default" ? "Studio" : "KeTube"}
+      />
+      <NotificationItem
+        icon={<Icon>logout</Icon>}
+        onClick={() => redirect("logout")}
+        title="Logout"
+      />
     </Menu>
   );
 
