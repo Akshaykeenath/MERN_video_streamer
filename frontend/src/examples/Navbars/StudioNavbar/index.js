@@ -37,20 +37,26 @@ import {
   setTransparentNavbar,
   setMiniSidenav,
   setOpenConfigurator,
-  setAppDomain,
 } from "context";
 import { useRouteRedirect } from "services/redirection";
 
 function StudioNavbar({ absolute, light, isMini }) {
+  const { pathname } = useLocation();
   const redirect = useRouteRedirect();
   const [navbarType, setNavbarType] = useState();
   const [controller, dispatch] = useMaterialUIController();
-  const { miniSidenav, transparentNavbar, fixedNavbar, openConfigurator, darkMode, appDomain } =
-    controller;
+  const { miniSidenav, transparentNavbar, fixedNavbar, openConfigurator, darkMode } = controller;
   const [openMenu, setOpenMenu] = useState(false);
   const [openProfile, setOpenProfile] = useState(false);
+  const [appDomain, setAppDomain] = useState("default");
 
-  const route = useLocation().pathname.split("/").slice(1);
+  useEffect(() => {
+    if (pathname.startsWith("/studio")) {
+      setAppDomain("studio");
+    } else {
+      setAppDomain("default");
+    }
+  }, [pathname]);
 
   useEffect(() => {
     // Setting the navbar type
@@ -86,9 +92,11 @@ function StudioNavbar({ absolute, light, isMini }) {
   const handleCloseMenu = () => setOpenMenu(false);
   const handleStudioClick = () => {
     if (appDomain === "default") {
-      setAppDomain(dispatch, "studio");
+      setAppDomain("studio");
+      redirect("dashboard");
     } else {
-      setAppDomain(dispatch, "default");
+      setAppDomain("default");
+      redirect("home");
     }
   };
 

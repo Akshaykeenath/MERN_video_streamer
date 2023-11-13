@@ -41,6 +41,7 @@ import {
 import brandWhite from "assets/images/brand_white.png";
 import brandDark from "assets/images/brand_dark.png";
 import KEAlert from "components/KEAlert";
+import StudioSidenav from "examples/Sidenav/StudioSidenav";
 
 export default function App() {
   const [controller, dispatch] = useMaterialUIController();
@@ -53,7 +54,6 @@ export default function App() {
     transparentSidenav,
     whiteSidenav,
     darkMode,
-    appDomain,
   } = controller;
   const [onMouseEnter, setOnMouseEnter] = useState(false);
   const [rtlCache, setRtlCache] = useState(null);
@@ -114,24 +114,32 @@ export default function App() {
       <CssBaseline />
       {layout === "dashboard" && (
         <>
-          <Sidenav
-            color={sidenavColor}
-            brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
-            brandName={appDomain === "default" ? "KeTube" : "KeTube Studio"}
-            routes={appDomain === "default" ? routes : studioRoutes}
-            onMouseEnter={handleOnMouseEnter}
-            onMouseLeave={handleOnMouseLeave}
-          />
+          {pathname.startsWith("/studio") ? (
+            <StudioSidenav
+              color={sidenavColor}
+              brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
+              brandName={pathname.startsWith("/studio") ? "KeTube Studio" : "KeTube"}
+              routes={routes}
+              onMouseEnter={handleOnMouseEnter}
+              onMouseLeave={handleOnMouseLeave}
+            />
+          ) : (
+            <Sidenav
+              color={sidenavColor}
+              brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
+              brandName={pathname.startsWith("/studio") ? "KeTube Studio" : "KeTube"}
+              routes={routes}
+              onMouseEnter={handleOnMouseEnter}
+              onMouseLeave={handleOnMouseLeave}
+            />
+          )}
           <Configurator />
         </>
       )}
       {layout === "vr" && <Configurator />}
       <Routes>
-        {appDomain === "default" ? getRoutes(routes) : getRoutes(studioRoutes)}
-        <Route
-          path="*"
-          element={appDomain === "default" ? <Navigate to="/" /> : <Navigate to="/dashboard" />}
-        />
+        {getRoutes(routes)}
+        <Route path="*" element={<Navigate to="/" />} />
       </Routes>
       <KEAlert />
     </ThemeProvider>

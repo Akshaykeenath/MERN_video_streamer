@@ -1,18 +1,3 @@
-/**
-=========================================================
-* Material Dashboard 2 React - v2.2.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
 import { useState, useEffect } from "react";
 
 // react-router components
@@ -52,21 +37,28 @@ import {
   setTransparentNavbar,
   setMiniSidenav,
   setOpenConfigurator,
-  setAppDomain,
 } from "context";
 import { useRouteRedirect } from "services/redirection";
-import { routes, studioRoutes } from "routes";
 
 function DashboardNavbar({ absolute, light, isMini }) {
+  const { pathname } = useLocation();
   const redirect = useRouteRedirect();
   const [navbarType, setNavbarType] = useState();
   const [controller, dispatch] = useMaterialUIController();
-  const { miniSidenav, transparentNavbar, fixedNavbar, openConfigurator, darkMode, appDomain } =
-    controller;
+  const { miniSidenav, transparentNavbar, fixedNavbar, openConfigurator, darkMode } = controller;
   const [openMenu, setOpenMenu] = useState(false);
   const [openProfile, setOpenProfile] = useState(false);
+  const [appDomain, setAppDomain] = useState("default");
 
   const route = useLocation().pathname.split("/").slice(1);
+
+  useEffect(() => {
+    if (pathname.startsWith("/studio")) {
+      setAppDomain("studio");
+    } else {
+      setAppDomain("default");
+    }
+  }, [pathname]);
 
   useEffect(() => {
     // Setting the navbar type
@@ -102,9 +94,11 @@ function DashboardNavbar({ absolute, light, isMini }) {
   const handleCloseMenu = () => setOpenMenu(false);
   const handleStudioClick = () => {
     if (appDomain === "default") {
-      setAppDomain(dispatch, "studio");
+      setAppDomain("studio");
+      redirect("dashboard");
     } else {
-      setAppDomain(dispatch, "default");
+      setAppDomain("default");
+      redirect("home");
     }
   };
 
@@ -178,7 +172,12 @@ function DashboardNavbar({ absolute, light, isMini }) {
     >
       <Toolbar sx={(theme) => navbarContainer(theme)}>
         <MDBox color="inherit" mb={{ xs: 1, md: 0 }} sx={(theme) => navbarRow(theme, { isMini })}>
-          <Breadcrumbs icon="home" title={route[route.length - 1]} route={route} light={light} />
+          <Breadcrumbs
+            icon="home"
+            title={route[route.length - 1]}
+            route={route.slice(route[0] === "studio" ? 1 : 0)}
+            light={light}
+          />
           <IconButton
             size="small"
             disableRipple

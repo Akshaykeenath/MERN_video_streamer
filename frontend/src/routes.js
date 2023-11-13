@@ -34,6 +34,7 @@ import Icon from "@mui/material/Icon";
 import Home from "layouts/home";
 import VerificationArea from "layouts/authentication/verification";
 import VideoUpload from "layouts/videoManagement/videoUploads";
+import VideoPageStudio from "layouts/videoManagement/videoPageStudio";
 
 const routes = [
   {
@@ -44,38 +45,28 @@ const routes = [
     route: "/",
     component: <Home />,
   },
-  {
-    key: "signin",
-    route: "/authentication/sign-in",
-    component: <SignIn />,
-  },
-  {
-    key: "signup",
-    route: "/authentication/sign-up",
-    component: <SignUp />,
-  },
-  {
-    key: "verify",
-    route: "/authentication/verify",
-    component: <VerificationArea />,
-  },
-];
+  // Studio Area
 
-const studioRoutes = [
   {
     type: "collapse",
     name: "Dashboard",
     key: "dashboard",
     icon: <Icon fontSize="small">dashboard</Icon>,
-    route: "/dashboard",
+    route: "/studio/dashboard",
     component: <Dashboard />,
   },
   {
     type: "collapse",
-    name: "Video",
-    key: "video/upload",
+    name: "Videos",
+    key: "videos",
     icon: <Icon fontSize="small">video_call</Icon>,
-    route: "/video/upload",
+    route: "/studio/videos",
+    component: <VideoPageStudio />,
+  },
+  {
+    key: "videos",
+    icon: <Icon fontSize="small">video_call</Icon>,
+    route: "/studio/videos/upload",
     component: <VideoUpload />,
   },
   {
@@ -110,6 +101,23 @@ const studioRoutes = [
     route: "/profile",
     component: <Profile />,
   },
+  {
+    key: "signin",
+    route: "/authentication/sign-in",
+    component: <SignIn />,
+  },
+  {
+    key: "signup",
+    route: "/authentication/sign-up",
+    component: <SignUp />,
+  },
+  {
+    key: "verify",
+    route: "/authentication/verify",
+    component: <VerificationArea />,
+  },
 ];
+
+const studioRoutes = [];
 
 export { routes, studioRoutes };

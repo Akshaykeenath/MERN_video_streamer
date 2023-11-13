@@ -47,12 +47,11 @@ import {
   setWhiteSidenav,
 } from "context";
 
-function Sidenav({ color, brand, brandName, routes, ...rest }) {
+function StudioSidenav({ color, brand, brandName, routes, ...rest }) {
   const [controller, dispatch] = useMaterialUIController();
   const { miniSidenav, transparentSidenav, whiteSidenav, darkMode, sidenavColor } = controller;
   const location = useLocation();
-  const collapseName = location.pathname.replace("/", "");
-
+  const collapseName = location.pathname.split("/").filter(Boolean);
   let textColor = "white";
 
   if (transparentSidenav || (whiteSidenav && !darkMode)) {
@@ -87,7 +86,7 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
   const renderRoutes = routes.map(({ type, name, icon, title, noCollapse, key, href, route }) => {
     let returnValue;
 
-    if (type === "collapse" && !route.startsWith("/studio")) {
+    if (type === "collapse" && route.startsWith("/studio")) {
       returnValue = href ? (
         <Link
           href={href}
@@ -99,13 +98,13 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
           <SidenavCollapse
             name={name}
             icon={icon}
-            active={key === collapseName}
+            active={key === collapseName[1]}
             noCollapse={noCollapse}
           />
         </Link>
       ) : (
         <NavLink key={key} to={route}>
-          <SidenavCollapse name={name} icon={icon} active={key === collapseName} />
+          <SidenavCollapse name={name} icon={icon} active={key === collapseName[1]} />
         </NavLink>
       );
     } else if (type === "title") {
@@ -184,17 +183,17 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
 }
 
 // Setting default values for the props of Sidenav
-Sidenav.defaultProps = {
+StudioSidenav.defaultProps = {
   color: "info",
   brand: "",
 };
 
 // Typechecking props for the Sidenav
-Sidenav.propTypes = {
+StudioSidenav.propTypes = {
   color: PropTypes.oneOf(["primary", "secondary", "info", "success", "warning", "error", "dark"]),
   brand: PropTypes.string,
   brandName: PropTypes.string.isRequired,
   routes: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
-export default Sidenav;
+export default StudioSidenav;
