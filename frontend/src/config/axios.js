@@ -1,11 +1,5 @@
 // axios.js
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
-
-const redirectLogin = () => {
-  const navigate = useNavigate();
-  navigate("/authentication/sign-in");
-};
 
 // Set up a base URL if needed
 axios.defaults.baseURL = process.env.REACT_APP_API_URL;
@@ -44,7 +38,7 @@ axios.interceptors.response.use(
   (error) => {
     // Do something with response error
     if (error.response.status === 401) {
-      redirectLogin();
+      window.location.href = "/authentication/sign-in";
     }
     return Promise.reject(error);
   }

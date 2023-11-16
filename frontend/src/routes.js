@@ -44,6 +44,7 @@ const routes = [
     icon: <Icon fontSize="small">home</Icon>,
     route: "/",
     component: <Home />,
+    protected: true,
   },
   // Studio Area
 
@@ -54,6 +55,7 @@ const routes = [
     icon: <Icon fontSize="small">dashboard</Icon>,
     route: "/studio/dashboard",
     component: <Dashboard />,
+    protected: true,
   },
   {
     type: "collapse",
@@ -62,12 +64,14 @@ const routes = [
     icon: <Icon fontSize="small">video_call</Icon>,
     route: "/studio/videos",
     component: <VideoPageStudio />,
+    protected: true,
   },
   {
     key: "videos",
     icon: <Icon fontSize="small">video_call</Icon>,
     route: "/studio/videos/upload",
     component: <VideoUpload />,
+    protected: true,
   },
   {
     type: "collapse",
@@ -100,6 +104,7 @@ const routes = [
     icon: <Icon fontSize="small">person</Icon>,
     route: "/profile",
     component: <Profile />,
+    protected: true,
   },
   {
     key: "signin",

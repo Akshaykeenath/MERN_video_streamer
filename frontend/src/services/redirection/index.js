@@ -1,15 +1,17 @@
 import { useNavigate } from "react-router-dom";
 import { apiDeAuth } from "services/userManagement";
 import { apiAuth } from "services/userManagement";
-import { useMaterialUIController, setNotification } from "context";
+import { useMaterialUIController, setNotification, setIsAuthenticated } from "context";
 
 const checkAuth = async () => {
   try {
     const response = await apiAuth();
     if (response === "not authorised") {
+      setIsAuthenticated(dispatch, false);
       return false;
     } else if (response === "authorised") {
       console.log("User is authorized");
+      setIsAuthenticated(dispatch, true);
       return true;
     }
     // You can set the data to state if needed
@@ -37,6 +39,8 @@ export function useRouteRedirect() {
           color: "warning",
         };
         setNotification(dispatch, noti);
+        setIsAuthenticated(dispatch, false);
+
         apiDeAuth();
         navigate("/authentication/sign-in");
         break;
@@ -58,6 +62,9 @@ export function useRouteRedirect() {
           setNotification(dispatch, noti);
           navigate("/authentication/sign-in");
         }
+        break;
+      case "videoUpload":
+        navigate("/studio/videos/upload");
         break;
       default:
         console.log("redirect default");

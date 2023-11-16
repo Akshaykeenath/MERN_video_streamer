@@ -13,7 +13,7 @@ Coded by www.creative-tim.com
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 // react-router-dom components
 import { Link, useNavigate } from "react-router-dom";
@@ -42,17 +42,19 @@ import BasicLayout from "layouts/authentication/components/BasicLayout";
 import bgImage from "assets/images/bg-sign-in-basic.jpeg";
 import { apiLogin } from "services/userManagement";
 import MDSnackbar from "components/MDSnackbar";
-import { useMaterialUIController, setNotification } from "context";
+import { useMaterialUIController, setNotification, setIsAuthenticated } from "context";
 import { useRouteRedirect } from "services/redirection";
 
 function Basic() {
   const [loading, setLoading] = useState(false);
   const redirect = useRouteRedirect();
   const [controller, dispatch] = useMaterialUIController();
-  const navigate = useNavigate();
   const [rememberMe, setRememberMe] = useState(false);
   const [password, setPassword] = useState("pass");
   const [email, setEmail] = useState("akshaykeenath97@gmail.com");
+  useEffect(() => {
+    setIsAuthenticated(dispatch, false);
+  }, []);
 
   const handleSetRememberMe = () => setRememberMe(!rememberMe);
 
@@ -82,7 +84,7 @@ function Basic() {
             color: "success",
           };
           setNotification(dispatch, noti);
-
+          setIsAuthenticated(dispatch, true);
           redirect("home");
         } else {
           // Handle login failure here

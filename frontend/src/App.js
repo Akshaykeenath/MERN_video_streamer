@@ -54,6 +54,7 @@ export default function App() {
     transparentSidenav,
     whiteSidenav,
     darkMode,
+    isAuthenticated,
   } = controller;
   const [onMouseEnter, setOnMouseEnter] = useState(false);
   const [rtlCache, setRtlCache] = useState(null);
@@ -101,7 +102,16 @@ export default function App() {
       if (route.collapse) {
         return getRoutes(route.collapse);
       }
-
+      if (route.protected && !isAuthenticated) {
+        // Redirect to the login page
+        return (
+          <Route
+            path={route.route}
+            element={<Navigate to="/authentication/sign-in" />}
+            key={route.key}
+          />
+        );
+      }
       if (route.route) {
         return <Route exact path={route.route} element={route.component} key={route.key} />;
       }
