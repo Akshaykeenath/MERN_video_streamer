@@ -20,20 +20,11 @@ function VideoPageStudio() {
         direction="row"
         justifyContent="center"
         alignItems="center"
-<<<<<<< HEAD
       >
         <Grid item xs={12} md={9}>
           <VideoList />
         </Grid>
         <Grid item xs={12} md={3}>
-=======
-        columns={{ xs: 4, md: 12 }}
-      >
-        <Grid item xs={9}>
-          <VideoList />
-        </Grid>
-        <Grid item xs={3}>
->>>>>>> a5ffea86e7e91fec4293c650b7f9d6b4e0a749eb
           <Card sx={{ paddingY: "5vh", paddingX: "3vw" }}>
             <Grid container direction="column" justifyContent="center" alignItems="center">
               <Grid item>
