@@ -10,6 +10,29 @@ router.get("/", (req, res, next) => {
   });
 });
 
+router.get("/video/my", async (req, res, next) => {
+  const token = req.headers.authorization;
+  const user = await getUserDetails(token);
+  if (user) {
+    const userId = user._id;
+    videoModel
+      .find({ uploader: userId })
+      .exec()
+      .then((videos) => {
+        res.status(200).json({
+          videos: videos,
+        });
+      })
+      .catch((err) => {
+        // Handle error
+        console.error(err);
+        res.status(500).json({
+          message: err,
+        });
+      });
+  }
+});
+
 router.post("/video/upload", async (req, res, next) => {
   try {
     const data = req.body.data;

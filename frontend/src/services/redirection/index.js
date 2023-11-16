@@ -59,6 +59,9 @@ export function useRouteRedirect() {
           navigate("/authentication/sign-in");
         }
         break;
+      case "videoUpload":
+        navigate("/studio/videos/upload");
+        break;
       default:
         console.log("redirect default");
         navigate("/authentication/sign-in");

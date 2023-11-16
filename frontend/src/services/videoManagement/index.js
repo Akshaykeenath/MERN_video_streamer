@@ -73,6 +73,23 @@ export async function apiUploadVideo(videoData, onProgress) {
   }
 }
 
+export function getMyvideoData() {
+  const [response, setResponse] = useState(null);
+  const [error, setError] = useState(null);
+  useEffect(() => {
+    myaxios
+      .get("/private/video/my")
+      .then((res) => {
+        setResponse(res.data);
+      })
+      .catch((err) => {
+        setError(err);
+      });
+  }, []);
+
+  return { response, error };
+}
+
 export function getHomeData() {
   const [response, setResponse] = useState(null);
   const [error, setError] = useState(null);
