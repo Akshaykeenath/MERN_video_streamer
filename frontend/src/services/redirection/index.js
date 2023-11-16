@@ -7,11 +7,9 @@ const checkAuth = async () => {
   try {
     const response = await apiAuth();
     if (response === "not authorised") {
-      setIsAuthenticated(dispatch, false);
       return false;
     } else if (response === "authorised") {
       console.log("User is authorized");
-      setIsAuthenticated(dispatch, true);
       return true;
     }
     // You can set the data to state if needed
@@ -60,6 +58,7 @@ export function useRouteRedirect() {
             color: "warning",
           };
           setNotification(dispatch, noti);
+          setIsAuthenticated(dispatch, false);
           navigate("/authentication/sign-in");
         }
         break;

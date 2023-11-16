@@ -43,7 +43,7 @@ function VideoPageStudio() {
               </Grid>
               <Grid item>
                 <MDButton
-                  variant="gradient"
+                  variant="outlined"
                   color="info"
                   size="large"
                   circular

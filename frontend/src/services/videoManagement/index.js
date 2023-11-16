@@ -96,8 +96,9 @@ export function getHomeData() {
 
   useEffect(() => {
     myaxios
-      .get(`home`)
+      .get(`/private/home`)
       .then((res) => {
+        console.log(res.data);
         setResponse(res.data);
       })
       .catch((err) => {

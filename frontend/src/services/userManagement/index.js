@@ -22,7 +22,6 @@ export function apiLogin(uname, pass, rememberMe) {
   return axios
     .post(`${url}/auth/login`, data)
     .then((response) => {
-      console.log(response.data.token);
       localStorage.setItem("currentUserJWT", response.data.token);
       return response.data.message;
     })

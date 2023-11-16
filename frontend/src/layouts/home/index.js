@@ -10,6 +10,7 @@ import KEVideoPlayer from "components/KEVideoPlayer";
 import { getHomeData } from "services/videoManagement";
 import { CircularProgress, Grid } from "@mui/material";
 import { useMaterialUIController, setNotification } from "context";
+import { getRelativeTime } from "functions/general/time";
 
 function Home() {
   const redirect = useRouteRedirect();
@@ -30,7 +31,7 @@ function Home() {
     } else if (response != null) {
       const trendingVideos = response.trending;
       const mappedVideoData = trendingVideos.map((currVideo, index) => {
-        const { title, uploader, video: videoArray, poster } = currVideo;
+        const { title, uploader, video: videoArray, poster, timestamp } = currVideo;
         const videoUrl = videoArray[0].url;
         const posterUrl = poster[0].url;
 
@@ -46,7 +47,7 @@ function Home() {
             route: "/channel", // Replace with actual channel route if available
           },
           views: "100 views", // You may replace this with actual view count
-          time: "10 min ago", // You may replace this with actual upload time
+          time: getRelativeTime(timestamp), // You may replace this with actual upload time
           action: {
             type: "internal", // Change to "external" if needed
             route: "/sample-video-url", // Replace with actual video route if available

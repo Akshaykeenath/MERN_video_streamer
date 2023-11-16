@@ -3,6 +3,9 @@ const router = express.Router();
 const videoModel = require("../models/videoModel");
 const { getUserDetails } = require("../functions/userManagement/userDetails");
 const mongoose = require("mongoose");
+const {
+  getTrendingVideos,
+} = require("../functions/videoManagement/trendingVideos");
 
 router.get("/", (req, res, next) => {
   res.status(200).json({
@@ -31,6 +34,13 @@ router.get("/video/my", async (req, res, next) => {
         });
       });
   }
+});
+
+router.get("/home", async (req, res, next) => {
+  const videos = await getTrendingVideos();
+  return res.status(200).json({
+    trending: videos,
+  });
 });
 
 router.post("/video/upload", async (req, res, next) => {

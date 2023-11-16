@@ -91,7 +91,7 @@ function MaterialUIControllerProvider({ children }) {
     layout: "dashboard",
     darkMode: false,
     notification: false,
-    isAuthenticated: false,
+    isAuthenticated: true,
     appDomain: "default",
   };
 
