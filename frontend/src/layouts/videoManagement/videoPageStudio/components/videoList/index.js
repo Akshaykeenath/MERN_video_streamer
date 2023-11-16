@@ -35,7 +35,6 @@ function VideoList() {
             showTotalEntries={true}
             noEndBorder
           />
-          {/* <RowDetails videoName="Aksakjs" col1="Hahahahahahah" col2="hhhhhhhhh" col3="abajbb" /> */}
         </MDBox>
       </Card>
     </MDBox>
