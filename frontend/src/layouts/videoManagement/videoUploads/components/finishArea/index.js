@@ -4,10 +4,11 @@ import MDTypography from "components/MDTypography";
 import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { useRouteRedirect } from "services/redirection";
+import { useMaterialUIController, setNotification } from "context";
 
 function UploadFinishArea({ progress }) {
+  const [controller, dispatch] = useMaterialUIController();
   const redirect = useRouteRedirect();
-
   const [finished, setFinished] = useState(false);
   const [progressColor, setProgressColor] = useState("warning");
   const [textColor, setTextColor] = useState("dark");
@@ -21,6 +22,11 @@ function UploadFinishArea({ progress }) {
     } else if (progress <= 68) {
       setProgressColor("info");
     } else if (progress >= 100) {
+      const noti = {
+        message: "Video Upload Completed",
+        color: "error",
+      };
+      setNotification(dispatch, noti);
       setFinished(true);
       setProgressColor("success");
       setTextColor("success");

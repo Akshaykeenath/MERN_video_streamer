@@ -110,7 +110,11 @@ router.get("/video/:videoId", async (req, res) => {
   const videoId = req.params.videoId;
 
   try {
-    const video = await videoModel.findById(videoId);
+    const video = await videoModel.findById(videoId).populate({
+      path: "uploader",
+      model: "userdata",
+      select: "fname lname uname email",
+    });
 
     if (!video) {
       return res.status(404).json({

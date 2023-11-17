@@ -123,7 +123,6 @@ export function useDeleteVideo() {
             res.data.video.poster[0] &&
             res.data.video.poster[0].firebaseUrl
           ) {
-            console.log(res.data.video.poster[0].firebaseUrl);
             FirebaseDelete(res.data.video.poster[0].firebaseUrl);
           }
           if (
@@ -133,7 +132,6 @@ export function useDeleteVideo() {
             res.data.video.video[0] &&
             res.data.video.video[0].firebaseUrl
           ) {
-            console.log(res.data.video.video[0].firebaseUrl);
             FirebaseDelete(res.data.video.video[0].firebaseUrl);
           }
         });

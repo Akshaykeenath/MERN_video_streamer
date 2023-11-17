@@ -38,9 +38,12 @@ import breakpoints from "assets/theme/base/breakpoints";
 import burceMars from "assets/images/bruce-mars.jpg";
 import backgroundImage from "assets/images/bg-profile.jpeg";
 
-function Header({ children }) {
+function Header({ onTabChange, children }) {
   const [tabsOrientation, setTabsOrientation] = useState("horizontal");
   const [tabValue, setTabValue] = useState(0);
+  useEffect(() => {
+    onTabChange(tabValue);
+  }, [tabValue]);
 
   useEffect(() => {
     // A function that sets the orientation state of the tabs.
@@ -110,10 +113,10 @@ function Header({ children }) {
             <AppBar position="static">
               <Tabs orientation={tabsOrientation} value={tabValue} onChange={handleSetTabValue}>
                 <Tab
-                  label="App"
+                  label="Details"
                   icon={
                     <Icon fontSize="small" sx={{ mt: -0.25 }}>
-                      home
+                      account_circle
                     </Icon>
                   }
                 />
@@ -151,6 +154,7 @@ Header.defaultProps = {
 // Typechecking props for the Header
 Header.propTypes = {
   children: PropTypes.node,
+  onTabChange: PropTypes.func,
 };
 
 export default Header;
