@@ -25,7 +25,7 @@ function UploadFinishArea({ progress }) {
       setProgressColor("success");
       setTextColor("success");
       setTimeout(() => {
-        redirect("home");
+        redirect("videoDetailsStudio");
       }, 5000);
     }
   }, [progress]);

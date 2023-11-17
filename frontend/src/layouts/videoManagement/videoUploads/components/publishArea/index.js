@@ -18,11 +18,6 @@ function VideoPublishArea({ url, onVideoPublish }) {
       const fileType = poster.type;
       if (fileType.startsWith("image/")) {
         setPosterUrl(URL.createObjectURL(poster));
-        const noti = {
-          message: "Poster Uploaded Successfully",
-          color: "success",
-        };
-        setNotification(dispatch, noti);
         onVideoPublish(poster);
       } else {
         const noti = {

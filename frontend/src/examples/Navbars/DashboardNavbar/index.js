@@ -39,6 +39,7 @@ import {
   setOpenConfigurator,
 } from "context";
 import { useRouteRedirect } from "services/redirection";
+import KESlideModal from "components/KEModals/SlideModal";
 
 function DashboardNavbar({ absolute, light, isMini }) {
   const { pathname } = useLocation();
@@ -49,6 +50,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
   const [openMenu, setOpenMenu] = useState(false);
   const [openProfile, setOpenProfile] = useState(false);
   const [appDomain, setAppDomain] = useState("default");
+  const [modalData, setModalData] = useState(null);
 
   const route = useLocation().pathname.split("/").slice(1);
 
@@ -121,6 +123,42 @@ function DashboardNavbar({ absolute, light, isMini }) {
     </Menu>
   );
 
+  // Log out modal Code
+
+  const handleLogout = () => {
+    setModalData({
+      title: "Confirm ?",
+      body: "Are you sure you want to logout ?",
+      buttons: [
+        { color: "success", label: "No", value: "no" },
+        { color: "error", label: "Yes", value: "yes" },
+      ],
+      onAction: handleModalAction,
+    });
+  };
+
+  useEffect(() => {
+    if (modalData && modalData.onAction) {
+      if (modalData.actionValue === "yes") {
+        redirect("logout");
+
+        // Perform the delete operation here
+        setModalData(null);
+      }
+    }
+  }, [modalData]);
+
+  const handleModalAction = (value) => {
+    if (value === "yes") {
+      setModalData((prevData) => ({ ...prevData, actionValue: value }));
+    } else {
+      // For "No" or other cases, just close the modal
+      setModalData(null);
+    }
+  };
+
+  // End Log out modal Code
+
   const renderProfileMenu = () => (
     <Menu
       anchorEl={openProfile}
@@ -143,11 +181,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
         onClick={handleStudioClick}
         title={appDomain === "default" ? "Studio" : "KeTube"}
       />
-      <NotificationItem
-        icon={<Icon>logout</Icon>}
-        onClick={() => redirect("logout")}
-        title="Logout"
-      />
+      <NotificationItem icon={<Icon>logout</Icon>} onClick={handleLogout} title="Logout" />
     </Menu>
   );
 
@@ -242,6 +276,14 @@ function DashboardNavbar({ absolute, light, isMini }) {
           </MDBox>
         )}
       </Toolbar>
+      {modalData && (
+        <KESlideModal
+          title={modalData.title}
+          body={modalData.body}
+          onAction={modalData.onAction}
+          buttons={modalData.buttons}
+        />
+      )}
     </AppBar>
   );
 }

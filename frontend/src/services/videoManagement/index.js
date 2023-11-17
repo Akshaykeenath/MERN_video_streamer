@@ -98,7 +98,6 @@ export function getHomeData() {
     myaxios
       .get(`/private/home`)
       .then((res) => {
-        console.log(res.data);
         setResponse(res.data);
       })
       .catch((err) => {

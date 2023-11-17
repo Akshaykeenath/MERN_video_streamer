@@ -62,6 +62,9 @@ export function useRouteRedirect() {
           navigate("/authentication/sign-in");
         }
         break;
+      case "videoDetailsStudio":
+        navigate("/studio/videos");
+        break;
       case "videoUpload":
         navigate("/studio/videos/upload");
         break;

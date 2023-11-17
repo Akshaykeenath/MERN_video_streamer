@@ -8,12 +8,24 @@ import KESlideModal from "components/KEModals/SlideModal";
 
 function VideoList() {
   const [loading, setLoading] = useState(true);
+  const [modalData, setModalData] = useState(null);
 
   const handleSelectedVideo = (data) => {
     if (data.action === "loading") {
       setLoading(false);
     } else {
-      console.log("Selected video data after call back :", data);
+      if (data.action === "delete") {
+        setModalData({
+          videoID: data.id,
+          title: "Confirm ?",
+          body: "Are you sure you want to delete ?",
+          buttons: [
+            { color: "success", label: "No", value: "no" },
+            { color: "error", label: "Yes", value: "yes" },
+          ],
+          onAction: handleModalAction,
+        });
+      }
     }
   };
 
@@ -24,8 +36,23 @@ function VideoList() {
     }
   }, [rows, columns]);
 
+  useEffect(() => {
+    if (modalData && modalData.onAction) {
+      if (modalData.actionValue === "yes" && modalData.videoID !== null) {
+        console.log("Deleted the video : ", modalData.videoID);
+        // Perform the delete operation here
+        setModalData(null);
+      }
+    }
+  }, [modalData]);
+
   const handleModalAction = (value) => {
-    console.log("Clicked modal value : ", value);
+    if (value === "yes") {
+      setModalData((prevData) => ({ ...prevData, actionValue: value }));
+    } else {
+      // For "No" or other cases, just close the modal
+      setModalData(null);
+    }
   };
 
   return (
@@ -62,11 +89,14 @@ function VideoList() {
           </MDBox>
         )}
       </Card>
-      <KESlideModal
-        title="Confirm ?"
-        body="Are you sure you want to delete ?"
-        onAction={handleModalAction}
-      />
+      {modalData && (
+        <KESlideModal
+          title={modalData.title}
+          body={modalData.body}
+          onAction={modalData.onAction}
+          buttons={modalData.buttons}
+        />
+      )}
     </MDBox>
   );
 }

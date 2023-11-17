@@ -14,7 +14,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export default function KESlideModal({ title, body, onAction }) {
+export default function KESlideModal({ title, body, onAction, buttons }) {
   const [open, setOpen] = React.useState(false);
   React.useEffect(() => {
     if (title.length > 0 && body.length > 0 && !open) {
@@ -52,12 +52,16 @@ export default function KESlideModal({ title, body, onAction }) {
             </MDTypography>
           </DialogContent>
           <DialogActions>
-            <MDButton onClick={() => handleClick("No")} variant="text" color="error">
-              No
-            </MDButton>
-            <MDButton onClick={() => handleClick("yes")} variant="text" color="success">
-              Yes
-            </MDButton>
+            {buttons.map((button, index) => (
+              <MDButton
+                key={index}
+                onClick={() => handleClick(button.value)}
+                variant="text"
+                color={button.color}
+              >
+                {button.label}
+              </MDButton>
+            ))}
           </DialogActions>
         </Card>
       </Dialog>
@@ -68,9 +72,17 @@ export default function KESlideModal({ title, body, onAction }) {
 KESlideModal.defaultProps = {
   title: "sample title",
   body: "sample Body",
+  buttons: [{ color: "info", label: "ok", value: "ok" }],
 };
 KESlideModal.propTypes = {
   title: PropTypes.string,
   body: PropTypes.string,
   onAction: PropTypes.func,
+  buttons: PropTypes.arrayOf(
+    PropTypes.shape({
+      color: PropTypes.string,
+      label: PropTypes.string,
+      value: PropTypes.string,
+    })
+  ),
 };
