@@ -2,13 +2,40 @@ import { Card, CircularProgress, Grid } from "@mui/material";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import VideoTable from "examples/Tables/VideoTable";
-import { useEffect, useReducer, useState } from "react";
+import { useEffect, useState } from "react";
 import videoTableData from "layouts/videoManagement/videoPageStudio/data/videoTableData";
 import KESlideModal from "components/KEModals/SlideModal";
+import { useDeleteVideo } from "services/videoManagement";
+import { useMaterialUIController, setNotification } from "context";
 
 function VideoList() {
+  const [controller, dispatch] = useMaterialUIController();
   const [loading, setLoading] = useState(true);
   const [modalData, setModalData] = useState(null);
+  const { deleteVideo, response, error } = useDeleteVideo();
+  const [refreshData, setRefreshData] = useState(false);
+
+  useEffect(() => {
+    if (response) {
+      console.log("Video deleted successfully");
+      const noti = {
+        message: "Video deleted successfully",
+        color: "success",
+      };
+      setNotification(dispatch, noti);
+      // Handle any other actions after successful deletion
+      setRefreshData((prev) => !prev);
+    }
+    if (error) {
+      console.error("Error deleting video", error);
+      const noti = {
+        message: "Error Deleting Video ",
+        color: "error",
+      };
+      setNotification(dispatch, noti);
+      // Handle error state
+    }
+  }, [response, error]);
 
   const handleSelectedVideo = (data) => {
     if (data.action === "loading") {
@@ -29,7 +56,10 @@ function VideoList() {
     }
   };
 
-  const { columns, rows } = videoTableData({ onVideoDataCallback: handleSelectedVideo });
+  const { columns, rows } = videoTableData({
+    refreshData,
+    onVideoDataCallback: handleSelectedVideo,
+  });
   useEffect(() => {
     if (columns.length > 0 && rows.length > 0) {
       setLoading(false);
@@ -40,7 +70,8 @@ function VideoList() {
     if (modalData && modalData.onAction) {
       if (modalData.actionValue === "yes" && modalData.videoID !== null) {
         console.log("Deleted the video : ", modalData.videoID);
-        // Perform the delete operation here
+        deleteVideo(modalData.videoID);
+
         setModalData(null);
       }
     }

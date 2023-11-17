@@ -73,7 +73,7 @@ export async function apiUploadVideo(videoData, onProgress) {
   }
 }
 
-export function getMyvideoData() {
+export function getMyvideoData(refreshData) {
   const [response, setResponse] = useState(null);
   const [error, setError] = useState(null);
   useEffect(() => {
@@ -85,9 +85,67 @@ export function getMyvideoData() {
       .catch((err) => {
         setError(err);
       });
+  }, [refreshData]);
+
+  return { response, error };
+}
+
+export function getVideoDataByID(id) {
+  const [response, setResponse] = useState(null);
+  const [error, setError] = useState(null);
+  useEffect(() => {
+    myaxios
+      .get(`/private/video/${id}`)
+      .then((res) => {
+        setResponse(res.data);
+      })
+      .catch((err) => {
+        setError(err);
+      });
   }, []);
 
   return { response, error };
+}
+
+export function useDeleteVideo() {
+  const [response, setResponse] = useState(null);
+  const [error, setError] = useState(null);
+
+  const deleteVideo = async (id) => {
+    try {
+      if (id) {
+        // Send a DELETE request to delete the video
+        await myaxios.get(`/private/video/${id}`).then((res) => {
+          if (
+            res &&
+            res.data &&
+            res.data.video &&
+            res.data.video.poster[0] &&
+            res.data.video.poster[0].firebaseUrl
+          ) {
+            console.log(res.data.video.poster[0].firebaseUrl);
+            FirebaseDelete(res.data.video.poster[0].firebaseUrl);
+          }
+          if (
+            res &&
+            res.data &&
+            res.data.video &&
+            res.data.video.video[0] &&
+            res.data.video.video[0].firebaseUrl
+          ) {
+            console.log(res.data.video.video[0].firebaseUrl);
+            FirebaseDelete(res.data.video.video[0].firebaseUrl);
+          }
+        });
+        await myaxios.delete(`/private/video/${id}`);
+        setResponse({ status: "success" });
+      }
+    } catch (err) {
+      setError(err);
+    }
+  };
+
+  return { deleteVideo, response, error };
 }
 
 export function getHomeData() {

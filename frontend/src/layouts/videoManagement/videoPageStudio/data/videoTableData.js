@@ -13,10 +13,10 @@ import MDButton from "components/MDButton";
 import { Grid, Icon, Tooltip } from "@mui/material";
 import { useMaterialUIController, setNotification } from "context";
 
-export default function data({ onVideoDataCallback }) {
+export default function data({ refreshData, onVideoDataCallback }) {
   const [controller, dispatch] = useMaterialUIController();
 
-  const { response, error } = getMyvideoData();
+  const { response, error } = getMyvideoData(refreshData);
 
   const handleEditClick = (id) => {
     const data = {

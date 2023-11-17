@@ -13,6 +13,14 @@ router.get("/", (req, res, next) => {
   });
 });
 
+router.get("/home", async (req, res, next) => {
+  const videos = await getTrendingVideos();
+  return res.status(200).json({
+    trending: videos,
+  });
+});
+
+// Video Routes
 router.get("/video/my", async (req, res, next) => {
   const token = req.headers.authorization;
   const user = await getUserDetails(token);
@@ -35,14 +43,6 @@ router.get("/video/my", async (req, res, next) => {
       });
   }
 });
-
-router.get("/home", async (req, res, next) => {
-  const videos = await getTrendingVideos();
-  return res.status(200).json({
-    trending: videos,
-  });
-});
-
 router.post("/video/upload", async (req, res, next) => {
   try {
     const data = req.body.data;
@@ -76,14 +76,14 @@ router.post("/video/upload", async (req, res, next) => {
         {
           size: "1080p",
           url: videoUrl.url,
-          firebaseUrl: videoUrl.url.firebaseUrl,
+          firebaseUrl: videoUrl.firebaseUrl,
         },
       ],
       poster: [
         {
           size: "large",
           url: posterUrl.url,
-          firebaseUrl: posterUrl.url.firebaseUrl,
+          firebaseUrl: posterUrl.firebaseUrl,
         },
       ],
       uploader: user._id,
@@ -104,6 +104,62 @@ router.post("/video/upload", async (req, res, next) => {
       message: "An error occurred while processing the request",
     });
   }
+});
+
+router.get("/video/:videoId", async (req, res) => {
+  const videoId = req.params.videoId;
+
+  try {
+    const video = await videoModel.findById(videoId);
+
+    if (!video) {
+      return res.status(404).json({
+        error: "Not Found",
+        message: "Video not found",
+      });
+    }
+
+    res.status(200).json({
+      video: video,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      error: "Internal Server Error",
+      message: "An error occurred while processing the request",
+    });
+  }
+});
+
+router.delete("/video/:videoId", async (req, res, next) => {
+  const token = req.headers.authorization;
+  const user = await getUserDetails(token);
+
+  const userId = user._id;
+  const videoId = req.params.videoId;
+
+  videoModel
+    .findOneAndDelete({ _id: videoId, uploader: userId })
+    .exec()
+    .then((result) => {
+      if (result) {
+        return res.status(200).json({
+          message: "Video deleted successfully",
+        });
+      } else {
+        return res.status(404).json({
+          error: "Not Found",
+          message: "Video not found or user does not have permission to delete",
+        });
+      }
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).json({
+        error: "Internal Server Error",
+        message: "An error occurred while processing the request",
+      });
+    });
 });
 
 module.exports = router;
