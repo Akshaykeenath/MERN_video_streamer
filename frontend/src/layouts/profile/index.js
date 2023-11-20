@@ -62,7 +62,6 @@ function Overview() {
   const { response, error } = apiGetMyProfileData();
   useEffect(() => {
     if (response) {
-      console.log("response : ", response.message);
       const userData = response.message;
       setUser(userData);
     }
@@ -94,7 +93,7 @@ function Overview() {
                       userName: user.uname,
                       firstName: user.fname,
                       lastName: user.lname,
-                      mobile: user.mobile,
+                      mobile: String(user.mobile),
                       email: user.email,
                     }}
                     action={{ route: "/studio/dashboard", tooltip: "Edit Profile" }}

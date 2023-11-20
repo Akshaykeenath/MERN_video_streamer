@@ -19,10 +19,10 @@ router.post("/login", (req, res) => {
     pass: req.body.pass,
     rememberMe: req.body.rememberMe,
   };
-
   userModel
     .findOne({ uname: user.uname })
     .then(async (existingUser) => {
+      console.log(existingUser);
       if (existingUser) {
         const isMatch = await verifyPassword(user.pass, existingUser.password);
         if (isMatch) {

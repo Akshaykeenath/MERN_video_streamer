@@ -13,10 +13,10 @@ const app = express();
 const corsOptions = {
   origin: process.env.APP_URL,
   credentials: true,
-  exposedHeaders: ["Authorization"],
 };
 app.use(cors(corsOptions));
 app.use(express.json());
+
 app.use(async (req, res, next) => {
   console.log(`Received a ${req.method} request at ${req.url}`);
   const token = req.headers.authorization;
@@ -48,7 +48,7 @@ app.use("/", publicRoutes);
 app.use("/auth", authRoutes);
 
 // Authentication middleware for private routes
-function isAuthenticated(req, res, next) {
+async function isAuthenticated(req, res, next) {
   const token = req.headers.authorization;
   const response = verifyToken(token);
   if (!response.error) {

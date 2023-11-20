@@ -50,7 +50,7 @@ function Basic() {
   const redirect = useRouteRedirect();
   const [controller, dispatch] = useMaterialUIController();
   const [rememberMe, setRememberMe] = useState(false);
-  const [password, setPassword] = useState("pass");
+  const [password, setPassword] = useState("Akshay");
   const [email, setEmail] = useState("akshaykeenath97@gmail.com");
   useEffect(() => {
     setIsAuthenticated(dispatch, false);
@@ -78,19 +78,25 @@ function Basic() {
     } else {
       try {
         const response = await apiLogin(email, password, rememberMe);
-        if (response === "success") {
+        if (response.status === 200) {
           const noti = {
             message: "Logged in Successfully",
             color: "success",
           };
           setNotification(dispatch, noti);
           setIsAuthenticated(dispatch, true);
-          redirect("home");
+          redirect("profile");
+        } else if (response.status === 401 && response.data && response.data.message) {
+          // Handle login failure here
+          const noti = {
+            message: response.data.message,
+            color: "error",
+          };
+          setNotification(dispatch, noti);
         } else {
           // Handle login failure here
-          console.log(response);
           const noti = {
-            message: response,
+            message: "Internal Server Error",
             color: "error",
           };
           setNotification(dispatch, noti);
@@ -99,7 +105,7 @@ function Basic() {
         // Handle any API request error here
         console.error("API request error:", error);
         const noti = {
-          message: error,
+          message: "Unexpected Error",
           color: "error",
         };
         setNotification(dispatch, noti);

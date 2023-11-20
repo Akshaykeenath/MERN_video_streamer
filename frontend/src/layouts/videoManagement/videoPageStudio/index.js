@@ -7,6 +7,7 @@ import VideoList from "./components/videoList";
 import uploadVideoImg from "assets/images/addVideo.png";
 import MDButton from "components/MDButton";
 import { useRouteRedirect } from "services/redirection";
+import Footer from "examples/Footer";
 
 function VideoPageStudio() {
   const redirect = useRouteRedirect();
@@ -59,6 +60,7 @@ function VideoPageStudio() {
           </Card>
         </Grid>
       </Grid>
+      <Footer />
     </DashboardLayout>
   );
 }

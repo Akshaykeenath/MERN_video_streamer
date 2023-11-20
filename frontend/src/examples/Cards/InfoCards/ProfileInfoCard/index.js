@@ -68,7 +68,7 @@ function ProfileInfoCard({ title, info, social, action, shadow }) {
 
   // Render the card social media icons
   const renderSocial =
-    social &&
+    social.length > 0 &&
     social.map(({ link, icon, color }) => (
       <MDBox
         key={color}
@@ -102,7 +102,7 @@ function ProfileInfoCard({ title, info, social, action, shadow }) {
         <MDBox>
           {renderItems}
 
-          {social && (
+          {social.length > 0 && (
             <MDBox display="flex" py={1} pr={2}>
               <MDTypography variant="button" fontWeight="bold" textTransform="capitalize">
                 social: &nbsp;
@@ -119,13 +119,12 @@ function ProfileInfoCard({ title, info, social, action, shadow }) {
 // Setting default props for the ProfileInfoCard
 ProfileInfoCard.defaultProps = {
   shadow: true,
-  social: false,
+  social: [],
 };
 
 // Typechecking props for the ProfileInfoCard
 ProfileInfoCard.propTypes = {
   title: PropTypes.string.isRequired,
-  description: PropTypes.string.isRequired,
   info: PropTypes.objectOf(PropTypes.string).isRequired,
   social: PropTypes.arrayOf(PropTypes.object),
   action: PropTypes.shape({

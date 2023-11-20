@@ -15,21 +15,19 @@ export function sendMailVerification(data) {
     });
 }
 
-export function apiLogin(uname, pass, rememberMe) {
+export async function apiLogin(uname, pass, rememberMe) {
   const data = {
     uname: uname,
     pass: pass,
     rememberMe: rememberMe,
   };
-  return axios
-    .post(`${url}/auth/login`, data)
-    .then((response) => {
-      localStorage.setItem("currentUserJWT", response.data.token);
-      return response.data.message;
-    })
-    .catch((error) => {
-      return error.response.data.message;
-    });
+  try {
+    const response = await myaxios.post(`${url}/auth/login`, data);
+    localStorage.setItem("currentUserJWT", response.data.token);
+    return response;
+  } catch (error) {
+    return error.response;
+  }
 }
 
 export function apiAuth() {
@@ -49,7 +47,8 @@ export function apiAuth() {
 }
 
 export function apiDeAuth() {
-  localStorage.removeItem("currentUserJWT");
+  // localStorage.removeItem("currentUserJWT");
+  localStorage.clear();
 }
 
 // Function for registration

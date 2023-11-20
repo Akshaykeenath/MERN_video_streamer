@@ -152,7 +152,7 @@ export function getHomeData() {
 
   useEffect(() => {
     myaxios
-      .get(`/private/home`)
+      .get(`/private/myhome`)
       .then((res) => {
         setResponse(res.data);
       })
