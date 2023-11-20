@@ -10,8 +10,22 @@ const KEVideoPlayerReal = ({ video, sx }) => {
   useEffect(() => {
     try {
       playerRef.current = new Plyr(videoRef.current, {
-        controls: ["play-large", "play", "progress", "current-time", "mute", "volume"],
-        hideControls: false,
+        controls: [
+          "play-large",
+          "play",
+          "progress",
+          "current-time",
+          "mute",
+          "volume",
+          "captions",
+          "settings",
+          "pip",
+          "airplay",
+          "fullscreen",
+        ],
+        hideControls: true,
+        keyboard: { focused: true, global: true },
+        ratio: "16:9",
       });
     } catch (error) {
       console.log("Error initializing Plyr:", error);
@@ -29,18 +43,17 @@ const KEVideoPlayerReal = ({ video, sx }) => {
   }, []);
 
   return (
-    <video ref={videoRef} poster={video.poster || null} style={sx}>
-      <source src={video.url || null} type="video/mp4" />
+    <video ref={videoRef} poster={video[0].poster || null} style={sx}>
+      {video.map((videos, index) => (
+        <source key={index} src={videos.url} type="video/mp4" size={videos.size} />
+      ))}
       Your browser does not support the video tag.
     </video>
   );
 };
 
 KEVideoPlayerReal.propTypes = {
-  video: PropTypes.shape({
-    url: PropTypes.string,
-    poster: PropTypes.string,
-  }),
+  video: PropTypes.any,
   sx: PropTypes.any,
 };
 

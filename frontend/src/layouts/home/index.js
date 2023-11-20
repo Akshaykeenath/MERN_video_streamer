@@ -31,7 +31,7 @@ function Home() {
     } else if (response != null) {
       const trendingVideos = response.trending;
       const mappedVideoData = trendingVideos.map((currVideo, index) => {
-        const { title, uploader, video: videoArray, poster, timestamp } = currVideo;
+        const { _id, title, uploader, video: videoArray, poster, timestamp } = currVideo;
         const videoUrl = videoArray[0].url;
         const posterUrl = poster[0].url;
 
@@ -50,7 +50,7 @@ function Home() {
           time: getRelativeTime(timestamp), // You may replace this with actual upload time
           action: {
             type: "internal", // Change to "external" if needed
-            route: "/sample-video-url", // Replace with actual video route if available
+            route: `/video/${_id}`, // Replace with actual video route if available
           },
         };
       });

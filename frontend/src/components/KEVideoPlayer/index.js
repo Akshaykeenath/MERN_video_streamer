@@ -24,7 +24,7 @@ KEVideoPlayer.defaultProps = {
 
 KEVideoPlayer.propTypes = {
   type: PropTypes.string,
-  video: PropTypes.object,
+  video: PropTypes.any,
   sx: PropTypes.any,
 };
 

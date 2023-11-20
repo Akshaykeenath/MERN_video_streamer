@@ -94,6 +94,13 @@ export function getVideoDataByID(id) {
   const [response, setResponse] = useState(null);
   const [error, setError] = useState(null);
   useEffect(() => {
+    // Validate the format of the MongoDB ObjectID
+    const isValidObjectId = /^[0-9a-fA-F]{24}$/.test(id);
+
+    if (!isValidObjectId) {
+      setError({ message: "Video Not Found" });
+      return;
+    }
     myaxios
       .get(`/private/video/${id}`)
       .then((res) => {
@@ -102,7 +109,7 @@ export function getVideoDataByID(id) {
       .catch((err) => {
         setError(err);
       });
-  }, []);
+  }, [id]);
 
   return { response, error };
 }

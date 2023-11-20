@@ -35,6 +35,7 @@ import Home from "layouts/home";
 import VerificationArea from "layouts/authentication/verification";
 import VideoUpload from "layouts/videoManagement/videoUploads";
 import VideoPageStudio from "layouts/videoManagement/videoPageStudio";
+import VideoViewMaster from "layouts/videoManagement/videoStream";
 
 const routes = [
   {
@@ -44,6 +45,12 @@ const routes = [
     icon: <Icon fontSize="small">home</Icon>,
     route: "/",
     component: <Home />,
+    protected: true,
+  },
+  {
+    key: "videoMaster",
+    route: "/video/:videoId",
+    component: <VideoViewMaster />,
     protected: true,
   },
   // Studio Area

@@ -10,7 +10,6 @@ axios.interceptors.request.use(
     // Do something before request is sent
     // For example, attach an authorization header
     const token = localStorage.getItem("currentUserJWT");
-    console.log("token send ", token);
     if (token) {
       config.headers.Authorization = token;
     }
@@ -28,7 +27,6 @@ axios.interceptors.response.use(
     if (response.headers && response.headers.authorization) {
       const newToken = response.headers.authorization;
       if (newToken) {
-        console.log("token recieved", response.headers);
         localStorage.setItem("currentUserJWT", newToken);
       }
       // You can handle the new token as needed
