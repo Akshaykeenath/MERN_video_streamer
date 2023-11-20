@@ -35,10 +35,11 @@ import MDAvatar from "components/MDAvatar";
 import breakpoints from "assets/theme/base/breakpoints";
 
 // Images
-import burceMars from "assets/images/bruce-mars.jpg";
 import backgroundImage from "assets/images/bg-profile.jpeg";
+import { useMediaQuery } from "@mui/material";
 
-function Header({ onTabChange, children }) {
+function Header({ onTabChange, name, username, proPic, children }) {
+  const isLg = useMediaQuery((theme) => theme.breakpoints.up("lg"));
   const [tabsOrientation, setTabsOrientation] = useState("horizontal");
   const [tabValue, setTabValue] = useState(0);
   useEffect(() => {
@@ -97,48 +98,50 @@ function Header({ onTabChange, children }) {
       >
         <Grid container spacing={3} alignItems="center">
           <Grid item>
-            <MDAvatar src={burceMars} alt="profile-image" size="xl" shadow="sm" />
+            <MDAvatar src={proPic} alt="profile-image" size="xl" shadow="sm" />
           </Grid>
           <Grid item>
             <MDBox height="100%" mt={0.5} lineHeight={1}>
               <MDTypography variant="h5" fontWeight="medium">
-                Richard Davis
+                {name}
               </MDTypography>
               <MDTypography variant="button" color="text" fontWeight="regular">
-                CEO / Co-Founder
+                {username}
               </MDTypography>
             </MDBox>
           </Grid>
-          <Grid item xs={12} md={6} lg={4} sx={{ ml: "auto" }}>
-            <AppBar position="static">
-              <Tabs orientation={tabsOrientation} value={tabValue} onChange={handleSetTabValue}>
-                <Tab
-                  label="Details"
-                  icon={
-                    <Icon fontSize="small" sx={{ mt: -0.25 }}>
-                      account_circle
-                    </Icon>
-                  }
-                />
-                <Tab
-                  label="Message"
-                  icon={
-                    <Icon fontSize="small" sx={{ mt: -0.25 }}>
-                      email
-                    </Icon>
-                  }
-                />
-                <Tab
-                  label="Settings"
-                  icon={
-                    <Icon fontSize="small" sx={{ mt: -0.25 }}>
-                      settings
-                    </Icon>
-                  }
-                />
-              </Tabs>
-            </AppBar>
-          </Grid>
+          {!isLg && (
+            <Grid item xs={12} md={6} lg={4} sx={{ ml: "auto" }}>
+              <AppBar position="static">
+                <Tabs orientation={tabsOrientation} value={tabValue} onChange={handleSetTabValue}>
+                  <Tab
+                    label="Details"
+                    icon={
+                      <Icon fontSize="small" sx={{ mt: -0.25 }}>
+                        account_circle
+                      </Icon>
+                    }
+                  />
+                  <Tab
+                    label="Message"
+                    icon={
+                      <Icon fontSize="small" sx={{ mt: -0.25 }}>
+                        email
+                      </Icon>
+                    }
+                  />
+                  <Tab
+                    label="Settings"
+                    icon={
+                      <Icon fontSize="small" sx={{ mt: -0.25 }}>
+                        settings
+                      </Icon>
+                    }
+                  />
+                </Tabs>
+              </AppBar>
+            </Grid>
+          )}
         </Grid>
         {children}
       </Card>
@@ -154,7 +157,10 @@ Header.defaultProps = {
 // Typechecking props for the Header
 Header.propTypes = {
   children: PropTypes.node,
+  proPic: PropTypes.string,
   onTabChange: PropTypes.func,
+  name: PropTypes.string,
+  username: PropTypes.string,
 };
 
 export default Header;

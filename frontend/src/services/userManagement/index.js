@@ -1,4 +1,6 @@
 import axios from "axios";
+import myaxios from "config/axios";
+import { useEffect, useState } from "react";
 
 const url = process.env.REACT_APP_API_URL;
 
@@ -70,4 +72,21 @@ export function apiRegister(e) {
       console.log(error);
       return error.response;
     });
+}
+
+export function apiGetMyProfileData(refreshData) {
+  const [response, setResponse] = useState(null);
+  const [error, setError] = useState(null);
+  useEffect(() => {
+    myaxios
+      .get("/private/profile/my")
+      .then((res) => {
+        setResponse(res.data);
+      })
+      .catch((err) => {
+        setError(err);
+      });
+  }, [refreshData]);
+
+  return { response, error };
 }
