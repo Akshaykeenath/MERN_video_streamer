@@ -1,4 +1,4 @@
-import { Avatar, Grid, Skeleton } from "@mui/material";
+import { Avatar, Grid, Skeleton, useMediaQuery } from "@mui/material";
 import KEVideoPlayer from "components/KEVideoPlayer";
 import MDAvatar from "components/MDAvatar";
 import MDTypography from "components/MDTypography";
@@ -13,6 +13,8 @@ import { useMaterialUIController, setNotification } from "context";
 function VideoViewMaster() {
   const { videoId } = useParams();
   const [controller, dispatch] = useMaterialUIController();
+  const isXs = useMediaQuery((theme) => theme.breakpoints.down("md"));
+  const isMd = useMediaQuery((theme) => theme.breakpoints.up("md"));
   const { response, error } = getVideoDataByID(videoId);
   const [loading, setLoading] = useState(true);
   const [videos, setVideos] = useState([]);
@@ -59,10 +61,9 @@ function VideoViewMaster() {
         alignItems="center"
       >
         <Grid item xs={12} md={9}>
-          <MDTypography color="text">Video Area</MDTypography>
           {loading && (
             <>
-              <Skeleton variant="rounded" animation="wave" height={(60 * 9) / 16 + "vw"} />
+              <Skeleton variant="rounded" animation="wave" height={isMd ? "33vw" : "52vw"} />
               <Skeleton variant="circular" height="10vh" width="10vh">
                 <Avatar />
               </Skeleton>

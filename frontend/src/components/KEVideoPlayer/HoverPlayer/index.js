@@ -67,17 +67,21 @@ const KEVideoPlayerHover = ({ video, sx }) => {
       playerRef.current.elements.controls.style.display = "none";
     }
   };
+  const containerStyle = {
+    position: "relative",
+    width: "100%", // Set the width of the container as needed
+    aspectRatio: "16 / 9", // 16:9 aspect ratio
+    borderRadius: "16px",
+    maxWidth: "340px",
+  };
 
+  const imageStyle = {
+    width: "100%",
+    height: "100%",
+    objectFit: "cover",
+  };
   return (
-    <div
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      style={{
-        position: "relative",
-        borderRadius: "16px",
-        maxWidth: "340px",
-      }}
-    >
+    <div onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} style={containerStyle}>
       <MDBox
         component="img"
         src={video.poster}
@@ -89,6 +93,7 @@ const KEVideoPlayerHover = ({ video, sx }) => {
         maxWidth="340px"
         position="relative"
         zIndex={1}
+        sx={imageStyle}
         display={isHover ? "none" : "flex"}
       />
       <video

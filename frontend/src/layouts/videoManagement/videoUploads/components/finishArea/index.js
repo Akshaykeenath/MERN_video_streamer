@@ -24,7 +24,7 @@ function UploadFinishArea({ progress }) {
     } else if (progress >= 100) {
       const noti = {
         message: "Video Upload Completed",
-        color: "error",
+        color: "success",
       };
       setNotification(dispatch, noti);
       setFinished(true);
