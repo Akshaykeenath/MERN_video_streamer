@@ -34,7 +34,7 @@ function DefaultVideoCard({ video, title, channel, views, time, action }) {
   return (
     <Card onClick={handleClick} sx={{ cursor: "pointer", maxWidth: "340px" }}>
       <MDBox position="relative" borderRadius="lg" mt={-3} mx={2}>
-        <MDBox position="relative" zIndex={1} onClick={handleChannelClick}>
+        <MDBox position="relative" zIndex={1}>
           <KEVideoPlayer
             type="hover"
             video={video}

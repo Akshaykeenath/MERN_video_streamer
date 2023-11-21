@@ -26,6 +26,7 @@ const KEVideoPlayerReal = ({ video, sx }) => {
         hideControls: true,
         keyboard: { focused: true, global: true },
         ratio: "16:9",
+        autoplay: true,
       });
     } catch (error) {
       console.log("Error initializing Plyr:", error);

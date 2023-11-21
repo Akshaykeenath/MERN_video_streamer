@@ -62,7 +62,7 @@ function VideoViewMaster() {
           <MDTypography color="text">Video Area</MDTypography>
           {loading && (
             <>
-              <Skeleton variant="rounded" animation="wave" height="60vh" />
+              <Skeleton variant="rounded" animation="wave" height={(60 * 9) / 16 + "vw"} />
               <Skeleton variant="circular" height="10vh" width="10vh">
                 <Avatar />
               </Skeleton>

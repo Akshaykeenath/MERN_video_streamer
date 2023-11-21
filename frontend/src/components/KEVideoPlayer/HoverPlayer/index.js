@@ -12,9 +12,11 @@ const KEVideoPlayerHover = ({ video, sx }) => {
   useEffect(() => {
     try {
       playerRef.current = new Plyr(videoRef.current, {
-        controls: ["current-time", "progress", "duration"],
+        controls: ["current-time", "duration"],
         muted: true,
         hideControls: false,
+        keyboard: { focused: false, global: false },
+        tooltips: { controls: false, seek: false },
       });
       // Set initial control color
       if (playerRef.current.elements.controls) {
