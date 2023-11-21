@@ -1,4 +1,4 @@
-import { Avatar, Grid, Skeleton, useMediaQuery } from "@mui/material";
+import { Avatar, Card, Grid, Skeleton, useMediaQuery } from "@mui/material";
 import KEVideoPlayer from "components/KEVideoPlayer";
 import MDAvatar from "components/MDAvatar";
 import MDTypography from "components/MDTypography";
@@ -9,6 +9,9 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getVideoDataByID } from "services/videoManagement";
 import { useMaterialUIController, setNotification } from "context";
+import MDBox from "components/MDBox";
+import ChannelLikeArea from "./components/channelLikeArea";
+import DescriptionArea from "./components/descriptionArea";
 
 function VideoViewMaster() {
   const { videoId } = useParams();
@@ -17,7 +20,8 @@ function VideoViewMaster() {
   const isMd = useMediaQuery((theme) => theme.breakpoints.up("md"));
   const { response, error } = getVideoDataByID(videoId);
   const [loading, setLoading] = useState(true);
-  const [videos, setVideos] = useState([]);
+  const [videos, setVideos] = useState([]); // Video data like array urls and poster data
+  const [videoDetail, setVideoDetail] = useState([]); // Other details like channel, likes
   useEffect(() => {
     if (response && response.video) {
       setLoading(false);
@@ -28,9 +32,9 @@ function VideoViewMaster() {
           poster: response.video.poster[0].url, // Assuming there's only one poster in the response
           size: videoItem.size,
         }));
-
         // Set the mapped videos to the state
         setVideos(mappedVideos);
+        setVideoDetail(response.video);
       } else {
         const noti = {
           message: "Video is not public",
@@ -69,7 +73,20 @@ function VideoViewMaster() {
               </Skeleton>
             </>
           )}
-          {videos.length > 0 && <KEVideoPlayer type="real" video={videos} />}
+          {videos.length > 0 && (
+            <Card>
+              <MDBox px={1} py={0.5}>
+                <KEVideoPlayer type="real" video={videos} />
+              </MDBox>
+              <MDBox px={2} pt={2}>
+                <MDTypography color="dark" variant="h5">
+                  {videoDetail.title}
+                </MDTypography>
+              </MDBox>
+              <ChannelLikeArea video={videoDetail} />
+              <DescriptionArea />
+            </Card>
+          )}
         </Grid>
         <Grid item xs={12} md={3}>
           <MDTypography color="text">Side Area</MDTypography>
