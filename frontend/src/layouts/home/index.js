@@ -32,6 +32,7 @@ function Home() {
       const trendingVideos = response.trending;
       const mappedVideoData = trendingVideos.map((currVideo, index) => {
         const { _id, title, uploader, video: videoArray, poster, timestamp } = currVideo;
+        console.log(currVideo);
         const videoUrl = videoArray[0].url;
         const posterUrl = poster[0].url;
 

@@ -5,6 +5,12 @@ const {
   getUserDetails,
 } = require("../../functions/userManagement/userDetails");
 const videoModel = require("../../models/videoModel");
+const {
+  addLikeToVideo,
+  addViewToVideo,
+} = require("../../functions/videoManagement/likeViewComment");
+
+// current link : /private/video
 
 router.get("/", (req, res, next) => {
   res.status(200).json({
@@ -12,7 +18,29 @@ router.get("/", (req, res, next) => {
   });
 });
 
-// Video Routes
+// like, comments and views area
+
+router.post("/like", async (req, res, next) => {
+  const videoId = req.body.videoId;
+  const likeType = req.body.likeType; // "like" or "dislike"
+  const token = req.headers.authorization;
+
+  try {
+    const user = await getUserDetails(token);
+
+    // Use the addLikeToVideo function from the videoService
+    const result = await addLikeToVideo(videoId, user._id, likeType);
+
+    res.status(200).json(result);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      message: err.message || "Internal Server Error",
+    });
+  }
+});
+
+// Video management Routes
 router.get("/my", async (req, res, next) => {
   const token = req.headers.authorization;
   const user = await getUserDetails(token);
@@ -35,6 +63,7 @@ router.get("/my", async (req, res, next) => {
       });
   }
 });
+
 router.post("/upload", async (req, res, next) => {
   try {
     const data = req.body.data;
@@ -98,8 +127,10 @@ router.post("/upload", async (req, res, next) => {
   }
 });
 
-router.get("/:videoId", async (req, res) => {
+router.get("/watch/id/:videoId", async (req, res) => {
   const videoId = req.params.videoId;
+  const token = req.headers.authorization;
+  const user = await getUserDetails(token);
 
   try {
     const video = await videoModel.findById(videoId).populate({
@@ -114,9 +145,30 @@ router.get("/:videoId", async (req, res) => {
         message: "Video not found",
       });
     }
+    const viewRes = addViewToVideo(videoId, user._id);
+    const userInteraction = video.likes.find(
+      (like) => like.user.toString() === user._id.toString()
+    );
+
+    const userLiked = userInteraction ? userInteraction.type : false;
+    const userViews = video.views.length + 10000;
+    const modifedVideo = {
+      _id: video._id,
+      comments: video.comments,
+      desc: video.desc,
+      poster: video.poster,
+      privacy: video.privacy,
+      tags: video.tags,
+      timestamp: video.timestamp,
+      title: video.title,
+      uploader: video.uploader,
+      video: video.video,
+      views: userViews,
+      likeType: userLiked,
+    };
 
     res.status(200).json({
-      video: video,
+      video: modifedVideo,
     });
   } catch (error) {
     console.error(error);
@@ -126,6 +178,35 @@ router.get("/:videoId", async (req, res) => {
     });
   }
 });
+
+// router.get("/id/:videoId", async (req, res) => {
+//   const videoId = req.params.videoId;
+
+//   try {
+//     const video = await videoModel.findById(videoId).populate({
+//       path: "uploader",
+//       model: "userdata",
+//       select: "fname lname uname email",
+//     });
+
+//     if (!video) {
+//       return res.status(404).json({
+//         error: "Not Found",
+//         message: "Video not found",
+//       });
+//     }
+
+//     res.status(200).json({
+//       video: video,
+//     });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({
+//       error: "Internal Server Error",
+//       message: "An error occurred while processing the request",
+//     });
+//   }
+// });
 
 router.delete("/:videoId", async (req, res, next) => {
   const token = req.headers.authorization;

@@ -2,16 +2,41 @@ import { Grid, Icon, Tooltip } from "@mui/material";
 import MDAvatar from "components/MDAvatar";
 import MDButton from "components/MDButton";
 import MDTypography from "components/MDTypography";
-import { useMaterialUIController } from "context";
-import { useState } from "react";
+import { useMaterialUIController, setOtherNotification } from "context";
+import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
+import { Link } from "react-router-dom";
+import { videoReactions } from "services/videoManagement/likeCommentViews";
 
 function ChannelLikeArea({ video }) {
-  const [controller] = useMaterialUIController();
+  const [controller, dispatch] = useMaterialUIController();
   const { darkMode } = controller;
-  const [like, setLike] = useState(false);
-  const [dislike, setDislike] = useState(false);
+  const [like, setLike] = useState(video.likeType === "like");
+  const [dislike, setDislike] = useState(video.likeType === "dislike");
+  const [componentLoaded, setComponentLoaded] = useState(false);
   const channelName = video.uploader.fname + " " + video.uploader.lname;
+  const { addLikeToVideo, response, error } = videoReactions();
+
+  useEffect(() => {
+    // This useEffect will only run after the component has loaded
+    if (componentLoaded) {
+      if (dislike) {
+        setOtherNotification(dispatch, "Disliked");
+        addLikeToVideo(video._id, "dislike");
+      }
+      if (like) {
+        setOtherNotification(dispatch, "Liked");
+        addLikeToVideo(video._id, "like");
+      }
+      if (!like && !dislike) {
+        addLikeToVideo(video._id, "nolike");
+      }
+    }
+  }, [like, dislike]);
+
+  useEffect(() => {
+    setComponentLoaded(true);
+  }, []);
 
   const handleLike = () => {
     setLike(!like);
@@ -21,6 +46,15 @@ function ChannelLikeArea({ video }) {
   const handleDislike = () => {
     setDislike(!dislike);
     setLike(false);
+  };
+
+  const handleShare = () => {
+    // Get the current URL and copy it to the clipboard
+    const currentURL = window.location.href;
+
+    // Use the Clipboard API to copy the URL
+    navigator.clipboard.writeText(currentURL);
+    setOtherNotification(dispatch, "Coppied to clipboard");
   };
 
   return (
@@ -37,7 +71,9 @@ function ChannelLikeArea({ video }) {
           p={1}
         >
           <Grid item>
-            <MDAvatar src="https://picsum.photos/200" alt="Avatar" size="md" />
+            <Link to="#">
+              <MDAvatar src="https://picsum.photos/200" alt="Avatar" size="md" />
+            </Link>
           </Grid>
           <Grid item>
             <Grid container direction="column" justifyContent="center" rowGap={0}>
@@ -94,7 +130,12 @@ function ChannelLikeArea({ video }) {
           </Grid>
           <Grid item>
             <Tooltip title="Share">
-              <MDButton variant="gradient" circular color={darkMode ? "dark" : "light"}>
+              <MDButton
+                variant="gradient"
+                circular
+                color={darkMode ? "dark" : "light"}
+                onClick={handleShare}
+              >
                 <Icon>share</Icon>
               </MDButton>
             </Tooltip>

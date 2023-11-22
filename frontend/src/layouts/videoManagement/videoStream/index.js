@@ -7,21 +7,35 @@ import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import StudioNavbar from "examples/Navbars/StudioNavbar";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { getVideoDataByID } from "services/videoManagement";
-import { useMaterialUIController, setNotification } from "context";
+import {
+  useMaterialUIController,
+  setMiniSidenav,
+  setNotification,
+  setOtherNotification,
+} from "context";
 import MDBox from "components/MDBox";
 import ChannelLikeArea from "./components/channelLikeArea";
 import DescriptionArea from "./components/descriptionArea";
+import { getVideoDataByIdWatch } from "services/videoManagement";
 
 function VideoViewMaster() {
   const { videoId } = useParams();
   const [controller, dispatch] = useMaterialUIController();
   const isXs = useMediaQuery((theme) => theme.breakpoints.down("md"));
   const isMd = useMediaQuery((theme) => theme.breakpoints.up("md"));
-  const { response, error } = getVideoDataByID(videoId);
+  const { response, error } = getVideoDataByIdWatch(videoId);
   const [loading, setLoading] = useState(true);
   const [videos, setVideos] = useState([]); // Video data like array urls and poster data
   const [videoDetail, setVideoDetail] = useState([]); // Other details like channel, likes
+
+  useEffect(() => {
+    setMiniSidenav(dispatch, true);
+
+    return () => {
+      setMiniSidenav(dispatch, false);
+    };
+  }, []);
+
   useEffect(() => {
     if (response && response.video) {
       setLoading(false);
@@ -84,7 +98,11 @@ function VideoViewMaster() {
                 </MDTypography>
               </MDBox>
               <ChannelLikeArea video={videoDetail} />
-              <DescriptionArea />
+              <DescriptionArea
+                description={videoDetail.desc}
+                views={videoDetail.views}
+                date={videoDetail.timestamp}
+              />
             </Card>
           )}
         </Grid>

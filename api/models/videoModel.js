@@ -24,6 +24,27 @@ const videoSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "userdata", // Reference the userdata model
   },
+  likes: [
+    {
+      user: { type: mongoose.Schema.Types.ObjectId, ref: "userdata" },
+      type: { type: String, enum: ["like", "dislike"] },
+      timestamp: { type: Date, default: Date.now },
+    },
+  ],
+  comments: [
+    {
+      user: { type: mongoose.Schema.Types.ObjectId, ref: "userdata" },
+      text: { type: String },
+      likes: { type: Number, default: 0 },
+      timestamp: { type: Date, default: Date.now },
+    },
+  ],
+  views: [
+    {
+      user: { type: mongoose.Schema.Types.ObjectId, ref: "userdata" },
+      timestamp: { type: Date, default: Date.now },
+    },
+  ],
   timestamp: {
     type: Date,
     default: Date.now,

@@ -90,6 +90,30 @@ export function getMyvideoData(refreshData) {
   return { response, error };
 }
 
+export function getVideoDataByIdWatch(id) {
+  const [response, setResponse] = useState(null);
+  const [error, setError] = useState(null);
+  useEffect(() => {
+    // Validate the format of the MongoDB ObjectID
+    const isValidObjectId = /^[0-9a-fA-F]{24}$/.test(id);
+
+    if (!isValidObjectId) {
+      setError({ message: "Video Not Found" });
+      return;
+    }
+    myaxios
+      .get(`/private/video/watch/id/${id}`)
+      .then((res) => {
+        setResponse(res.data);
+      })
+      .catch((err) => {
+        setError(err);
+      });
+  }, [id]);
+
+  return { response, error };
+}
+
 export function getVideoDataByID(id) {
   const [response, setResponse] = useState(null);
   const [error, setError] = useState(null);

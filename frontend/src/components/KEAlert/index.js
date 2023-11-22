@@ -6,7 +6,7 @@ import MuiAlert from "@mui/material/Alert";
 import { useEffect } from "react";
 import Slide from "@mui/material/Slide";
 
-import { useMaterialUIController, setNotification } from "context";
+import { useMaterialUIController, setNotification, setOtherNotification } from "context";
 
 // Expect only on as severity ["error","info","success","warning"]
 
@@ -18,7 +18,7 @@ function SlideTransition(props) {
   return <Slide {...props} direction="down" />;
 }
 
-export default function KEAlert() {
+export function KEAlert() {
   const [controller, dispatch] = useMaterialUIController();
   const { notification } = controller;
   const [open, setOpen] = React.useState(false);
@@ -26,6 +26,12 @@ export default function KEAlert() {
     if (notification) {
       handleClick();
     }
+    const timeoutId = setTimeout(() => {
+      setNotification(dispatch, false);
+    }, 6100);
+    return () => {
+      clearTimeout(timeoutId);
+    };
   }, [notification]);
 
   const handleClick = () => {
@@ -53,6 +59,52 @@ export default function KEAlert() {
           {notification.message}
         </Alert>
       </Snackbar>
+    </Stack>
+  );
+}
+
+function SlideTransitionOther(props) {
+  return <Slide {...props} direction="left" />;
+}
+
+export function KEAlertOther() {
+  const [controller, dispatch] = useMaterialUIController();
+  const { otherNotification } = controller;
+  const [open, setOpen] = React.useState(false);
+  useEffect(() => {
+    if (otherNotification) {
+      handleClick();
+    }
+    const timeoutId = setTimeout(() => {
+      setOtherNotification(dispatch, null);
+    }, 1100);
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [otherNotification]);
+
+  const handleClick = () => {
+    setOpen(true);
+  };
+
+  const handleClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpen(false);
+  };
+
+  return (
+    <Stack spacing={2} sx={{ width: "100%" }}>
+      <Snackbar
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+        autoHideDuration={1000}
+        open={open}
+        onClose={handleClose}
+        message={otherNotification}
+        TransitionComponent={SlideTransitionOther}
+      />
     </Stack>
   );
 }

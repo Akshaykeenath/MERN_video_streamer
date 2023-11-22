@@ -13,11 +13,25 @@ import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDButton from "components/MDButton";
 import MDAvatar from "components/MDAvatar";
-import { Grid } from "@mui/material";
+import { Grid, Tooltip } from "@mui/material";
 import KEVideoPlayer from "components/KEVideoPlayer";
 
 function DefaultVideoCard({ video, title, channel, views, time, action }) {
   const navigate = useNavigate();
+  const modifiedChannelName = () => {
+    if (channel.name.length > 30) {
+      return channel.name.slice(0, 30) + "...";
+    } else {
+      return channel.name;
+    }
+  };
+  const modifiedTitle = () => {
+    if (title.length > 29) {
+      return title.slice(0, 27) + "...";
+    } else {
+      return title;
+    }
+  };
   const handleClick = () => {
     if (action.type == "internal") {
       navigate(`${action.route}`);
@@ -75,21 +89,23 @@ function DefaultVideoCard({ video, title, channel, views, time, action }) {
           <Grid item>
             <MDBox>
               <MDBox>
-                <MDTypography display="inline" variant="h6" fontWeight="bold">
-                  {title}
-                </MDTypography>
+                <Tooltip title={title}>
+                  <MDTypography display="inline" variant="h6" fontWeight="bold">
+                    {modifiedTitle()}
+                  </MDTypography>
+                </Tooltip>
               </MDBox>
               <MDBox mt={0} mb={0}>
-                <Link to={channel.route} onClick={handleChannelClick}>
-                  <MDTypography
-                    variant="body2"
-                    component="p"
-                    color="text"
-                    sx={{ "&:hover": { textDecoration: "underline" } }}
-                  >
-                    {channel.name}
-                  </MDTypography>
-                </Link>
+                <MDTypography
+                  variant="body2"
+                  component="p"
+                  color="text"
+                  sx={{ "&:hover": { textDecoration: "underline" } }}
+                >
+                  <Link to={channel.route} onClick={handleChannelClick}>
+                    {modifiedChannelName()}
+                  </Link>
+                </MDTypography>
               </MDBox>
               <MDBox mt={0}>
                 <MDTypography variant="button" component="p" color="text">

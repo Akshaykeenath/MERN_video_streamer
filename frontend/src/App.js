@@ -40,7 +40,7 @@ import {
 // Images
 import brandWhite from "assets/images/brand_white.png";
 import brandDark from "assets/images/brand_dark.png";
-import KEAlert from "components/KEAlert";
+import { KEAlert, KEAlertOther } from "components/KEAlert/index";
 import StudioSidenav from "examples/Sidenav/StudioSidenav";
 
 export default function App() {
@@ -152,6 +152,7 @@ export default function App() {
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
       <KEAlert />
+      <KEAlertOther />
     </ThemeProvider>
   );
 }

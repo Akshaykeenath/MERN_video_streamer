@@ -1,0 +1,73 @@
+// videoService.js
+const videoModel = require("../../models/videoModel");
+
+async function addLikeToVideo(videoId, userId, likeType) {
+  try {
+    if (!["like", "dislike", "nolike"].includes(likeType)) {
+      throw new Error(
+        "Invalid likeType. It should be either 'like', 'dislike', or 'nolike'."
+      );
+    }
+    const video = await videoModel.findById(videoId);
+
+    if (!video) {
+      throw new Error("Video not found");
+    }
+
+    if (likeType === "nolike") {
+      // Remove existing like or dislike
+      const existingLikeIndex = video.likes.findIndex(
+        (like) => like.user.toString() === userId.toString()
+      );
+
+      if (existingLikeIndex !== -1) {
+        video.likes.splice(existingLikeIndex, 1);
+      }
+    } else {
+      // Check if the user has already liked or disliked the video
+      const existingLike = video.likes.find(
+        (like) => like.user.toString() === userId.toString()
+      );
+
+      if (existingLike) {
+        // User has already liked or disliked, update the type
+        existingLike.type = likeType;
+      } else {
+        // User has not liked or disliked before, add a new like
+        video.likes.push({
+          user: userId,
+          type: likeType,
+          timestamp: Date.now(),
+        });
+      }
+    }
+
+    await video.save(); // Save the updated video document
+
+    return { message: "Like added successfully" };
+  } catch (err) {
+    throw new Error(err.message);
+  }
+}
+
+async function addViewToVideo(videoId, userId) {
+  try {
+    const video = await videoModel.findById(videoId);
+    if (!video) {
+      throw new Error("Video not found");
+    }
+    video.views.push({
+      user: userId,
+      timestamp: Date.now(),
+    });
+    await video.save();
+    return { message: "Like added successfully" };
+  } catch (err) {
+    throw new Error(err.message);
+  }
+}
+
+module.exports = {
+  addLikeToVideo,
+  addViewToVideo,
+};

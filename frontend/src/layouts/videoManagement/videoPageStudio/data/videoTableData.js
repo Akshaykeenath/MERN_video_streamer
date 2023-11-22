@@ -87,7 +87,9 @@ export default function data({ refreshData, onVideoDataCallback }) {
 
     rows: response
       ? response.videos.map((video) => ({
-          video: <Video image={video.poster[0].url} name={video.title} link="#" />,
+          video: (
+            <Video image={video.poster[0].url} name={video.title} link={`/video/${video._id}`} />
+          ),
           status: (
             <MDBox ml={-1}>
               <MDBadge

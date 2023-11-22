@@ -1,20 +1,58 @@
 import { Grid } from "@mui/material";
 import MDBox from "components/MDBox";
+import MDButton from "components/MDButton";
 import MDTypography from "components/MDTypography";
-import { useMaterialUIController } from "context";
+import { setMiniSidenav, useMaterialUIController } from "context";
+import { useEffect, useState } from "react";
+import PropTypes from "prop-types";
+import { formatCountToKilos } from "functions/general/count";
+import { formatCountToIndian } from "functions/general/count";
+import { getRelativeTime } from "functions/general/time";
+import { getRelativeDate } from "functions/general/time";
+import { getRelativeDateMonth } from "functions/general/time";
 
-function DescriptionArea() {
-  const [controller] = useMaterialUIController();
+function DescriptionArea({ description, views, date }) {
+  const [controller, dispatch] = useMaterialUIController();
   const { darkMode } = controller;
+  const [seeMore, setSeeMore] = useState(false);
+  const [desArray, setDesArray] = useState([]);
+  const [modifiedDes, setModifiedDes] = useState("");
+  useEffect(() => {
+    if (modifiedDes.length > 0) {
+      setDesArray(modifiedDes.split("\n"));
+    }
+  }, [modifiedDes]);
+
+  useEffect(() => {
+    if (description.length > 50 && !seeMore) {
+      let modifeddes = description.slice(0, 50);
+      if (modifeddes.indexOf("\n") >= 0) {
+        const index = modifeddes.indexOf("\n");
+        modifeddes = description.slice(0, index);
+      }
+      setModifiedDes(modifeddes + "....");
+    } else {
+      setModifiedDes(description);
+    }
+  }, [description, seeMore]);
+
   return (
     <MDBox p={1}>
-      <MDBox bgColor={darkMode ? "rgb(0,0,0,0.4)" : "rgb(0,0,0,0.2)"} borderRadius="lg" shadow="lg">
+      <MDBox
+        bgColor={darkMode ? "rgb(0,0,0,0.4)" : "rgb(0,0,0,0.2)"}
+        borderRadius="lg"
+        shadow="lg"
+        sx={{ "&:hover": { cursor: seeMore ? "default" : "pointer" } }}
+        onClick={() => {
+          setSeeMore(true);
+        }}
+      >
         <Grid
           container
           width="100%"
           direction="column"
           justifyContent="flex-start"
-          rowGap={2}
+          rowGap={1}
           p={2}
         >
           {/* View Count and Publish Date Area  */}
@@ -29,12 +67,12 @@ function DescriptionArea() {
             >
               <Grid item>
                 <MDTypography color="dark" variant="button" fontWeight="medium">
-                  1000k views
+                  {seeMore ? formatCountToIndian(views) : formatCountToKilos(views)} views
                 </MDTypography>
               </Grid>
               <Grid item>
                 <MDTypography color="dark" variant="button" fontWeight="medium">
-                  1 month ago
+                  {seeMore ? getRelativeDateMonth(date) : getRelativeTime(date)}
                 </MDTypography>
               </Grid>
             </Grid>
@@ -44,32 +82,49 @@ function DescriptionArea() {
           {/* User Description Area */}
           <Grid item>
             <Grid container width="100%" direction="column" justifyContent="flex-start" rowGap={1}>
-              <Grid item>
-                <MDTypography color="dark" variant="button">
-                  ബാലുവിനെ കാണാൻ ഉറ്റചങ്ങാതി ഫിലിപ്സ് എത്തുന്നു. നാട്ടിലേക്ക് താമസം മാറ്റുകയാണ്
-                  ഫിലിപ്സ്. പിശുക്കൻ ഫിലിപ്സിന്റെ മോഹം ഹൈമവതിയുടെ വീടാണ്. ഫിലിപ്സിന് വീട് കിട്ടുമോ
-                  എന്നറിയാൻ കാണുക, ഉപ്പും മുളകും
-                </MDTypography>
-              </Grid>
-              <Grid item>
-                <MDTypography color="dark" variant="button">
-                  Balus close friend Philips is here to visit him. Phlips is shifting places. But
-                  his aim is Himavathis house. Keep watching Uppum Mulakum to find out whether he
-                  gets the house or not. #uppummulakum2
-                </MDTypography>
-              </Grid>
-              <Grid item>
-                <MDTypography color="dark" variant="button">
-                  #uppummulakum2
-                </MDTypography>
-              </Grid>
+              {desArray.map((des, index) => (
+                <Grid item key={index}>
+                  {/* Added key attribute for each item */}
+                  <MDTypography color="dark" variant="button">
+                    {des}
+                  </MDTypography>
+                </Grid>
+              ))}
             </Grid>
           </Grid>
           {/* End User Description Area */}
         </Grid>
+        {description.length > 50 && (
+          <Grid item>
+            <MDButton
+              variant="text"
+              size="small"
+              color="dark"
+              onClick={(e) => {
+                e.stopPropagation();
+                setSeeMore(!seeMore);
+              }}
+              disableRipple
+            >
+              {seeMore ? "see less" : "...more"}
+            </MDButton>
+          </Grid>
+        )}
       </MDBox>
     </MDBox>
   );
 }
 
+DescriptionArea.defaultProps = {
+  description: " ",
+  views: "100k",
+  date: "1 month ago",
+};
+
+// Typechecking props for the MDButton
+DescriptionArea.propTypes = {
+  description: PropTypes.string,
+  views: PropTypes.number,
+  date: PropTypes.string,
+};
 export default DescriptionArea;

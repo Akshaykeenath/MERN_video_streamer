@@ -49,3 +49,11 @@ export const getRelativeDate = (timestamp) => {
   // If not today or yesterday, return the local date
   return inputDate.toLocaleDateString();
 };
+
+export const getRelativeDateMonth = (timestamp) => {
+  const inputDate = new Date(timestamp);
+
+  // Return the formatted date
+  const options = { month: "short", day: "numeric", year: "numeric" };
+  return inputDate.toLocaleDateString("en-US", options);
+};

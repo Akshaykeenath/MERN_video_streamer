@@ -65,6 +65,9 @@ function reducer(state, action) {
     case "NOTIFICATION": {
       return { ...state, notification: action.value };
     }
+    case "OTHER_NOTIFICATION": {
+      return { ...state, otherNotification: action.value };
+    }
     case "ISAUTHENTICATED": {
       return { ...state, isAuthenticated: action.value };
     }
@@ -91,6 +94,7 @@ function MaterialUIControllerProvider({ children }) {
     layout: "dashboard",
     darkMode: false,
     notification: false,
+    otherNotification: false,
     isAuthenticated: true,
     appDomain: "default",
   };
@@ -132,6 +136,7 @@ const setDirection = (dispatch, value) => dispatch({ type: "DIRECTION", value })
 const setLayout = (dispatch, value) => dispatch({ type: "LAYOUT", value });
 const setDarkMode = (dispatch, value) => dispatch({ type: "DARKMODE", value });
 const setNotification = (dispatch, value) => dispatch({ type: "NOTIFICATION", value });
+const setOtherNotification = (dispatch, value) => dispatch({ type: "OTHER_NOTIFICATION", value });
 const setIsAuthenticated = (dispatch, value) => dispatch({ type: "ISAUTHENTICATED", value });
 const setAppDomain = (dispatch, value) => dispatch({ type: "APPDOMAIN", value });
 
@@ -149,6 +154,7 @@ export {
   setLayout,
   setDarkMode,
   setNotification,
+  setOtherNotification,
   setIsAuthenticated,
   setAppDomain,
 };
