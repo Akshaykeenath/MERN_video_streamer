@@ -99,7 +99,7 @@ function DescriptionArea({ description, views, date }) {
             <MDButton
               variant="text"
               size="small"
-              color="dark"
+              color={darkMode ? "white" : "dark"}
               onClick={(e) => {
                 e.stopPropagation();
                 setSeeMore(!seeMore);

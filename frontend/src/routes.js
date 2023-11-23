@@ -36,6 +36,7 @@ import VerificationArea from "layouts/authentication/verification";
 import VideoUpload from "layouts/videoManagement/videoUploads";
 import VideoPageStudio from "layouts/videoManagement/videoPageStudio";
 import VideoViewMaster from "layouts/videoManagement/videoStream";
+import EditProfile from "layouts/profile/editProfile";
 
 const routes = [
   {
@@ -109,8 +110,14 @@ const routes = [
     name: "Profile",
     key: "profile",
     icon: <Icon fontSize="small">person</Icon>,
-    route: "/profile",
+    route: "/studio/profile",
     component: <Profile />,
+    protected: true,
+  },
+  {
+    key: "profile",
+    route: "/studio/profile/edit",
+    component: <EditProfile />,
     protected: true,
   },
   {

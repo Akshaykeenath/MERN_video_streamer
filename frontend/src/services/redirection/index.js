@@ -29,7 +29,10 @@ export function useRouteRedirect() {
         navigate("/authentication/sign-in");
         break;
       case "profile":
-        navigate("/profile");
+        navigate("/studio/profile");
+        break;
+      case "editProfile":
+        navigate("/studio/profile/edit");
         break;
       case "logout":
         const noti = {

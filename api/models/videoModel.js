@@ -51,4 +51,31 @@ const videoSchema = new mongoose.Schema({
   },
 });
 
+// Virtual property to get views count
+videoSchema.virtual("viewsCount").get(function () {
+  return (this.views && this.views.length) || 0;
+});
+
+// Virtual property to get likes count
+videoSchema.virtual("likesCount").get(function () {
+  return (
+    (this.likes && this.likes.filter((like) => like.type === "like").length) ||
+    0
+  );
+});
+
+// Virtual property to get dislikes count
+videoSchema.virtual("dislikesCount").get(function () {
+  return (
+    (this.likes &&
+      this.likes.filter((like) => like.type === "dislike").length) ||
+    0
+  );
+});
+
+// Apply the virtuals to JSON output
+videoSchema.set("toJSON", {
+  virtuals: true,
+});
+
 module.exports = mongoose.model("videoData", videoSchema);

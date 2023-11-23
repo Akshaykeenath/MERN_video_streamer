@@ -28,7 +28,7 @@ export function KEAlert() {
     }
     const timeoutId = setTimeout(() => {
       setNotification(dispatch, false);
-    }, 6100);
+    }, 6500);
     return () => {
       clearTimeout(timeoutId);
     };

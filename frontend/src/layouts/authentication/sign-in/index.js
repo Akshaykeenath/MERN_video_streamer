@@ -85,7 +85,7 @@ function Basic() {
           };
           setNotification(dispatch, noti);
           setIsAuthenticated(dispatch, true);
-          redirect("profile");
+          redirect("home");
         } else if (response.status === 401 && response.data && response.data.message) {
           // Handle login failure here
           const noti = {

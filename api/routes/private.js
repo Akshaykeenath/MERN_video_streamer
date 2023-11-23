@@ -15,6 +15,7 @@ router.get("/", (req, res, next) => {
 
 router.get("/myhome", async (req, res, next) => {
   const videos = await getTrendingVideos();
+
   return res.status(200).json({
     trending: videos,
   });

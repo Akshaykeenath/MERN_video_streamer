@@ -102,7 +102,11 @@ function DefaultVideoCard({ video, title, channel, views, time, action }) {
                   color="text"
                   sx={{ "&:hover": { textDecoration: "underline" } }}
                 >
-                  <Link to={channel.route} onClick={handleChannelClick}>
+                  <Link
+                    to={channel.route}
+                    onClick={handleChannelClick}
+                    style={{ color: "inherit" }}
+                  >
                     {modifiedChannelName()}
                   </Link>
                 </MDTypography>

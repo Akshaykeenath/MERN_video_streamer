@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import { videoReactions } from "services/videoManagement/likeCommentViews";
+import { formatCountToKilos } from "functions/general/count";
 
 function ChannelLikeArea({ video }) {
   const [controller, dispatch] = useMaterialUIController();
@@ -14,6 +15,8 @@ function ChannelLikeArea({ video }) {
   const [like, setLike] = useState(video.likeType === "like");
   const [dislike, setDislike] = useState(video.likeType === "dislike");
   const [componentLoaded, setComponentLoaded] = useState(false);
+  const [likesCount, setLikesCount] = useState(0);
+  const [dislikesCount, setDislikesCount] = useState(0);
   const channelName = video.uploader.fname + " " + video.uploader.lname;
   const { addLikeToVideo, response, error } = videoReactions();
 
@@ -35,15 +38,33 @@ function ChannelLikeArea({ video }) {
   }, [like, dislike]);
 
   useEffect(() => {
+    setLikesCount(video.likes);
+    setDislikesCount(video.dislikes);
     setComponentLoaded(true);
   }, []);
 
   const handleLike = () => {
+    if (like) {
+      setLikesCount(likesCount - 1);
+    } else {
+      setLikesCount(likesCount + 1);
+      if (dislike) {
+        setDislikesCount(dislikesCount - 1);
+      }
+    }
     setLike(!like);
     setDislike(false);
   };
 
   const handleDislike = () => {
+    if (dislike) {
+      setDislikesCount(dislikesCount - 1);
+    } else {
+      setDislikesCount(dislikesCount + 1);
+      if (like) {
+        setLikesCount(likesCount - 1);
+      }
+    }
     setDislike(!dislike);
     setLike(false);
   };
@@ -112,7 +133,7 @@ function ChannelLikeArea({ video }) {
                 color={like ? "info" : darkMode ? "dark" : "light"}
                 onClick={handleLike}
               >
-                <Icon>thumb_up</Icon>&nbsp; 1K
+                <Icon>thumb_up</Icon>&nbsp; {formatCountToKilos(likesCount)}
               </MDButton>
             </Tooltip>
           </Grid>
@@ -124,7 +145,7 @@ function ChannelLikeArea({ video }) {
                 color={dislike ? "info" : darkMode ? "dark" : "light"}
                 onClick={handleDislike}
               >
-                <Icon>thumb_down</Icon>&nbsp; 2K
+                <Icon>thumb_down</Icon>&nbsp; {formatCountToKilos(dislikesCount)}
               </MDButton>
             </Tooltip>
           </Grid>

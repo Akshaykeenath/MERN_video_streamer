@@ -96,7 +96,7 @@ function Overview() {
                       mobile: String(user.mobile),
                       email: user.email,
                     }}
-                    action={{ route: "/studio/dashboard", tooltip: "Edit Profile" }}
+                    action={{ route: "/studio/profile/edit", tooltip: "Edit Profile" }}
                     shadow={false}
                   />
                   <Divider orientation="vertical" sx={{ mx: 0 }} />

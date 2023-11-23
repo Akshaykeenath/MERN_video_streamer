@@ -151,7 +151,7 @@ router.get("/watch/id/:videoId", async (req, res) => {
     );
 
     const userLiked = userInteraction ? userInteraction.type : false;
-    const userViews = video.views.length + 10000;
+    const userViews = video.views.length + 1;
     const modifedVideo = {
       _id: video._id,
       comments: video.comments,
@@ -165,6 +165,8 @@ router.get("/watch/id/:videoId", async (req, res) => {
       video: video.video,
       views: userViews,
       likeType: userLiked,
+      likes: video.likesCount,
+      dislikes: video.dislikesCount,
     };
 
     res.status(200).json({
@@ -179,34 +181,34 @@ router.get("/watch/id/:videoId", async (req, res) => {
   }
 });
 
-// router.get("/id/:videoId", async (req, res) => {
-//   const videoId = req.params.videoId;
+router.get("/id/:videoId", async (req, res) => {
+  const videoId = req.params.videoId;
 
-//   try {
-//     const video = await videoModel.findById(videoId).populate({
-//       path: "uploader",
-//       model: "userdata",
-//       select: "fname lname uname email",
-//     });
+  try {
+    const video = await videoModel.findById(videoId).populate({
+      path: "uploader",
+      model: "userdata",
+      select: "fname lname uname email",
+    });
 
-//     if (!video) {
-//       return res.status(404).json({
-//         error: "Not Found",
-//         message: "Video not found",
-//       });
-//     }
+    if (!video) {
+      return res.status(404).json({
+        error: "Not Found",
+        message: "Video not found",
+      });
+    }
 
-//     res.status(200).json({
-//       video: video,
-//     });
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({
-//       error: "Internal Server Error",
-//       message: "An error occurred while processing the request",
-//     });
-//   }
-// });
+    res.status(200).json({
+      video: video,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      error: "Internal Server Error",
+      message: "An error occurred while processing the request",
+    });
+  }
+});
 
 router.delete("/:videoId", async (req, res, next) => {
   const token = req.headers.authorization;

@@ -11,6 +11,7 @@ import { getHomeData } from "services/videoManagement";
 import { CircularProgress, Grid } from "@mui/material";
 import { useMaterialUIController, setNotification } from "context";
 import { getRelativeTime } from "functions/general/time";
+import { formatCountToKilos } from "functions/general/count";
 
 function Home() {
   const redirect = useRouteRedirect();
@@ -31,7 +32,15 @@ function Home() {
     } else if (response != null) {
       const trendingVideos = response.trending;
       const mappedVideoData = trendingVideos.map((currVideo, index) => {
-        const { _id, title, uploader, video: videoArray, poster, timestamp } = currVideo;
+        const {
+          _id,
+          title,
+          uploader,
+          video: videoArray,
+          poster,
+          timestamp,
+          viewsCount,
+        } = currVideo;
         console.log(currVideo);
         const videoUrl = videoArray[0].url;
         const posterUrl = poster[0].url;
@@ -47,7 +56,7 @@ function Home() {
             image: "https://picsum.photos/200", // Replace with actual channel image URL if available
             route: "/channel", // Replace with actual channel route if available
           },
-          views: "100 views", // You may replace this with actual view count
+          views: formatCountToKilos(viewsCount) + " " + "views", // You may replace this with actual view count
           time: getRelativeTime(timestamp), // You may replace this with actual upload time
           action: {
             type: "internal", // Change to "external" if needed
