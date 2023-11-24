@@ -126,7 +126,7 @@ function EditProfile() {
   useEffect(() => {
     const fileInput = document.getElementById("file-input");
     if (profilePic !== null) {
-      const fileType = profilePic.type;
+      const fileType = profilePic && profilePic.type ? profilePic.type : "";
       if (fileType.startsWith("image/")) {
         setProfilePicUrl(URL.createObjectURL(profilePic));
       } else {
@@ -244,6 +244,7 @@ function EditProfile() {
               justifyContent="center"
               alignItems="center"
               columnSpacing={4}
+              rowSpacing={4}
             >
               {/* Profile Pic Area */}
               <Grid item xs={12} md={5}>
@@ -332,7 +333,7 @@ function EditProfile() {
               {/* End Profile Pic Area */}
 
               {/* Detail Area */}
-              <Grid item xs={12} md={7} px={3}>
+              <Grid item xs={10} md={7} px={3}>
                 <Grid
                   container
                   direction="column"
