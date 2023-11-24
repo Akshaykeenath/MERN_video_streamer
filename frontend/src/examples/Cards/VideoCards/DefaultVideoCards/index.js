@@ -82,7 +82,13 @@ function DefaultVideoCard({ video, title, channel, views, time, action }) {
           <Grid item>
             <Link to={channel.route} onClick={handleChannelClick}>
               <MDBox>
-                <MDAvatar src={channel.image} alt={channel.name} size="sm" shadow="xxl"></MDAvatar>
+                <MDAvatar
+                  src={channel.image}
+                  alt={channel.name}
+                  size="sm"
+                  shadow="xxl"
+                  bgColor="dark"
+                />
               </MDBox>
             </Link>
           </Grid>

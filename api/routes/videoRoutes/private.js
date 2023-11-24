@@ -136,7 +136,7 @@ router.get("/watch/id/:videoId", async (req, res) => {
     const video = await videoModel.findById(videoId).populate({
       path: "uploader",
       model: "userdata",
-      select: "fname lname uname email",
+      select: "fname lname uname email channel",
     });
 
     if (!video) {
@@ -210,7 +210,7 @@ router.get("/id/:videoId", async (req, res) => {
   }
 });
 
-router.delete("/:videoId", async (req, res, next) => {
+router.delete("/id/:videoId", async (req, res, next) => {
   const token = req.headers.authorization;
   const user = await getUserDetails(token);
 

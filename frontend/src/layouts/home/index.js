@@ -12,6 +12,7 @@ import { CircularProgress, Grid } from "@mui/material";
 import { useMaterialUIController, setNotification } from "context";
 import { getRelativeTime } from "functions/general/time";
 import { formatCountToKilos } from "functions/general/count";
+import proPic from "assets/images/propicWhite.png";
 
 function Home() {
   const redirect = useRouteRedirect();
@@ -41,6 +42,9 @@ function Home() {
           timestamp,
           viewsCount,
         } = currVideo;
+        const { channel } = uploader;
+        const channelPic =
+          channel.img && channel.img[0] && channel.img[0].url ? channel.img[0].url : proPic;
         console.log(currVideo);
         const videoUrl = videoArray[0].url;
         const posterUrl = poster[0].url;
@@ -53,7 +57,7 @@ function Home() {
           title: title,
           channel: {
             name: uploader.fname + " " + uploader.lname,
-            image: "https://picsum.photos/200", // Replace with actual channel image URL if available
+            image: channelPic,
             route: "/channel", // Replace with actual channel route if available
           },
           views: formatCountToKilos(viewsCount) + " " + "views", // You may replace this with actual view count

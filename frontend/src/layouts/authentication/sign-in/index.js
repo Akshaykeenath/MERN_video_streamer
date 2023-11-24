@@ -153,8 +153,8 @@ function Basic() {
           <MDBox component="form" role="form" onSubmit={handleSubmit}>
             <MDBox mb={2}>
               <MDInput
-                type="email"
-                label="Email"
+                type="text"
+                label="Email or Username"
                 value={email}
                 onChange={handleEmailChange}
                 fullWidth

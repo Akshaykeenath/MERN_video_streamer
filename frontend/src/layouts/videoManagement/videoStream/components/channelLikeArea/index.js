@@ -8,6 +8,7 @@ import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import { videoReactions } from "services/videoManagement/likeCommentViews";
 import { formatCountToKilos } from "functions/general/count";
+import proPic from "assets/images/propicWhite.png";
 
 function ChannelLikeArea({ video }) {
   const [controller, dispatch] = useMaterialUIController();
@@ -18,6 +19,14 @@ function ChannelLikeArea({ video }) {
   const [likesCount, setLikesCount] = useState(0);
   const [dislikesCount, setDislikesCount] = useState(0);
   const channelName = video.uploader.fname + " " + video.uploader.lname;
+  const channelPic =
+    video.uploader &&
+    video.uploader.channel &&
+    video.uploader.channel.img &&
+    video.uploader.channel.img[0] &&
+    video.uploader.channel.img[0].url
+      ? video.uploader.channel.img[0].url
+      : proPic;
   const { addLikeToVideo, response, error } = videoReactions();
 
   useEffect(() => {
@@ -93,7 +102,7 @@ function ChannelLikeArea({ video }) {
         >
           <Grid item>
             <Link to="#">
-              <MDAvatar src="https://picsum.photos/200" alt="Avatar" size="md" />
+              <MDAvatar src={channelPic} bgColor="dark" alt="Avatar" size="md" />
             </Link>
           </Grid>
           <Grid item>

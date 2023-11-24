@@ -19,8 +19,9 @@ router.post("/login", (req, res) => {
     pass: req.body.pass,
     rememberMe: req.body.rememberMe,
   };
+  console.log(user);
   userModel
-    .findOne({ uname: user.uname })
+    .findOne({ $or: [{ uname: user.uname }, { email: user.uname }] })
     .then(async (existingUser) => {
       console.log(existingUser);
       if (existingUser) {

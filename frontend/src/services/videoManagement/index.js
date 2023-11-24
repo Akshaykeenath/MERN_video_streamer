@@ -146,7 +146,7 @@ export function useDeleteVideo() {
     try {
       if (id) {
         // Send a DELETE request to delete the video
-        await myaxios.get(`/private/video/${id}`).then((res) => {
+        await myaxios.get(`/private/video/id/${id}`).then((res) => {
           if (
             res &&
             res.data &&
@@ -166,7 +166,7 @@ export function useDeleteVideo() {
             FirebaseDelete(res.data.video.video[0].firebaseUrl);
           }
         });
-        await myaxios.delete(`/private/video/${id}`);
+        await myaxios.delete(`/private/video/id/${id}`);
         setResponse({ status: "success" });
       }
     } catch (err) {

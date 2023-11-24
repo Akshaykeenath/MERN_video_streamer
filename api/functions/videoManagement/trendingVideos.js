@@ -6,7 +6,7 @@ async function getTrendingVideos() {
     .populate({
       path: "uploader",
       model: "userdata",
-      select: "fname lname uname email",
+      select: "fname lname uname email channel",
     })
     .exec();
 
