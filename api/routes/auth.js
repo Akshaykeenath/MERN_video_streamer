@@ -169,4 +169,33 @@ router.post("/register", async (req, res) => {
   }
 });
 
+router.post("/check/uname", async (req, res, next) => {
+  const uname = req.body.uname;
+  try {
+    if (uname) {
+      if (!/^[a-zA-Z][a-zA-Z0-9@.]+$/.test(uname)) {
+        res.status(400).json({
+          message:
+            "Invalid username format. Username can only contain alphabets , numbers and @.",
+        });
+        return;
+      }
+
+      const existingUser = await userModel.findOne({ uname: uname });
+      if (existingUser) {
+        res.status(409).json({ message: "Username already in use" });
+      } else {
+        res.status(200).json({
+          message: "Username available",
+          uname: uname,
+        });
+      }
+    } else {
+      res.status(400).json({ message: "Username not found in the request" });
+    }
+  } catch (err) {
+    res.status(500).json({ message: err.message || "Internal Server Error" });
+  }
+});
+
 module.exports = router;

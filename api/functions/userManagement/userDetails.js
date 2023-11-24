@@ -10,4 +10,21 @@ async function getUserDetails(token) {
   }
 }
 
-module.exports = { getUserDetails };
+async function updateUser(userId, updateData) {
+  try {
+    // Assuming `updateData` is an object containing the fields you want to update
+    const updatedUser = await userModel.findByIdAndUpdate(
+      userId,
+      { $set: updateData },
+      { new: true } // This option ensures that the updated document is returned
+    );
+
+    return updatedUser;
+  } catch (error) {
+    // Handle errors appropriately
+    console.error("Error updating user:", error);
+    throw error;
+  }
+}
+
+module.exports = { getUserDetails, updateUser };

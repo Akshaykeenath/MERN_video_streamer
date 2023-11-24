@@ -51,6 +51,7 @@ import team2 from "assets/images/team-2.jpg";
 import team3 from "assets/images/team-3.jpg";
 import team4 from "assets/images/team-4.jpg";
 import burceMars from "assets/images/bruce-mars.jpg";
+import proPic from "assets/images/propicWhite.png";
 import { useEffect, useState } from "react";
 import { apiGetMyProfileData } from "services/userManagement";
 import { CircularProgress, useMediaQuery } from "@mui/material";
@@ -60,6 +61,8 @@ function Overview() {
   const [currentTab, setCurrentTab] = useState(0);
   const [user, setUser] = useState(null);
   const { response, error } = apiGetMyProfileData();
+  const [userPic, setUserPic] = useState(null);
+
   useEffect(() => {
     if (response) {
       const userData = response.message;
@@ -69,6 +72,17 @@ function Overview() {
       console.log("error : ", error);
     }
   }, [response, error]);
+
+  useEffect(() => {
+    if (user && user.channel && user.channel.img && user.channel.img[0]) {
+      const pic = user.channel.img[0].url;
+      if (pic) {
+        setUserPic(pic);
+      }
+    } else if (user) {
+      setUserPic(proPic);
+    }
+  }, [user]);
   return (
     <DashboardLayout>
       <DashboardNavbar />
@@ -77,7 +91,7 @@ function Overview() {
         <Header
           name={user.fname + " " + user.lname}
           username={user.uname}
-          proPic={burceMars}
+          proPic={userPic}
           onTabChange={(val) => {
             setCurrentTab(val);
           }}

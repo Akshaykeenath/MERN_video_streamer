@@ -1,4 +1,4 @@
-import { Card, Grid, Skeleton } from "@mui/material";
+import { Card, CircularProgress, Grid, Skeleton } from "@mui/material";
 import MDAvatar from "components/MDAvatar";
 import MDBox from "components/MDBox";
 import MDInput from "components/MDInput";
@@ -11,6 +11,8 @@ import propicWhite from "assets/images/propicWhite.png";
 import MDButton from "components/MDButton";
 import { useRouteRedirect } from "services/redirection";
 import { apiGetMyProfileData } from "services/userManagement";
+import { apiCheckUname } from "services/userManagement";
+import { apiUpdateUser } from "services/userManagement";
 
 function EditProfile() {
   const [controller, dispatch] = useMaterialUIController();
@@ -20,6 +22,8 @@ function EditProfile() {
   const [profilePic, setProfilePic] = useState(null);
   const [profilePicUrl, setProfilePicUrl] = useState(propicWhite);
   const redirect = useRouteRedirect();
+  const [unameChecking, setUnameChecking] = useState(false);
+  const [updateBtnLoad, setUpdateBtnLoad] = useState(false);
 
   // Input box states
   const [fname, setFname] = useState("");
@@ -33,6 +37,8 @@ function EditProfile() {
   const [unameError, setUnameError] = useState(false);
   const [mobileError, setMobileError] = useState(false);
   const [mainColor, setMainColor] = useState("text");
+  const [unameApiRes, setUnameApiRes] = useState("valid username");
+  const [unameApiErr, setUnameApiErr] = useState(fname);
 
   useEffect(() => {
     if (fnameError || lnameError || unameError || mobileError) {
@@ -61,13 +67,6 @@ function EditProfile() {
         setLnameError(false);
       }
 
-      // User Name validation
-      if (uname.length <= 0) {
-        setUnameError("Enter a valid user name");
-      } else {
-        setUnameError(false);
-      }
-
       // Mobile Number validation
       if (typeof mobile === "string" && !mobile.match(mobileRegex)) {
         setMobileError("Enter a valid mobile number (10-12 digits only)");
@@ -75,7 +74,27 @@ function EditProfile() {
         setMobileError(false);
       }
     }
-  }, [fname, lname, uname, mobile, loading]);
+    if ((fname, lname, uname, mobile)) {
+      setLoading(false);
+    }
+  }, [fname, lname, uname, mobile]);
+
+  useEffect(() => {
+    if (!loading) {
+      // User Name validation
+      if (uname.length <= 0) {
+        setUnameApiRes(false);
+        setUnameError("Enter a valid user name");
+      } else {
+        if (unameApiErr.length > 0) {
+          setUnameError(unameApiErr);
+        } else {
+          setUnameApiRes(false);
+          setUnameError(false);
+        }
+      }
+    }
+  }, [uname]);
 
   useEffect(() => {
     if (response && response.message) {
@@ -83,24 +102,24 @@ function EditProfile() {
     }
     if (error) {
       console.log(error);
-      setLoading(false);
-
       const noti = {
         message: "An Error occured in fetching data",
         color: "error",
       };
       setNotification(dispatch, noti);
+      setLoading(false);
     }
   }, [response, error]);
 
   useEffect(() => {
     if (user) {
-      setLoading(false);
-      console.log(user);
       setFname(user.fname);
       setLname(user.lname);
       setUname(user.uname);
       setMobile(user.mobile);
+      if (user.channel && user.channel.img && user.channel.img[0]) {
+        setProfilePicUrl(user.channel.img[0].url);
+      }
     }
   }, [user]);
 
@@ -121,6 +140,83 @@ function EditProfile() {
       }
     }
   }, [profilePic]);
+
+  const handleUnameCheck = () => {
+    setUnameChecking(true);
+    setUnameApiErr(false);
+    setUnameApiRes(false);
+    setUnameError(false);
+    if (uname === user.uname) {
+      setUnameApiRes("Username available");
+      setUnameChecking(false);
+      return;
+    }
+    apiCheckUname(uname)
+      .then((response) => {
+        if (response.status === "error") {
+          setUnameApiErr(response.message);
+          setUnameError(response.message);
+        } else if (response.status === "success") {
+          setUnameApiRes(response.message);
+        }
+      })
+      .catch((err) => {
+        console.log(err.message);
+        setUnameError(err.message);
+        setUnameApiErr(err.message);
+      })
+      .finally(() => {
+        setUnameChecking(false);
+      });
+  };
+
+  const handleUpdateClick = async () => {
+    setUpdateBtnLoad(true);
+    if (!unameApiRes) {
+      const noti = {
+        message: "Check if username is available",
+        color: "warning",
+      };
+      setNotification(dispatch, noti);
+    } else {
+      if (fnameError || lnameError || unameError || mobileError) {
+        const noti = {
+          message: "Enter valid details before updating",
+          color: "error",
+        };
+        setNotification(dispatch, noti);
+      } else {
+        const data = {
+          fname: fname,
+          lname: lname,
+          uname: uname,
+          mobile: mobile,
+          email: user.email,
+          image: profilePic,
+        };
+        if (user.channel && user.channel.img && user.channel.img[0]) {
+          const firebaseUrl = user.channel.img[0].firebaseUrl;
+          data.firebaseUrl = firebaseUrl;
+        }
+        const updateRes = await apiUpdateUser(data);
+        if (updateRes.status === "success") {
+          const noti = {
+            message: "Updated successfully",
+            color: "success",
+          };
+          setNotification(dispatch, noti);
+          redirect("profile");
+        } else {
+          const noti = {
+            message: "Error in update",
+            color: "error",
+          };
+          setNotification(dispatch, noti);
+        }
+      }
+    }
+    setUpdateBtnLoad(false);
+  };
 
   return (
     <DashboardLayout>
@@ -208,14 +304,27 @@ function EditProfile() {
                   </Grid>
                   <Grid item>
                     <MDBox>
-                      <MDInput
-                        accept="image/*"
-                        id="file-input"
-                        type="file"
-                        onChange={(e) => {
-                          setProfilePic(e.target.files[0]);
-                        }}
-                      />
+                      {loading ? (
+                        <Skeleton variant="rounded" animation="wave">
+                          <MDInput
+                            accept="image/*"
+                            id="file-input"
+                            type="file"
+                            onChange={(e) => {
+                              setProfilePic(e.target.files[0]);
+                            }}
+                          />
+                        </Skeleton>
+                      ) : (
+                        <MDInput
+                          accept="image/*"
+                          id="file-input"
+                          type="file"
+                          onChange={(e) => {
+                            setProfilePic(e.target.files[0]);
+                          }}
+                        />
+                      )}
                     </MDBox>
                   </Grid>
                 </Grid>
@@ -241,8 +350,8 @@ function EditProfile() {
                         onChange={(e) => {
                           setFname(e.target.value);
                         }}
-                        success={!fnameError}
-                        error={fnameError}
+                        success={!fnameError.length > 0}
+                        error={fnameError.length > 0}
                         fullWidth
                       />
                     )}
@@ -260,8 +369,8 @@ function EditProfile() {
                         onChange={(e) => {
                           setLname(e.target.value);
                         }}
-                        success={!lnameError}
-                        error={lnameError}
+                        success={!lnameError.length > 0}
+                        error={lnameError.length > 0}
                         fullWidth
                       />
                     )}
@@ -287,14 +396,22 @@ function EditProfile() {
                             onChange={(e) => {
                               setUname(e.target.value);
                             }}
-                            success={!unameError}
-                            error={unameError}
+                            success={!unameError.length > 0 && unameApiRes.length > 0}
+                            error={unameError.length > 0 || unameApiErr.length > 0}
                             fullWidth
                           />
                         </Grid>
                         <Grid item xs={2}>
-                          <MDButton color="info" circular variant="outlined" size="small">
-                            Check
+                          <MDButton
+                            color="info"
+                            circular
+                            variant="outlined"
+                            size="small"
+                            onClick={() => handleUnameCheck()}
+                            disabled={unameError === "Enter a valid user name" || unameChecking}
+                          >
+                            Check&nbsp;
+                            {unameChecking && <CircularProgress color="inherit" size={15} />}
                           </MDButton>
                         </Grid>
                       </Grid>
@@ -302,6 +419,11 @@ function EditProfile() {
                     <MDTypography color="error" variant="caption" fontWeight="bold">
                       {unameError}
                     </MDTypography>
+                    {!loading && (
+                      <MDTypography color="success" variant="caption" fontWeight="bold">
+                        {unameApiRes}
+                      </MDTypography>
+                    )}
                   </Grid>
                   <Grid item>
                     {loading ? (
@@ -313,8 +435,8 @@ function EditProfile() {
                         onChange={(e) => {
                           setMobile(e.target.value);
                         }}
-                        success={!mobileError}
-                        error={mobileError}
+                        success={!mobileError.length > 0}
+                        error={mobileError.length > 0}
                         fullWidth
                       />
                     )}
@@ -354,9 +476,11 @@ function EditProfile() {
                   <MDButton
                     color="info"
                     circular
-                    disabled={fnameError || lnameError || unameError || mobileError}
+                    disabled={mainColor === "error" || updateBtnLoad}
+                    onClick={handleUpdateClick}
                   >
-                    Update
+                    Update&nbsp;
+                    {updateBtnLoad && <CircularProgress color="inherit" size={15} />}
                   </MDButton>
                 )}
               </Grid>

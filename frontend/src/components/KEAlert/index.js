@@ -27,6 +27,7 @@ export function KEAlert() {
       handleClick();
     }
     const timeoutId = setTimeout(() => {
+      setOpen(false);
       setNotification(dispatch, false);
     }, 6500);
     return () => {

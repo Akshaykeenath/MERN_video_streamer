@@ -36,12 +36,13 @@ import breakpoints from "assets/theme/base/breakpoints";
 
 // Images
 import backgroundImage from "assets/images/bg-profile.jpeg";
-import { useMediaQuery } from "@mui/material";
+import { Skeleton, useMediaQuery } from "@mui/material";
 
 function Header({ onTabChange, name, username, proPic, children }) {
   const isLg = useMediaQuery((theme) => theme.breakpoints.up("lg"));
   const [tabsOrientation, setTabsOrientation] = useState("horizontal");
   const [tabValue, setTabValue] = useState(0);
+
   useEffect(() => {
     onTabChange(tabValue);
   }, [tabValue]);
@@ -98,7 +99,13 @@ function Header({ onTabChange, name, username, proPic, children }) {
       >
         <Grid container spacing={3} alignItems="center">
           <Grid item>
-            <MDAvatar src={proPic} alt="profile-image" size="xl" shadow="sm" />
+            {proPic ? (
+              <MDAvatar src={proPic} bgColor="dark" alt="profile-image" size="xl" shadow="sm" />
+            ) : (
+              <Skeleton animation="wave" variant="circular">
+                <MDAvatar src={proPic} alt="profile-image" size="xl" shadow="sm" />
+              </Skeleton>
+            )}
           </Grid>
           <Grid item>
             <MDBox height="100%" mt={0.5} lineHeight={1}>
