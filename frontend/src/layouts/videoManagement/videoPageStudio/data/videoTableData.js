@@ -56,23 +56,26 @@ export default function data({ refreshData, onVideoDataCallback }) {
       onVideoDataCallback(data);
     }
   }, [error, response]);
-  const Video = ({ image, name, link }) => (
-    <Link to={link}>
-      <MDBox display="flex" alignItems="center" lineHeight={1}>
-        <MDAvatar src={image} name={name} size="sm" />
-        <MDBox ml={2} lineHeight={1}>
-          <MDTypography display="block" variant="button" fontWeight="medium">
-            {name}
-          </MDTypography>
-        </MDBox>
+  const Video = ({ image, name, onClick }) => (
+    <MDBox
+      display="flex"
+      alignItems="center"
+      lineHeight={1}
+      style={{ cursor: "pointer" }} // Add this line for the pointer cursor
+      onClick={() => onClick()}
+    >
+      <MDAvatar src={image} name={name} size="sm" />
+      <MDBox ml={2} lineHeight={1}>
+        <MDTypography display="block" variant="button" fontWeight="medium">
+          {name}
+        </MDTypography>
       </MDBox>
-    </Link>
+    </MDBox>
   );
-
   Video.propTypes = {
     image: PropTypes.string,
     name: PropTypes.string,
-    link: PropTypes.string,
+    onClick: PropTypes.func,
   };
 
   return {
@@ -88,7 +91,11 @@ export default function data({ refreshData, onVideoDataCallback }) {
     rows: response
       ? response.videos.map((video) => ({
           video: (
-            <Video image={video.poster[0].url} name={video.title} link={`/video/${video._id}`} />
+            <Video
+              image={video.poster[0].url}
+              name={video.title}
+              onClick={() => handleEditClick(video._id)}
+            />
           ),
           status: (
             <MDBox ml={-1}>

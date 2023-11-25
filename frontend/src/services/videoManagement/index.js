@@ -126,7 +126,7 @@ export function getVideoDataByID(id) {
       return;
     }
     myaxios
-      .get(`/private/video/${id}`)
+      .get(`/private/video/id/${id}`)
       .then((res) => {
         setResponse(res.data);
       })

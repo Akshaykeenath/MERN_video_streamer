@@ -7,8 +7,9 @@ import videoTableData from "layouts/videoManagement/videoPageStudio/data/videoTa
 import KESlideModal from "components/KEModals/SlideModal";
 import { useDeleteVideo } from "services/videoManagement";
 import { useMaterialUIController, setNotification } from "context";
+import PropTypes from "prop-types";
 
-function VideoList() {
+function VideoList({ onVideoListAction }) {
   const [controller, dispatch] = useMaterialUIController();
   const [loading, setLoading] = useState(true);
   const [modalData, setModalData] = useState(null);
@@ -41,6 +42,9 @@ function VideoList() {
     if (data.action === "loading") {
       setLoading(false);
     } else {
+      if (data.action === "edit") {
+        onVideoListAction(data);
+      }
       if (data.action === "delete") {
         setModalData({
           videoID: data.id,
@@ -131,5 +135,9 @@ function VideoList() {
     </MDBox>
   );
 }
+
+VideoList.propTypes = {
+  onVideoListAction: PropTypes.func,
+};
 
 export default VideoList;

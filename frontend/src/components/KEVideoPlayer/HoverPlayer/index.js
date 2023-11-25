@@ -17,6 +17,7 @@ const KEVideoPlayerHover = ({ video, sx }) => {
         hideControls: false,
         keyboard: { focused: false, global: false },
         tooltips: { controls: false, seek: false },
+        storage: { enabled: false, key: "plyr" },
       });
       // Set initial control color
       if (playerRef.current.elements.controls) {

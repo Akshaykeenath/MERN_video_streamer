@@ -8,58 +8,77 @@ import uploadVideoImg from "assets/images/addVideo.png";
 import MDButton from "components/MDButton";
 import { useRouteRedirect } from "services/redirection";
 import Footer from "examples/Footer";
+import VideoEdit from "./components/videoEdit";
+import { useState } from "react";
 
 function VideoPageStudio() {
   const redirect = useRouteRedirect();
+  const [editVideo, setEditVideo] = useState(null);
+  const handleVideoListAction = (data) => {
+    // Implement your logic here based on the 'data' received
+    console.log("Handling video list action:", data);
+    if (data.action === "edit") {
+      setEditVideo(data.id);
+    }
+  };
+  const handleVideoEditBackClick = (clicked) => {
+    if (clicked) {
+      setEditVideo(null);
+    }
+  };
   return (
     <DashboardLayout>
       <DashboardNavbar />
-      <Grid
-        container
-        columnSpacing={3}
-        rowSpacing={1}
-        direction="row"
-        justifyContent="center"
-        alignItems="center"
-      >
-        <Grid item xs={12} md={9}>
-          <VideoList />
-        </Grid>
-        <Grid item xs={12} md={3}>
-          <Card sx={{ paddingY: "5vh", paddingX: "3vw" }}>
-            <Grid container direction="column" justifyContent="center" alignItems="center">
-              <Grid item>
-                <MDBox
-                  component="img"
-                  src={uploadVideoImg}
-                  alt="Poster"
-                  borderRadius="lg"
-                  shadow="none"
-                  width="100%"
-                  height="100%"
-                  maxWidth="200px"
-                  position="relative"
-                  zIndex={1}
-                />
+      {!editVideo ? (
+        <Grid
+          container
+          columnSpacing={3}
+          rowSpacing={1}
+          direction="row"
+          justifyContent="center"
+          alignItems="center"
+        >
+          <Grid item xs={12} md={9}>
+            <VideoList onVideoListAction={handleVideoListAction} />
+          </Grid>
+          <Grid item xs={12} md={3}>
+            <Card sx={{ paddingY: "5vh", paddingX: "3vw" }}>
+              <Grid container direction="column" justifyContent="center" alignItems="center">
+                <Grid item>
+                  <MDBox
+                    component="img"
+                    src={uploadVideoImg}
+                    alt="Poster"
+                    borderRadius="lg"
+                    shadow="none"
+                    width="100%"
+                    height="100%"
+                    maxWidth="200px"
+                    position="relative"
+                    zIndex={1}
+                  />
+                </Grid>
+                <Grid item>
+                  <MDButton
+                    variant="outlined"
+                    color="info"
+                    size="large"
+                    circular
+                    onClick={() => {
+                      redirect("videoUpload");
+                    }}
+                  >
+                    Add New Video&nbsp;
+                    <Icon>add_circle_outline</Icon>
+                  </MDButton>
+                </Grid>
               </Grid>
-              <Grid item>
-                <MDButton
-                  variant="outlined"
-                  color="info"
-                  size="large"
-                  circular
-                  onClick={() => {
-                    redirect("videoUpload");
-                  }}
-                >
-                  Add New Video&nbsp;
-                  <Icon>add_circle_outline</Icon>
-                </MDButton>
-              </Grid>
-            </Grid>
-          </Card>
+            </Card>
+          </Grid>
         </Grid>
-      </Grid>
+      ) : (
+        <VideoEdit videoId={editVideo} onBackClick={handleVideoEditBackClick} />
+      )}
       <Footer />
     </DashboardLayout>
   );
