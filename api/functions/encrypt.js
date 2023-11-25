@@ -21,7 +21,7 @@ function generateToken(user, rememberMe = false) {
   };
 
   secretKey = process.env.SESSION_KEY;
-  const expiresIn = rememberMe ? "7d" : "1h"; // Set expiration based on rememberMe value
+  const expiresIn = rememberMe ? "7d" : "1min"; // Set expiration based on rememberMe value
 
   const token = jwt.sign(payload, secretKey, {
     expiresIn,

@@ -72,7 +72,7 @@ const routes = [
     icon: <Icon fontSize="small">video_call</Icon>,
     route: "/studio/videos",
     component: <VideoPageStudio />,
-    protected: false,
+    protected: true,
   },
   {
     key: "videos",

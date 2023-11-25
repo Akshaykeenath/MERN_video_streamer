@@ -16,7 +16,7 @@ Coded by www.creative-tim.com
 import { useEffect, useState } from "react";
 
 // react-router-dom components
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 // @mui material components
 import Card from "@mui/material/Card";
@@ -44,17 +44,29 @@ import { apiLogin } from "services/userManagement";
 import MDSnackbar from "components/MDSnackbar";
 import { useMaterialUIController, setNotification, setIsAuthenticated } from "context";
 import { useRouteRedirect } from "services/redirection";
+import { createBrowserHistory } from "history";
 
 function Basic() {
+  const location = useLocation();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const redirect = useRouteRedirect();
   const [controller, dispatch] = useMaterialUIController();
   const [rememberMe, setRememberMe] = useState(false);
   const [password, setPassword] = useState("Akshay");
   const [email, setEmail] = useState("akshaykeenath97@gmail.com");
+  const [prevUrl, setPrevUrl] = useState(null);
+  const history = createBrowserHistory();
   useEffect(() => {
     setIsAuthenticated(dispatch, false);
+    setPrevUrl(getCurrentUrl());
+    history.push("/authentication/sign-in");
   }, []);
+
+  const getCurrentUrl = () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get("prevUrl") || null;
+  };
 
   const handleSetRememberMe = () => setRememberMe(!rememberMe);
 
@@ -85,7 +97,13 @@ function Basic() {
           };
           setNotification(dispatch, noti);
           setIsAuthenticated(dispatch, true);
-          redirect("home");
+          if (prevUrl) {
+            navigate(prevUrl);
+          } else if (location.state && location.state.prevUrl) {
+            navigate(location.state.prevUrl);
+          } else {
+            redirect("home");
+          }
         } else if (response.status === 401 && response.data && response.data.message) {
           // Handle login failure here
           const noti = {

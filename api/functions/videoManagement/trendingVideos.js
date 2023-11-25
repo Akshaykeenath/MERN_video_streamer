@@ -1,8 +1,7 @@
 const VideoModel = require("../../models/videoModel");
+
 async function getTrendingVideos() {
   const tVideos = await VideoModel.find({ privacy: "public" })
-    .limit(10)
-    .select("_id title video poster uploader timestamp viewsCount views")
     .populate({
       path: "uploader",
       model: "userdata",
@@ -11,6 +10,7 @@ async function getTrendingVideos() {
     .exec();
 
   let newVideos = [];
+
   tVideos.forEach((vid) => {
     const newVid = {
       _id: vid._id,
@@ -20,11 +20,18 @@ async function getTrendingVideos() {
       video: vid.video,
       viewsCount: vid.viewsCount,
       title: vid.title,
-      des: vid.desc,
+      desc: vid.desc,
+      trendingScore: vid.trendingScore,
     };
     newVideos.push(newVid);
   });
-  return newVideos;
+
+  // Sort the newVideos array based on trendingScore in descending order
+  newVideos.sort((a, b) => b.trendingScore - a.trendingScore);
+
+  // Take only the top 10 videos
+  const top10Videos = newVideos.slice(0, 10);
+  return top10Videos;
 }
 
 module.exports = { getTrendingVideos };

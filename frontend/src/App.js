@@ -27,21 +27,17 @@ import { CacheProvider } from "@emotion/react";
 import createCache from "@emotion/cache";
 
 // Video Streamer React routes
-import { routes, studioRoutes } from "routes";
+import { routes } from "routes";
 
 // Video Streamer React contexts
-import {
-  useMaterialUIController,
-  setMiniSidenav,
-  setOpenConfigurator,
-  setAppDomain,
-} from "context";
+import { useMaterialUIController, setMiniSidenav, setOpenConfigurator } from "context";
 
 // Images
 import brandWhite from "assets/images/brand_white.png";
 import brandDark from "assets/images/brand_dark.png";
 import { KEAlert, KEAlertOther } from "components/KEAlert/index";
 import StudioSidenav from "examples/Sidenav/StudioSidenav";
+import { useRouteRedirect } from "services/redirection";
 
 export default function App() {
   const [controller, dispatch] = useMaterialUIController();
@@ -59,6 +55,19 @@ export default function App() {
   const [onMouseEnter, setOnMouseEnter] = useState(false);
   const [rtlCache, setRtlCache] = useState(null);
   const { pathname } = useLocation();
+  const redirect = useRouteRedirect();
+
+  function isPathProtected(currentPath) {
+    const route = routes.find((r) => r.route === currentPath);
+    return route && route.protected;
+  }
+
+  useState(() => {
+    const isProtected = isPathProtected(pathname);
+    if (isProtected) {
+      redirect("checkAuth");
+    }
+  }, []);
 
   // Cache for the rtl
   useMemo(() => {
@@ -107,7 +116,7 @@ export default function App() {
         return (
           <Route
             path={route.route}
-            element={<Navigate to="/authentication/sign-in" />}
+            element={<Navigate to="/authentication/sign-in" state={{ prevUrl: pathname }} />}
             key={route.key}
           />
         );

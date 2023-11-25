@@ -64,6 +64,10 @@ videoSchema.virtual("likesCount").get(function () {
   );
 });
 
+// virtual property to get trending score
+videoSchema.virtual("trendingScore").get(function () {
+  return this.likesCount + this.viewsCount - this.dislikesCount;
+});
 // Virtual property to get dislikes count
 videoSchema.virtual("dislikesCount").get(function () {
   return (

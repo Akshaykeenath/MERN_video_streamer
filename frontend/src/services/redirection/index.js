@@ -1,7 +1,9 @@
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { apiDeAuth } from "services/userManagement";
 import { apiAuth } from "services/userManagement";
 import { useMaterialUIController, setNotification, setIsAuthenticated } from "context";
+// Video Streamer React routes
+import { routes } from "routes";
 
 const checkAuth = async () => {
   try {
@@ -19,8 +21,14 @@ const checkAuth = async () => {
   }
 };
 
+function isPathProtected(currentPath) {
+  const route = routes.find((r) => r.route === currentPath);
+  return route && route.protected;
+}
+
 export function useRouteRedirect() {
   const navigate = useNavigate();
+  const { pathname } = useLocation();
   const [controller, dispatch] = useMaterialUIController();
   const redirect = async (location) => {
     // Make the function async
@@ -43,7 +51,10 @@ export function useRouteRedirect() {
         setIsAuthenticated(dispatch, false);
 
         apiDeAuth();
-        navigate("/authentication/sign-in");
+        const isProtected = isPathProtected(pathname);
+        if (!isProtected) {
+          navigate("/authentication/sign-in");
+        }
         break;
       case "signup":
         navigate("/authentication/sign-up");
@@ -62,7 +73,6 @@ export function useRouteRedirect() {
           };
           setNotification(dispatch, noti);
           setIsAuthenticated(dispatch, false);
-          navigate("/authentication/sign-in");
         }
         break;
       case "videoDetailsStudio":

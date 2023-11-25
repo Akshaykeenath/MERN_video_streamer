@@ -48,6 +48,7 @@ router.get("/my", async (req, res, next) => {
     const userId = user._id;
     videoModel
       .find({ uploader: userId })
+      .sort({ timestamp: -1 })
       .exec()
       .then((videos) => {
         res.status(200).json({

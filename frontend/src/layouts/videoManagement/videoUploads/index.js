@@ -12,8 +12,11 @@ import VideoPublishArea from "./components/publishArea";
 import { apiUploadVideo } from "services/videoManagement";
 import { useRouteRedirect } from "services/redirection";
 import UploadFinishArea from "./components/finishArea";
+import { useLocation, useNavigate } from "react-router-dom";
 
 function VideoUpload() {
+  const navigate = useNavigate();
+
   const redirect = useRouteRedirect();
   const defaultVideoData = {
     title: "",
@@ -165,6 +168,16 @@ function VideoUpload() {
 
             <MDBox p={2}>
               <MDBox sx={{ display: "flex", justifyContent: "flex-end" }}>
+                {currentStep === 0 && (
+                  <MDButton
+                    variant="gradient"
+                    color="secondary"
+                    circular
+                    onClick={() => navigate(1)}
+                  >
+                    Back
+                  </MDButton>
+                )}
                 <MDButton
                   variant="gradient"
                   color="info"

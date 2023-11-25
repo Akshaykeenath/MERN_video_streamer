@@ -1,5 +1,12 @@
 // axios.js
 import axios from "axios";
+import { createBrowserHistory } from "history";
+const history = createBrowserHistory();
+
+// Utility function for navigation with state
+const navigateWithState = (url, state) => {
+  history.push({ pathname: url, state });
+};
 
 // Set up a base URL if needed
 axios.defaults.baseURL = process.env.REACT_APP_API_URL;
@@ -39,7 +46,9 @@ axios.interceptors.response.use(
     console.log(error);
     const message = error.response.data.message;
     if (error.response.status === 401 && message === "unauthorized") {
-      window.location.href = "/authentication/sign-in";
+      // navigateWithState("/authentication/sign-in", { prevUrl: window.location.pathname });
+      // history.push("/authentication/sign-in", { prevUrl: window.location.pathname });
+      window.location.href = `/authentication/sign-in?prevUrl=${window.location.pathname}`;
     }
     return Promise.reject(error);
   }
