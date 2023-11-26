@@ -363,7 +363,8 @@ function VideoEdit({ videoId, onBackClick }) {
               disabled={updateLoad || noChange}
               circular
             >
-              Update
+              Update&nbsp;
+              {updateLoad && <CircularProgress color="inherit" size={15} />}
             </MDButton>
           </Grid>
         </Grid>
