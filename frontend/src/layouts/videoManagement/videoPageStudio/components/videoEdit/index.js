@@ -38,6 +38,7 @@ function VideoEdit({ videoId, onBackClick }) {
   const [videoUrl, setVideoUrl] = useState(null);
   const [updateLoad, setUpdateLoad] = useState(false);
   const [noChange, setNoChange] = useState(false);
+  const [titleError, setTitleError] = useState(false);
   useEffect(() => {
     if (response && response.video) {
       setVideo(response.video);
@@ -110,12 +111,18 @@ function VideoEdit({ videoId, onBackClick }) {
   };
 
   const handleUpdateClick = async () => {
+    if (title.length === 0) {
+      setTitleError("Enter a valid title");
+    } else {
+      setTitleError(false);
+    }
     setUpdateLoad(true);
     if (title.length > 0) {
       const data = {
         id: video.id,
         title: title,
         desc: desc,
+        privacy: privacy,
         tags: videoChipList,
       };
 
@@ -200,6 +207,7 @@ function VideoEdit({ videoId, onBackClick }) {
                     onChange={(e) => {
                       setTitle(e.target.value);
                     }}
+                    error={titleError.length > 0}
                     fullWidth
                   />
                 ) : (
