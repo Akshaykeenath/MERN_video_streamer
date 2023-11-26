@@ -9,6 +9,10 @@ const {
   addLikeToVideo,
   addViewToVideo,
 } = require("../../functions/videoManagement/likeViewComment");
+const {
+  getVideoById,
+  updateVideo,
+} = require("../../functions/videoManagement/videoDetails");
 
 // current link : /private/video
 
@@ -240,6 +244,41 @@ router.delete("/id/:videoId", async (req, res, next) => {
         message: "An error occurred while processing the request",
       });
     });
+});
+
+router.post("/update", async (req, res, next) => {
+  const video = req.body.video;
+  const token = req.headers.authorization;
+  try {
+    if (video) {
+      const user = await getUserDetails(token);
+      const orginalVideo = await getVideoById(video.id);
+      if (orginalVideo.uploader.toString() === user._id.toString()) {
+        const updatedVideo = await updateVideo(video.id, video);
+        if (updatedVideo) {
+          res.status(200).json({
+            user: user,
+            video: updatedVideo,
+          });
+        } else {
+          throw new Error("Failed to update video");
+        }
+      } else {
+        res.status(403).json({
+          message: "user not permitted to update",
+          user: user,
+          video: orginalVideo,
+        });
+      }
+    } else {
+      res.status(400).json({ message: "Bad request" });
+    }
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      message: err,
+    });
+  }
 });
 
 module.exports = router;

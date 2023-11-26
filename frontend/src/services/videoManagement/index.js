@@ -177,6 +177,19 @@ export function useDeleteVideo() {
   return { deleteVideo, response, error };
 }
 
+export async function apiUpdateVideo(data) {
+  const video = {
+    video: data,
+  };
+
+  try {
+    const response = await myaxios.post("/private/video/update", video);
+    return { status: "success", data: response.data };
+  } catch (error) {
+    return { status: "error", message: error.message };
+  }
+}
+
 export function getHomeData() {
   const [response, setResponse] = useState(null);
   const [error, setError] = useState(null);

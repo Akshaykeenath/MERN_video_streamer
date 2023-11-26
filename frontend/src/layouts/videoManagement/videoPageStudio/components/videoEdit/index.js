@@ -20,6 +20,7 @@ import KEVideoPlayer from "components/KEVideoPlayer";
 import { useEffect, useState } from "react";
 import { getVideoDataByID } from "services/videoManagement";
 import { useMaterialUIController, setNotification } from "context";
+import { apiUpdateVideo } from "services/videoManagement";
 
 function VideoEdit({ videoId, onBackClick }) {
   const { response, error } = getVideoDataByID(videoId);
@@ -35,13 +36,19 @@ function VideoEdit({ videoId, onBackClick }) {
   const [videoChip, setVideoChip] = useState("");
   const [videoChipList, setVideoChipList] = useState([]);
   const [videoUrl, setVideoUrl] = useState(null);
+  const [updateLoad, setUpdateLoad] = useState(false);
+  const [noChange, setNoChange] = useState(false);
   useEffect(() => {
     if (response && response.video) {
       setVideo(response.video);
       console.log(response.video);
     }
     if (error) {
-      console.log(error);
+      const noti = {
+        message: "An Error occured",
+        color: "error",
+      };
+      setNotification(dispatch, noti);
     }
   }, [response, error]);
 
@@ -55,8 +62,22 @@ function VideoEdit({ videoId, onBackClick }) {
     }
   }, [video]);
 
+  useEffect(() => {
+    if (video) {
+      if (
+        title === video.title &&
+        desc === video.desc &&
+        videoChipList === video.tags &&
+        privacy === video.privacy
+      ) {
+        setNoChange(true);
+      } else {
+        setNoChange(false);
+      }
+    }
+  }, [title, desc, privacy, videoChipList, video]);
+
   const handleBackClick = () => {
-    console.log("clicked back button");
     onBackClick(true);
   };
 
@@ -87,6 +108,55 @@ function VideoEdit({ videoId, onBackClick }) {
   const handleChipDelete = (chipToDelete) => {
     setVideoChipList((chips) => chips.filter((chip) => chip !== chipToDelete));
   };
+
+  const handleUpdateClick = async () => {
+    setUpdateLoad(true);
+    if (title.length > 0) {
+      const data = {
+        id: video.id,
+        title: title,
+        desc: desc,
+        tags: videoChipList,
+      };
+
+      try {
+        const response = await apiUpdateVideo(data);
+
+        if (response.status === "success") {
+          handleBackClick();
+          const noti = {
+            message: "Update successful",
+            color: "success",
+          };
+          setNotification(dispatch, noti);
+        } else {
+          // Handle error, e.g., show an error message
+          console.error("Update failed", response.message);
+          const noti = {
+            message: "Update failed",
+            color: "error",
+          };
+          setNotification(dispatch, noti);
+        }
+      } catch (error) {
+        // Handle unexpected errors
+        console.error("Unexpected error", error);
+        const noti = {
+          message: "Update failed",
+          color: "error",
+        };
+        setNotification(dispatch, noti);
+      }
+    } else {
+      const noti = {
+        message: "Add a valid title",
+        color: "error",
+      };
+      setNotification(dispatch, noti);
+    }
+    setUpdateLoad(false);
+  };
+
   return (
     <Grid
       container
@@ -279,7 +349,12 @@ function VideoEdit({ videoId, onBackClick }) {
             </MDButton>
           </Grid>
           <Grid item>
-            <MDButton color="info" onClick={handleBackClick} circular>
+            <MDButton
+              color="info"
+              onClick={handleUpdateClick}
+              disabled={updateLoad || noChange}
+              circular
+            >
               Update
             </MDButton>
           </Grid>

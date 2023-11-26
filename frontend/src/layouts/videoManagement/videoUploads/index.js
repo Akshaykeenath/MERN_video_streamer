@@ -173,7 +173,7 @@ function VideoUpload() {
                     variant="gradient"
                     color="secondary"
                     circular
-                    onClick={() => navigate(1)}
+                    onClick={() => redirect("videoDetailsStudio")}
                   >
                     Back
                   </MDButton>
