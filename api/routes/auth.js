@@ -75,6 +75,7 @@ router.post("/verify/email", async (req, res) => {
   try {
     const token = req.body.token;
     const user = await getUserDetails(token);
+    console.log(user);
 
     if (!user) {
       // Handle the case where the user is not found
