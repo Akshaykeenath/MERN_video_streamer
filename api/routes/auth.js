@@ -19,11 +19,9 @@ router.post("/login", (req, res) => {
     pass: req.body.pass,
     rememberMe: req.body.rememberMe,
   };
-  console.log(user);
   userModel
     .findOne({ $or: [{ uname: user.uname }, { email: user.uname }] })
     .then(async (existingUser) => {
-      console.log(existingUser);
       if (existingUser) {
         const isMatch = await verifyPassword(user.pass, existingUser.password);
         if (isMatch) {
@@ -75,7 +73,6 @@ router.post("/verify/email", async (req, res) => {
   try {
     const token = req.body.token;
     const user = await getUserDetails(token);
-    console.log(user);
 
     if (!user) {
       // Handle the case where the user is not found
