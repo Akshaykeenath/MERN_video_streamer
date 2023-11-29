@@ -56,7 +56,8 @@ async function isAuthenticated(req, res, next) {
     next();
   } else {
     // User is not authenticated
-    res.status(401).json({ message: "unauthorized" });
+    const route = req.headers.frontendurl;
+    res.status(401).json({ message: "unauthorized", route: route });
   }
 }
 

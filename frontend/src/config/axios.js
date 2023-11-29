@@ -1,11 +1,9 @@
 // axios.js
 import axios from "axios";
-import { createBrowserHistory } from "history";
-const history = createBrowserHistory();
 
-// Utility function for navigation with state
-const navigateWithState = (url, state) => {
-  history.push({ pathname: url, state });
+const getCurrentUrl = () => {
+  console.log("called url : ", window.location.pathname);
+  return window.location.pathname;
 };
 
 // Set up a base URL if needed
@@ -17,9 +15,11 @@ axios.interceptors.request.use(
     // Do something before request is sent
     // For example, attach an authorization header
     const token = localStorage.getItem("currentUserJWT");
+    const currentUrl = getCurrentUrl();
     if (token) {
       config.headers.Authorization = token;
     }
+    config.headers.FrontEndUrl = currentUrl;
     return config;
   },
   (error) => {
@@ -46,9 +46,8 @@ axios.interceptors.response.use(
     console.log(error);
     const message = error.response.data.message;
     if (error.response.status === 401 && message === "unauthorized") {
-      // navigateWithState("/authentication/sign-in", { prevUrl: window.location.pathname });
-      // history.push("/authentication/sign-in", { prevUrl: window.location.pathname });
-      window.location.href = `/authentication/sign-in?prevUrl=${window.location.pathname}`;
+      const currentUrl = error.response.data.route;
+      window.location.href = `/authentication/sign-in?prevUrl=${currentUrl}`;
     }
     return Promise.reject(error);
   }

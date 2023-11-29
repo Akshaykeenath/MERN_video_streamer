@@ -97,11 +97,14 @@ function Basic() {
           };
           setNotification(dispatch, noti);
           setIsAuthenticated(dispatch, true);
-          if (prevUrl) {
+          if (prevUrl && prevUrl != "/authentication/sign-in") {
+            console.log("prevUrl", prevUrl);
             navigate(prevUrl);
           } else if (location.state && location.state.prevUrl) {
+            console.log("location.state.prevUrl ", location.state.prevUrl);
             navigate(location.state.prevUrl);
           } else {
+            console.log("home");
             redirect("home");
           }
         } else if (response.status === 401 && response.data && response.data.message) {
