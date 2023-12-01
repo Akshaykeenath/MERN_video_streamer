@@ -24,18 +24,22 @@ function VideoViewMaster() {
   const [controller, dispatch] = useMaterialUIController();
   const isXs = useMediaQuery((theme) => theme.breakpoints.down("md"));
   const isMd = useMediaQuery((theme) => theme.breakpoints.up("md"));
-  const { response, error } = getVideoDataByIdWatch(videoId);
+  const { fetchVideoData, response, error } = getVideoDataByIdWatch();
   const [loading, setLoading] = useState(true);
   const [videos, setVideos] = useState([]); // Video data like array urls and poster data
   const [videoDetail, setVideoDetail] = useState([]); // Other details like channel, likes
 
   useEffect(() => {
+    setVideos([]);
+    setVideoDetail([]);
+    setLoading(true);
     setMiniSidenav(dispatch, true);
+    fetchVideoData(videoId);
 
     return () => {
       setMiniSidenav(dispatch, false);
     };
-  }, []);
+  }, [videoId]);
 
   useEffect(() => {
     if (response && response.video) {
@@ -100,8 +104,8 @@ function VideoViewMaster() {
           )}
         </Grid>
         <Grid item xs={12} md={4}>
-          <MDTypography color="text">Side Area</MDTypography>
-          <RelatedVideoList />
+          <MDTypography color="text">Related videos</MDTypography>
+          <RelatedVideoList videoId={videoId} />
         </Grid>
       </Grid>
       <Footer />

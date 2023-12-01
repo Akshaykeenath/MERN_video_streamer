@@ -1,51 +1,108 @@
-import { Grid } from "@mui/material";
+import { CircularProgress, Grid, Skeleton } from "@mui/material";
 import VideoCardList from "examples/Cards/VideoCards/VideoListCards";
+import { useEffect, useState } from "react";
+import { getRelatedVideos } from "services/videoManagement";
+import PropTypes from "prop-types";
+import { formatCountToKilos } from "functions/general/count";
+import { getRelativeTime } from "functions/general/time";
+import MDTypography from "components/MDTypography";
+import MDBox from "components/MDBox";
 
-function RelatedVideoList() {
-  const videoData2 = {
-    poster: "https://assets.codepen.io/32795/poster.png",
-    url: "http://media.w3.org/2010/05/sintel/trailer.mp4",
-  };
+function RelatedVideoList({ videoId }) {
+  const { fetchData, response, error } = getRelatedVideos();
+  const [videoData, setVideoData] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  const channelData = {
-    name: "Channel Name",
-    image: "https://assets.codepen.io/32795/poster.png",
-    route: "/channel-route",
-  };
+  useEffect(() => {
+    if (response) {
+      setVideoData(response.message);
+      setLoading(false);
+    }
+    if (error) {
+      console.log(error);
+      setLoading(false);
+    }
+  }, [response, error]);
 
-  const actionData = {
-    type: "internal",
-    route: "/video-route",
+  useEffect(() => {
+    setLoading(true);
+    setVideoData(null);
+    fetchData(videoId);
+  }, [videoId]);
+
+  // Loading skelton animation
+  const loadingSkeltons = (numberOfTimes) => {
+    const skeletons = [];
+
+    for (let i = 0; i < numberOfTimes; i++) {
+      skeletons.push(
+        <Grid item key={i} my={-2}>
+          <Grid
+            container
+            direction="row"
+            columnSpacing={2}
+            justifyContent="center"
+            alignItems="center"
+          >
+            <Grid item xs={6} md={6}>
+              <MDBox p={1}>
+                <Skeleton animation="wave" height="20vh" />
+              </MDBox>
+            </Grid>
+            {/* Details area */}
+            <Grid item xs={6} md={6}>
+              <Grid container direction="column">
+                <Grid item>
+                  <Skeleton animation="wave" height="100%" />
+                </Grid>
+                <Grid item>
+                  <Skeleton animation="wave" height="100%" />
+                </Grid>
+                <Grid item>
+                  <Skeleton animation="wave" height="100%" />
+                </Grid>
+              </Grid>
+            </Grid>
+            {/* End Details area */}
+          </Grid>
+        </Grid>
+      );
+    }
+
+    return skeletons;
   };
-  const description =
-    " It was raining goals in #Kochi as #KBFCCFC ended in a draw after a feisty contest! 🤝 #ISL #ISL10 #LetsFootball #ISLonJioCinema #ISLonSports18 #KeralaBlasters #ChennaiyinFC Follow all the match highlights & updates on our official YouTube channel. Like, Comment and Subscribe and make sure to click on the bell icon. To subscribe";
+  // End Loading skelton animation
 
   return (
     <Grid container direction="column" rowSpacing={1}>
-      <Grid item>
-        <VideoCardList
-          video={videoData2}
-          title="Your Video Title"
-          views="1000"
-          time="10:00"
-          channel={channelData}
-          action={actionData}
-          description={description}
-        />
-      </Grid>
-      <Grid item>
-        <VideoCardList
-          video={videoData2}
-          title="Your Video Title"
-          views="1000"
-          time="10:00"
-          channel={channelData}
-          action={actionData}
-          description={description}
-        />
-      </Grid>
+      {loading && loadingSkeltons(3)}
+      {!loading &&
+        videoData &&
+        videoData.map((video) => (
+          <Grid item key={video._id}>
+            <VideoCardList
+              poster={video.poster[0].url}
+              title={video.title}
+              views={formatCountToKilos(video.viewsCount) + " " + "views"}
+              time={getRelativeTime(video.timestamp)}
+              channel={{
+                name: video.uploader.fname + " " + video.uploader.lname,
+                route: "/channel",
+              }}
+              action={{
+                type: "internal",
+                route: `/video/${video._id}`,
+              }}
+              description={video.desc}
+            />
+          </Grid>
+        ))}
     </Grid>
   );
 }
+
+RelatedVideoList.propTypes = {
+  videoId: PropTypes.string,
+};
 
 export default RelatedVideoList;

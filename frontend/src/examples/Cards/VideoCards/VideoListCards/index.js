@@ -14,7 +14,7 @@ import MDTypography from "components/MDTypography";
 import MDButton from "components/MDButton";
 import { Grid, Tooltip, useMediaQuery } from "@mui/material";
 
-function VideoCardList({ title, channel, views, time, action }) {
+function VideoCardList({ poster, title, channel, views, time, action }) {
   const breakpointSizes = {
     xs: "xs",
     sm: "sm",
@@ -87,7 +87,7 @@ function VideoCardList({ title, channel, views, time, action }) {
           <MDBox style={containerStyle} p={1}>
             <MDBox
               component="img"
-              src={"https://picsum.photos/id/237/3000/3000"}
+              src={poster}
               alt="Poster"
               borderRadius="lg"
               shadow="md"
@@ -138,12 +138,12 @@ function VideoCardList({ title, channel, views, time, action }) {
 
 // Typechecking props for the SimpleBlogCard
 VideoCardList.propTypes = {
+  poster: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
   views: PropTypes.string.isRequired,
   time: PropTypes.string.isRequired,
   channel: PropTypes.shape({
     name: PropTypes.string.isRequired,
-    image: PropTypes.string.isRequired,
     route: PropTypes.string.isRequired,
   }).isRequired,
   action: PropTypes.shape({

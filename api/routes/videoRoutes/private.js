@@ -12,6 +12,7 @@ const {
 const {
   getVideoById,
   updateVideo,
+  getRelatedVideos,
 } = require("../../functions/videoManagement/videoDetails");
 
 // current link : /private/video
@@ -179,6 +180,21 @@ router.get("/watch/id/:videoId", async (req, res) => {
     });
   } catch (error) {
     console.error(error);
+    res.status(500).json({
+      error: "Internal Server Error",
+      message: "An error occurred while processing the request",
+    });
+  }
+});
+
+router.get("/related/id/:videoId", async (req, res) => {
+  const videoId = req.params.videoId;
+  try {
+    if (videoId) {
+      const relatedVideos = await getRelatedVideos(videoId);
+      res.status(200).json({ message: relatedVideos });
+    }
+  } catch (error) {
     res.status(500).json({
       error: "Internal Server Error",
       message: "An error occurred while processing the request",

@@ -93,8 +93,8 @@ export function getMyvideoData(refreshData) {
 export function getVideoDataByIdWatch(id) {
   const [response, setResponse] = useState(null);
   const [error, setError] = useState(null);
-  useEffect(() => {
-    // Validate the format of the MongoDB ObjectID
+
+  const fetchVideoData = (id) => {
     const isValidObjectId = /^[0-9a-fA-F]{24}$/.test(id);
 
     if (!isValidObjectId) {
@@ -109,9 +109,9 @@ export function getVideoDataByIdWatch(id) {
       .catch((err) => {
         setError(err);
       });
-  }, [id]);
+  };
 
-  return { response, error };
+  return { fetchVideoData, response, error };
 }
 
 export function getVideoDataByID(id) {
@@ -188,6 +188,23 @@ export async function apiUpdateVideo(data) {
   } catch (error) {
     return { status: "error", message: error.message };
   }
+}
+
+export function getRelatedVideos() {
+  const [response, setResponse] = useState(null);
+  const [error, setError] = useState(null);
+  const fetchData = (videoId) => {
+    myaxios
+      .get(`/private/video/related/id/${videoId}`)
+      .then((res) => {
+        setResponse(res.data);
+      })
+      .catch((err) => {
+        setError(err);
+      });
+  };
+
+  return { fetchData, response, error };
 }
 
 export function getHomeData() {
