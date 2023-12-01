@@ -90,6 +90,8 @@ function Home() {
     type: "internal",
     route: "/video-route",
   };
+  const description =
+    " It was raining goals in #Kochi as #KBFCCFC ended in a draw after a feisty contest! 🤝 #ISL #ISL10 #LetsFootball #ISLonJioCinema #ISLonSports18 #KeralaBlasters #ChennaiyinFC Follow all the match highlights & updates on our official YouTube channel. Like, Comment and Subscribe and make sure to click on the bell icon. To subscribe";
 
   return (
     <DashboardLayout>
@@ -115,6 +117,7 @@ function Home() {
         time="10:00"
         channel={channelData}
         action={actionData}
+        description={description}
       />
       {/* <Footer /> */}
     </DashboardLayout>

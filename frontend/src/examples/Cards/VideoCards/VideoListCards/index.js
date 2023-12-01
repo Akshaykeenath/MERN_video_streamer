@@ -12,11 +12,33 @@ import MuiLink from "@mui/material/Link";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDButton from "components/MDButton";
-import MDAvatar from "components/MDAvatar";
-import { Grid, Tooltip } from "@mui/material";
-import KEVideoPlayer from "components/KEVideoPlayer";
+import { Grid, Tooltip, useMediaQuery } from "@mui/material";
 
-function VideoCardList({ video, title, channel, views, time, action }) {
+function VideoCardList({ title, channel, views, time, action }) {
+  const breakpointSizes = {
+    xs: "xs",
+    sm: "sm",
+    md: "md",
+    lg: "lg",
+    xl: "xl",
+    xxl: "xxl",
+    // Add more sizes as needed
+  };
+
+  const mediaQueries = {};
+
+  Object.keys(breakpointSizes).forEach((size) => {
+    mediaQueries[size] = useMediaQuery((theme) => theme.breakpoints.only(breakpointSizes[size]));
+  });
+
+  // Now you can access your variables like this:
+  const isXs = mediaQueries.xs;
+  const isSm = mediaQueries.sm;
+  const isMd = mediaQueries.md;
+  const isLg = mediaQueries.lg;
+  const isXl = mediaQueries.xl;
+  const isXxl = mediaQueries.xxl;
+
   const navigate = useNavigate();
   const modifiedChannelName = () => {
     if (channel.name.length > 30) {
@@ -32,6 +54,7 @@ function VideoCardList({ video, title, channel, views, time, action }) {
       return title;
     }
   };
+
   const handleClick = () => {
     if (action.type == "internal") {
       navigate(`${action.route}`);
@@ -60,7 +83,7 @@ function VideoCardList({ video, title, channel, views, time, action }) {
   return (
     <Card onClick={handleClick} sx={{ cursor: "pointer" }}>
       <Grid container direction="row" columnSpacing={2}>
-        <Grid item xs={6} md={3}>
+        <Grid item xs={6} md={6}>
           <MDBox style={containerStyle} p={1}>
             <MDBox
               component="img"
@@ -77,64 +100,34 @@ function VideoCardList({ video, title, channel, views, time, action }) {
           </MDBox>
         </Grid>
         {/* Details area */}
-        <Grid item xs={6} md={9}>
+        <Grid item xs={6} md={6}>
           <Grid container direction="column">
             <Grid item>
               <MDBox>
                 <Tooltip title={title}>
-                  <MDTypography display="inline" variant="h5" fontWeight="bold">
+                  <MDTypography display="inline" variant="h6" fontWeight="bold">
                     {modifiedTitle()}
                   </MDTypography>
                 </Tooltip>
               </MDBox>
             </Grid>
             <Grid item>
-              <Grid
-                container
-                direction="row"
-                justifyContent="flex-start"
-                alignItems="center"
-                columnSpacing={1}
+              <MDTypography
+                variant="body2"
+                color="text"
+                fontWeight="medium"
+                sx={{ "&:hover": { textDecoration: "underline" } }}
               >
-                <Grid item>
-                  <MDTypography
-                    variant="body2"
-                    color="text"
-                    fontWeight="medium"
-                    sx={{ "&:hover": { textDecoration: "underline" } }}
-                  >
-                    <Link
-                      to={channel.route}
-                      onClick={handleChannelClick}
-                      style={{ color: "inherit" }}
-                    >
-                      {modifiedChannelName()}
-                    </Link>
-                  </MDTypography>
-                </Grid>
-                <Grid item>
-                  <MDTypography
-                    variant="button"
-                    color="text"
-                    fontWeight="light"
-                    verticalAlign="middle"
-                  >
-                    {views} • {time}
-                  </MDTypography>
-                </Grid>
-              </Grid>
-            </Grid>
-            {/* Description */}
-            <Grid item>
-              <MDTypography variant="button" color="text" fontWeight="light" verticalAlign="middle">
-                It was raining goals in #Kochi as #KBFCCFC ended in a draw after a feisty contest!
-                🤝 #ISL #ISL10 #LetsFootball #ISLonJioCinema #ISLonSports18 #KeralaBlasters
-                #ChennaiyinFC Follow all the match highlights & updates on our official YouTube
-                channel. Like, Comment and Subscribe and make sure to click on the bell icon. To
-                subscribe,
+                <Link to={channel.route} onClick={handleChannelClick} style={{ color: "inherit" }}>
+                  {modifiedChannelName()}
+                </Link>
               </MDTypography>
             </Grid>
-            {/* End Description */}
+            <Grid item>
+              <MDTypography variant="button" color="text" fontWeight="light" verticalAlign="middle">
+                {views} • {time}
+              </MDTypography>
+            </Grid>
           </Grid>
         </Grid>
         {/* End Details area */}
@@ -145,10 +138,6 @@ function VideoCardList({ video, title, channel, views, time, action }) {
 
 // Typechecking props for the SimpleBlogCard
 VideoCardList.propTypes = {
-  video: PropTypes.shape({
-    poster: PropTypes.string,
-    url: PropTypes.string,
-  }),
   title: PropTypes.string.isRequired,
   views: PropTypes.string.isRequired,
   time: PropTypes.string.isRequired,

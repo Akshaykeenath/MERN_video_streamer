@@ -17,6 +17,7 @@ import MDBox from "components/MDBox";
 import ChannelLikeArea from "./components/channelLikeArea";
 import DescriptionArea from "./components/descriptionArea";
 import { getVideoDataByIdWatch } from "services/videoManagement";
+import RelatedVideoList from "./components/relatedVideoList";
 
 function VideoViewMaster() {
   const { videoId } = useParams();
@@ -66,19 +67,11 @@ function VideoViewMaster() {
       setLoading(false);
     }
   }, [response, error]);
-
   return (
     <DashboardLayout>
       <StudioNavbar />
-      <Grid
-        container
-        columnSpacing={3}
-        rowSpacing={1}
-        direction="row"
-        justifyContent="center"
-        alignItems="center"
-      >
-        <Grid item xs={12} md={9}>
+      <Grid container columnSpacing={3} rowSpacing={0.5} direction="row" justifyContent="center">
+        <Grid item xs={12} md={8}>
           {loading && (
             <>
               <Skeleton variant="rounded" animation="wave" height={isMd ? "33vw" : "52vw"} />
@@ -106,8 +99,9 @@ function VideoViewMaster() {
             </Card>
           )}
         </Grid>
-        <Grid item xs={12} md={3}>
+        <Grid item xs={12} md={4}>
           <MDTypography color="text">Side Area</MDTypography>
+          <RelatedVideoList />
         </Grid>
       </Grid>
       <Footer />
