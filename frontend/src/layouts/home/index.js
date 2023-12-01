@@ -13,6 +13,7 @@ import { useMaterialUIController, setNotification } from "context";
 import { getRelativeTime } from "functions/general/time";
 import { formatCountToKilos } from "functions/general/count";
 import proPic from "assets/images/propicWhite.png";
+import VideoCardList from "examples/Cards/VideoCards/VideoListCards";
 
 function Home() {
   const redirect = useRouteRedirect();
@@ -73,6 +74,23 @@ function Home() {
       setLoading(false);
     }
   }, [response, error]);
+
+  const videoData2 = {
+    poster: "https://assets.codepen.io/32795/poster.png",
+    url: "http://media.w3.org/2010/05/sintel/trailer.mp4",
+  };
+
+  const channelData = {
+    name: "Channel Name",
+    image: "https://assets.codepen.io/32795/poster.png",
+    route: "/channel-route",
+  };
+
+  const actionData = {
+    type: "internal",
+    route: "/video-route",
+  };
+
   return (
     <DashboardLayout>
       <StudioNavbar />
@@ -90,7 +108,14 @@ function Home() {
           </Grid>
         )
       )}
-
+      <VideoCardList
+        video={videoData2}
+        title="Your Video Title"
+        views="1000"
+        time="10:00"
+        channel={channelData}
+        action={actionData}
+      />
       {/* <Footer /> */}
     </DashboardLayout>
   );
