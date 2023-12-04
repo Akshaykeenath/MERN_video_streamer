@@ -17,8 +17,20 @@ function ChannelBodyArea({ videos }) {
 
   return (
     <MDBox>
-      <MDTypography color="text"> Videos</MDTypography>
-      <Grid container direction="row" mt={1} columnSpacing={2} rowSpacing={3} mb={3}>
+      <MDBox
+        mt={2}
+        py={1}
+        px={2}
+        variant="gradient"
+        bgColor="info"
+        borderRadius="lg"
+        coloredShadow="info"
+      >
+        <MDTypography variant="h6" color="white">
+          Videos
+        </MDTypography>
+      </MDBox>
+      <Grid container direction="row" mt={1} columnSpacing={2} rowSpacing={5} mb={3}>
         {videoData &&
           videoData.map((video, index) => (
             <Grid item key={video._id}>

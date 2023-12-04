@@ -40,6 +40,7 @@ import {
 } from "context";
 import { useRouteRedirect } from "services/redirection";
 import KESlideModal from "components/KEModals/SlideModal";
+import { Grid } from "@mui/material";
 
 function StudioNavbar({ absolute, light, isMini }) {
   const { pathname } = useLocation();
@@ -203,70 +204,67 @@ function StudioNavbar({ absolute, light, isMini }) {
       sx={(theme) => navbar(theme, { transparentNavbar, absolute, light, darkMode })}
     >
       <Toolbar sx={(theme) => navbarContainer(theme)}>
-        <MDBox color="inherit" mb={{ xs: 1, md: 0 }} sx={(theme) => navbarRow(theme, { isMini })}>
-          <IconButton
-            size="small"
-            disableRipple
-            color="inherit"
-            sx={navbarDesktopMenu}
-            onClick={handleMiniSidenav}
-          >
-            <Icon sx={iconsStyle} fontSize="medium">
-              {miniSidenav ? "menu_open" : "menu"}
-            </Icon>
-          </IconButton>
-        </MDBox>
-        <MDBox sx={{ width: "80%" }}>
-          <MDInput label="Search here" fullWidth />
-        </MDBox>
-        {isMini ? null : (
-          <MDBox sx={(theme) => navbarRow(theme, { isMini })}>
-            <MDBox color={light ? "white" : "inherit"}>
-              <IconButton
-                sx={navbarIconButton}
-                size="small"
-                onClick={handleOpenProfile}
-                disableRipple
-              >
-                <Icon sx={iconsStyle}>account_circle</Icon>
-              </IconButton>
-              {renderProfileMenu()}
-              <IconButton
-                size="small"
-                disableRipple
-                color="inherit"
-                sx={navbarMobileMenu}
-                onClick={handleMiniSidenav}
-              >
-                <Icon sx={iconsStyle} fontSize="medium">
-                  {miniSidenav ? "menu_open" : "menu"}
-                </Icon>
-              </IconButton>
-              <IconButton
-                size="small"
-                disableRipple
-                color="inherit"
-                sx={navbarIconButton}
-                onClick={handleConfiguratorOpen}
-              >
-                <Icon sx={iconsStyle}>settings</Icon>
-              </IconButton>
-              <IconButton
-                size="small"
-                disableRipple
-                color="inherit"
-                sx={navbarIconButton}
-                aria-controls="notification-menu"
-                aria-haspopup="true"
-                variant="contained"
-                onClick={handleOpenMenu}
-              >
-                <Icon sx={iconsStyle}>notifications</Icon>
-              </IconButton>
-              {renderMenu()}
-            </MDBox>
-          </MDBox>
-        )}
+        <Grid container direction="row" columnSpacing={1}>
+          <Grid item xs={12} md={11}>
+            <Grid container direction="row" columnSpacing={1}>
+              <Grid item xs={1}>
+                <IconButton size="small" disableRipple color="inherit" onClick={handleMiniSidenav}>
+                  <Icon sx={iconsStyle} fontSize="medium">
+                    {miniSidenav ? "menu" : "menu_open"}
+                  </Icon>
+                </IconButton>
+              </Grid>
+              <Grid item xs={11}>
+                <MDBox sx={{ width: "100%" }}>
+                  <MDInput label="Search here" fullWidth />
+                </MDBox>
+              </Grid>
+            </Grid>
+          </Grid>
+          <Grid item xs={12} md={1}>
+            {isMini ? null : (
+              <MDBox sx={(theme) => navbarRow(theme, { isMini })}>
+                <Grid container direction="row" justifyContent="flex-end" alignItems="center">
+                  <Grid item>
+                    <MDBox color={light ? "white" : "inherit"}>
+                      <IconButton
+                        sx={navbarIconButton}
+                        size="small"
+                        onClick={handleOpenProfile}
+                        disableRipple
+                      >
+                        <Icon sx={iconsStyle}>account_circle</Icon>
+                      </IconButton>
+                      {renderProfileMenu()}
+                      <IconButton
+                        size="small"
+                        disableRipple
+                        color="inherit"
+                        sx={navbarIconButton}
+                        onClick={handleConfiguratorOpen}
+                      >
+                        <Icon sx={iconsStyle}>settings</Icon>
+                      </IconButton>
+                      <IconButton
+                        size="small"
+                        disableRipple
+                        color="inherit"
+                        sx={navbarIconButton}
+                        aria-controls="notification-menu"
+                        aria-haspopup="true"
+                        variant="contained"
+                        onClick={handleOpenMenu}
+                      >
+                        <Icon sx={iconsStyle}>notifications</Icon>
+                      </IconButton>
+                      {renderMenu()}
+                    </MDBox>
+                  </Grid>
+                </Grid>
+              </MDBox>
+            )}
+          </Grid>
+        </Grid>
       </Toolbar>
       {modalData && (
         <KESlideModal
