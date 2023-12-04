@@ -103,8 +103,7 @@ function VideoViewMaster() {
             </Card>
           )}
         </Grid>
-        <Grid item xs={12} md={4}>
-          <MDTypography color="text">Related videos</MDTypography>
+        <Grid item xs={12} md={4} mt={3}>
           <RelatedVideoList videoId={videoId} />
         </Grid>
       </Grid>

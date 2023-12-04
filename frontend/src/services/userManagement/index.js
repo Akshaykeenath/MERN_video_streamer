@@ -48,6 +48,30 @@ export function apiAuth() {
     });
 }
 
+export function getChannelDataByIdWatch() {
+  const [response, setResponse] = useState(null);
+  const [error, setError] = useState(null);
+
+  const fetchVideoData = (id) => {
+    const isValidObjectId = /^[0-9a-fA-F]{24}$/.test(id);
+
+    if (!isValidObjectId) {
+      setError({ response: { data: { status: "error", message: "Channel Not Found" } } });
+      return;
+    }
+    myaxios
+      .get(`/private/channel/watch/${id}`)
+      .then((res) => {
+        setResponse(res.data);
+      })
+      .catch((err) => {
+        setError(err);
+      });
+  };
+
+  return { fetchVideoData, response, error };
+}
+
 export function apiDeAuth() {
   // localStorage.removeItem("currentUserJWT");
   localStorage.clear();

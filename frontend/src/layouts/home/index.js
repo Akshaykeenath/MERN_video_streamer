@@ -41,7 +41,7 @@ function Home() {
           timestamp,
           viewsCount,
         } = currVideo;
-        const { channel } = uploader;
+        const { channel, _id: channelUrl } = uploader;
         const channelPic =
           channel.img && channel.img[0] && channel.img[0].url ? channel.img[0].url : proPic;
         console.log(currVideo);
@@ -57,7 +57,7 @@ function Home() {
           channel: {
             name: uploader.fname + " " + uploader.lname,
             image: channelPic,
-            route: "/channel", // Replace with actual channel route if available
+            route: `/channel/${channelUrl}`, // Replace with actual channel route if available
           },
           views: formatCountToKilos(viewsCount) + " " + "views", // You may replace this with actual view count
           time: getRelativeTime(timestamp), // You may replace this with actual upload time

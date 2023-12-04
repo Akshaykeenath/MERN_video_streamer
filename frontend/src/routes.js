@@ -37,6 +37,7 @@ import VideoUpload from "layouts/videoManagement/videoUploads";
 import VideoPageStudio from "layouts/videoManagement/videoPageStudio";
 import VideoViewMaster from "layouts/videoManagement/videoStream";
 import EditProfile from "layouts/profile/editProfile";
+import Channel from "layouts/channel";
 
 const routes = [
   {
@@ -52,6 +53,12 @@ const routes = [
     key: "videoMaster",
     route: "/video/:videoId",
     component: <VideoViewMaster />,
+    protected: true,
+  },
+  {
+    key: "channel",
+    route: "/channel/:channelId",
+    component: <Channel />,
     protected: true,
   },
   // Studio Area

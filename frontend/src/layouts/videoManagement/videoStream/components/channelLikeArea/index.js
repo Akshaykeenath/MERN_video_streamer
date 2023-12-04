@@ -101,7 +101,7 @@ function ChannelLikeArea({ video }) {
           p={1}
         >
           <Grid item>
-            <Link to="#">
+            <Link to={`/channel/${video.uploader._id}`}>
               <MDAvatar src={channelPic} bgColor="dark" alt="Avatar" size="md" />
             </Link>
           </Grid>
@@ -109,7 +109,9 @@ function ChannelLikeArea({ video }) {
             <Grid container direction="column" justifyContent="center" rowGap={0}>
               <Grid item>
                 <MDTypography color="text" variant="body2" fontWeight="bold">
-                  {channelName}
+                  <Link to={`/channel/${video.uploader._id}`} style={{ color: "inherit" }}>
+                    {channelName}
+                  </Link>
                 </MDTypography>
               </Grid>
               <Grid item mt={-1}>

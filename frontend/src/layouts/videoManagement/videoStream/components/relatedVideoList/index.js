@@ -74,30 +74,46 @@ function RelatedVideoList({ videoId }) {
   // End Loading skelton animation
 
   return (
-    <Grid container direction="column" rowSpacing={1}>
-      {loading && loadingSkeltons(3)}
-      {!loading &&
-        videoData &&
-        videoData.map((video) => (
-          <Grid item key={video._id}>
-            <VideoCardList
-              poster={video.poster[0].url}
-              title={video.title}
-              views={formatCountToKilos(video.viewsCount) + " " + "views"}
-              time={getRelativeTime(video.timestamp)}
-              channel={{
-                name: video.uploader.fname + " " + video.uploader.lname,
-                route: "/channel",
-              }}
-              action={{
-                type: "internal",
-                route: `/video/${video._id}`,
-              }}
-              description={video.desc}
-            />
-          </Grid>
-        ))}
-    </Grid>
+    <MDBox>
+      <MDBox
+        mt={-3}
+        mb={1}
+        py={1}
+        px={2}
+        variant="gradient"
+        bgColor="secondary"
+        borderRadius="lg"
+        coloredShadow="info"
+      >
+        <MDTypography variant="h6" color="white">
+          Related Videos
+        </MDTypography>
+      </MDBox>
+      <Grid container direction="column" rowSpacing={1}>
+        {loading && loadingSkeltons(3)}
+        {!loading &&
+          videoData &&
+          videoData.map((video) => (
+            <Grid item key={video._id}>
+              <VideoCardList
+                poster={video.poster[0].url}
+                title={video.title}
+                views={formatCountToKilos(video.viewsCount) + " " + "views"}
+                time={getRelativeTime(video.timestamp)}
+                channel={{
+                  name: video.uploader.fname + " " + video.uploader.lname,
+                  route: `/channel/${video.uploader._id}`,
+                }}
+                action={{
+                  type: "internal",
+                  route: `/video/${video._id}`,
+                }}
+                description={video.desc}
+              />
+            </Grid>
+          ))}
+      </Grid>
+    </MDBox>
   );
 }
 
