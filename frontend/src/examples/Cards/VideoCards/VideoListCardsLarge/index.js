@@ -13,9 +13,9 @@ import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDButton from "components/MDButton";
 import { Grid, Tooltip, useMediaQuery } from "@mui/material";
-import { useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
-function VideoCardList({ poster, title, channel, views, time, action }) {
+function VideoCardListLarge({ poster, title, channel, views, time, description, action }) {
   const [height, setHeight] = useState(1);
   const cardRef = useRef(null);
 
@@ -29,6 +29,7 @@ function VideoCardList({ poster, title, channel, views, time, action }) {
 
     logCardWidth();
   }, []);
+
   const breakpointSizes = {
     xs: "xs",
     sm: "sm",
@@ -53,17 +54,54 @@ function VideoCardList({ poster, title, channel, views, time, action }) {
   const isXl = mediaQueries.xl;
   const isXxl = mediaQueries.xxl;
 
+  const modifiedDescription = () => {
+    let maxLength;
+
+    if (isXs) {
+      maxLength = 40; // Set your desired max length for xs screens
+    } else if (isSm) {
+      maxLength = 50; // Set your desired max length for sm screens
+    } else if (isMd) {
+      maxLength = 70; // Set your desired max length for md screens
+    } else if (isLg) {
+      maxLength = 120; // Set your desired max length for lg screens
+    } else if (isXl) {
+      maxLength = 150; // Set your desired max length for xl screens
+    } else if (isXxl) {
+      maxLength = 300; // Set your desired max length for xxl screens
+    } else {
+      maxLength = 50; // Default max length
+    }
+
+    if (description && typeof description === "string") {
+      const newlineIndex = description.indexOf("\n");
+
+      if (newlineIndex !== -1 && newlineIndex <= maxLength) {
+        // If newline is found within or at maxLength, use it as the limit
+        return description.slice(0, newlineIndex) + "...";
+      }
+
+      if (description.length > maxLength) {
+        return description.slice(0, maxLength) + "...";
+      }
+
+      return description;
+    }
+
+    return ""; // or some default value if description is undefined or not a string
+  };
+
   const navigate = useNavigate();
   const modifiedChannelName = () => {
-    if (channel.name.length > 30) {
-      return channel.name.slice(0, 30) + "...";
+    if (channel.name.length > 50) {
+      return channel.name.slice(0, 47) + "...";
     } else {
       return channel.name;
     }
   };
   const modifiedTitle = () => {
-    if (title.length > 29) {
-      return title.slice(0, 27) + "...";
+    if (title.length > 50) {
+      return title.slice(0, 47) + "...";
     } else {
       return title;
     }
@@ -98,7 +136,7 @@ function VideoCardList({ poster, title, channel, views, time, action }) {
   return (
     <Card onClick={handleClick} sx={{ cursor: "pointer" }}>
       <Grid container direction="row" columnSpacing={2}>
-        <Grid item xs={6} md={6}>
+        <Grid item xs={6} md={4}>
           <MDBox style={containerStyle} p={1} ref={cardRef}>
             <MDBox
               component="img"
@@ -115,7 +153,7 @@ function VideoCardList({ poster, title, channel, views, time, action }) {
           </MDBox>
         </Grid>
         {/* Details area */}
-        <Grid item xs={6} md={6}>
+        <Grid item xs={6} md={8}>
           <Grid container direction="column">
             <Grid item>
               <MDBox>
@@ -143,6 +181,11 @@ function VideoCardList({ poster, title, channel, views, time, action }) {
                 {views} • {time}
               </MDTypography>
             </Grid>
+            <Grid item>
+              <MDTypography variant="button" color="text" fontWeight="light" verticalAlign="middle">
+                {modifiedDescription()}
+              </MDTypography>
+            </Grid>
           </Grid>
         </Grid>
         {/* End Details area */}
@@ -152,11 +195,12 @@ function VideoCardList({ poster, title, channel, views, time, action }) {
 }
 
 // Typechecking props for the SimpleBlogCard
-VideoCardList.propTypes = {
+VideoCardListLarge.propTypes = {
   poster: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
   views: PropTypes.string.isRequired,
   time: PropTypes.string.isRequired,
+  description: PropTypes.string.isRequired,
   channel: PropTypes.shape({
     name: PropTypes.string.isRequired,
     route: PropTypes.string.isRequired,
@@ -167,4 +211,4 @@ VideoCardList.propTypes = {
   }).isRequired,
 };
 
-export default VideoCardList;
+export default VideoCardListLarge;

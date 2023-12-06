@@ -38,6 +38,7 @@ import VideoPageStudio from "layouts/videoManagement/videoPageStudio";
 import VideoViewMaster from "layouts/videoManagement/videoStream";
 import EditProfile from "layouts/profile/editProfile";
 import Channel from "layouts/channel";
+import SearchResults from "layouts/searchResults";
 
 const routes = [
   {
@@ -59,6 +60,12 @@ const routes = [
     key: "channel",
     route: "/channel/:channelId",
     component: <Channel />,
+    protected: true,
+  },
+  {
+    key: "searchResults",
+    route: "/results",
+    component: <SearchResults />,
     protected: true,
   },
   // Studio Area

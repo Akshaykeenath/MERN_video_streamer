@@ -13,6 +13,7 @@ const {
   getVideoById,
   updateVideo,
   getRelatedVideos,
+  getSearchVideoResults,
 } = require("../../functions/videoManagement/videoDetails");
 
 // current link : /private/video
@@ -294,6 +295,22 @@ router.post("/update", async (req, res, next) => {
     res.status(500).json({
       message: err,
     });
+  }
+});
+
+// search routes
+
+router.post("/search/results", async (req, res, next) => {
+  const searchQuery = req.body.searchQuery;
+  try {
+    if (searchQuery) {
+      const videos = await getSearchVideoResults(searchQuery);
+      res.status(200).json({ message: videos });
+    } else {
+      res.status(400).json({ message: "search query not found" });
+    }
+  } catch (err) {
+    res.status(500).json({ message: err });
   }
 });
 

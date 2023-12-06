@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 
 // react-router components
-import { useLocation, Link } from "react-router-dom";
+import { useLocation, Link, useNavigate } from "react-router-dom";
 
 // prop-types is a library for typechecking of props.
 import PropTypes from "prop-types";
@@ -52,6 +52,7 @@ function StudioNavbar({ absolute, light, isMini }) {
   const [openProfile, setOpenProfile] = useState(false);
   const [appDomain, setAppDomain] = useState("default");
   const [modalData, setModalData] = useState(null);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     if (pathname.startsWith("/studio")) {
@@ -59,7 +60,15 @@ function StudioNavbar({ absolute, light, isMini }) {
     } else {
       setAppDomain("default");
     }
-  }, [pathname]);
+    if (pathname === "/results") {
+      const searchQuery = new URLSearchParams(location.search).get("search_query");
+      const decodedSearchQuery = searchQuery ? decodeURIComponent(searchQuery) : "";
+      console.log("decoded search", decodedSearchQuery);
+      if (decodedSearchQuery.length > 0) {
+        setSearch(decodedSearchQuery);
+      }
+    }
+  }, [pathname, location.search]);
 
   useEffect(() => {
     // Setting the navbar type
@@ -195,6 +204,15 @@ function StudioNavbar({ absolute, light, isMini }) {
     }
   };
 
+  const navigate = useNavigate();
+  const handleSearch = () => {
+    const trimmedSearch = search.trim();
+
+    if (trimmedSearch.length > 0) {
+      navigate(`/results?search_query=${encodeURIComponent(trimmedSearch)}`);
+    }
+  };
+
   // End Log out modal Code
 
   return (
@@ -216,7 +234,19 @@ function StudioNavbar({ absolute, light, isMini }) {
               </Grid>
               <Grid item xs={11}>
                 <MDBox sx={{ width: "100%" }}>
-                  <MDInput label="Search here" fullWidth />
+                  <MDInput
+                    label="Search here"
+                    value={search}
+                    onChange={(e) => {
+                      setSearch(e.target.value);
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        handleSearch();
+                      }
+                    }}
+                    fullWidth
+                  />
                 </MDBox>
               </Grid>
             </Grid>

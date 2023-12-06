@@ -1,4 +1,5 @@
 const VideoModel = require("../../models/videoModel");
+const Fuse = require("fuse.js");
 
 async function getVideoById(videoId) {
   if (videoId) {
@@ -113,4 +114,88 @@ async function updateVideo(videoId, updateData) {
   }
 }
 
-module.exports = { getVideoById, updateVideo, getRelatedVideos };
+async function getSearchVideoResults(searchQuery) {
+  // Split the search query into individual words
+  const searchWords = searchQuery.split(/\s+/);
+
+  // Create a regular expression for each search word
+  const regexPatterns = searchWords.map((word) => new RegExp(word, "i"));
+
+  // Build the query to find videos with matching titles or descriptions
+  const queryObject = {
+    $or: [{ title: { $in: regexPatterns } }, { desc: { $in: regexPatterns } }],
+  };
+
+  try {
+    // Find videos that match the search query
+    const videos = await VideoModel.find(queryObject).populate({
+      path: "uploader",
+      model: "userdata",
+      select: "fname lname uname email channel",
+    });
+
+    if (!videos || videos.length === 0) {
+      // If no videos are found, return an empty array or handle accordingly
+      return [];
+    }
+
+    // Extract all tags from the initial search results
+    const allTags = videos.reduce((tags, video) => {
+      return tags.concat(video.tags || []);
+    }, []);
+
+    // Create a new Fuse instance for fuzzy search
+    const fuseOptions = {
+      keys: ["title", "desc"],
+      threshold: 0.1, // Adjust the threshold based on your requirements
+    };
+    const fuse = new Fuse(videos, fuseOptions);
+
+    // Perform fuzzy search on the videos
+    const fuzzySearchResults = fuse.search(searchQuery);
+
+    // Extract the sorted video objects from fuzzy search
+    const result = fuzzySearchResults.map((result) => result.item);
+
+    // Consider related videos based on additional criteria (e.g., similar tags)
+    const relatedVideos = await VideoModel.find({
+      tags: { $in: allTags }, // Use allTags to consider all tags from initial search results
+      _id: { $nin: result.map((video) => video._id) }, // Exclude already matched videos
+    }).populate({
+      path: "uploader",
+      model: "userdata",
+      select: "fname lname uname email channel",
+    });
+
+    // Combine the result with related videos
+    const finalResult = result.concat(relatedVideos);
+
+    let newVideos = [];
+
+    finalResult.forEach((vid) => {
+      const newVid = {
+        _id: vid._id,
+        poster: vid.poster,
+        timestamp: vid.timestamp,
+        uploader: vid.uploader,
+        video: vid.video,
+        viewsCount: vid.viewsCount,
+        title: vid.title,
+        desc: vid.desc,
+      };
+      newVideos.push(newVid);
+    });
+
+    return newVideos;
+  } catch (error) {
+    console.error("Error fetching video data:", error);
+    throw error;
+  }
+}
+
+module.exports = {
+  getVideoById,
+  updateVideo,
+  getRelatedVideos,
+  getSearchVideoResults,
+};
