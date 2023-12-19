@@ -8,12 +8,15 @@ const videoModel = require("../../models/videoModel");
 const {
   addLikeToVideo,
   addViewToVideo,
+  subscribeToChannel,
+  unsubscribeFromChannel,
 } = require("../../functions/videoManagement/likeViewComment");
 const {
   getVideoById,
   updateVideo,
   getRelatedVideos,
   getSearchVideoResults,
+  getChannelIdFromVideoId,
 } = require("../../functions/videoManagement/videoDetails");
 
 // current link : /private/video
@@ -24,7 +27,7 @@ router.get("/", (req, res, next) => {
   });
 });
 
-// like, comments and views area
+// like, comments, subscribe and views area
 
 router.post("/like", async (req, res, next) => {
   const videoId = req.body.videoId;
@@ -37,6 +40,28 @@ router.post("/like", async (req, res, next) => {
     // Use the addLikeToVideo function from the videoService
     const result = await addLikeToVideo(videoId, user._id, likeType);
 
+    res.status(200).json(result);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      message: err.message || "Internal Server Error",
+    });
+  }
+});
+
+router.post("/subscribe", async (req, res, next) => {
+  const channelOwnerId = req.body.channelId;
+  const subscribe = req.body.subscribe; // "true" or "false"
+  const token = req.headers.authorization;
+
+  try {
+    const user = await getUserDetails(token);
+    let result = "";
+    if (subscribe == "true") {
+      result = await subscribeToChannel(channelOwnerId, user._id);
+    } else {
+      result = await unsubscribeFromChannel(channelOwnerId, user._id);
+    }
     res.status(200).json(result);
   } catch (err) {
     console.error(err);
@@ -156,7 +181,10 @@ router.get("/watch/id/:videoId", async (req, res) => {
     const userInteraction = video.likes.find(
       (like) => like.user.toString() === user._id.toString()
     );
-
+    const isSubscribed = video.uploader.channel.subscribers.some(
+      (subscriber) => String(subscriber.user) === String(user._id)
+    );
+    const isOwner = video.uploader._id.toString() == user._id;
     const userLiked = userInteraction ? userInteraction.type : false;
     const userViews = video.views.length + 1;
     const modifedVideo = {
@@ -168,12 +196,23 @@ router.get("/watch/id/:videoId", async (req, res) => {
       tags: video.tags,
       timestamp: video.timestamp,
       title: video.title,
-      uploader: video.uploader,
+      uploader: {
+        channel: {
+          img: video.uploader.channel.img,
+          subscribers: video.uploader.channel.subscribers.length,
+        },
+        _id: video.uploader.id,
+        fname: video.uploader.fname,
+        lname: video.uploader.lname,
+        uname: video.uploader.uname,
+      },
       video: video.video,
       views: userViews,
       likeType: userLiked,
       likes: video.likesCount,
       dislikes: video.dislikesCount,
+      isSubscribed: isSubscribed,
+      isOwner: isOwner,
     };
 
     res.status(200).json({

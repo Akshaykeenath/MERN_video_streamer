@@ -17,6 +17,12 @@ const userSchema = mongoose.Schema({
         firebaseUrl: String,
       },
     ],
+    subscribers: [
+      {
+        user: { type: mongoose.Schema.Types.ObjectId, ref: "userdata" },
+        timestamp: { type: Date, default: Date.now },
+      },
+    ],
   },
 });
 

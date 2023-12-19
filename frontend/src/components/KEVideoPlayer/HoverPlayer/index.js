@@ -8,6 +8,7 @@ const KEVideoPlayerHover = ({ video, sx }) => {
   const videoRef = useRef(null);
   const playerRef = useRef(null);
   const [isHover, setIsHover] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   useEffect(() => {
     try {
@@ -28,6 +29,7 @@ const KEVideoPlayerHover = ({ video, sx }) => {
     }
 
     return () => {
+      setIsHover(false);
       if (playerRef.current) {
         try {
           playerRef.current.destroy();
@@ -38,15 +40,28 @@ const KEVideoPlayerHover = ({ video, sx }) => {
     };
   }, []);
 
-  const handleMouseEnter = () => {
-    if (playerRef.current && playerRef.current.paused) {
-      try {
-        playerRef.current.decreaseVolume(1);
-        playerRef.current.play();
-      } catch (error) {
-        console.log("Error playing video:", error);
+  useEffect(() => {
+    if (isHover) {
+      if (playerRef.current && playerRef.current.paused) {
+        try {
+          playerRef.current.decreaseVolume(1);
+          playerRef.current.play();
+        } catch (error) {
+          console.log("Error playing video:", error);
+        }
+      }
+    } else {
+      if (playerRef.current && playerRef.current.playing && isPlaying) {
+        try {
+          playerRef.current.pause();
+        } catch (error) {
+          console.log("Error pausing video:", error);
+        }
       }
     }
+  }, [isHover]);
+
+  const handleMouseEnter = async () => {
     setIsHover(true);
     // Set the control color to white (#fff)
     if (playerRef.current.elements.controls) {
@@ -55,13 +70,6 @@ const KEVideoPlayerHover = ({ video, sx }) => {
   };
 
   const handleMouseLeave = () => {
-    if (playerRef.current && playerRef.current.playing) {
-      try {
-        playerRef.current.pause();
-      } catch (error) {
-        console.log("Error pausing video:", error);
-      }
-    }
     setIsHover(false);
     // Set the control color to transparent
     if (playerRef.current.elements.controls) {

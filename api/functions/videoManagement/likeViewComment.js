@@ -1,5 +1,6 @@
 // videoService.js
 const videoModel = require("../../models/videoModel");
+const userModel = require("../../models/userModel");
 
 async function addLikeToVideo(videoId, userId, likeType) {
   try {
@@ -61,7 +62,63 @@ async function addViewToVideo(videoId, userId) {
       timestamp: Date.now(),
     });
     await video.save();
-    return { message: "Like added successfully" };
+    return { message: "View added successfully" };
+  } catch (err) {
+    throw new Error(err.message);
+  }
+}
+
+async function subscribeToChannel(channelOwnerId, subscriberId) {
+  try {
+    const channelOwner = await userModel.findById(channelOwnerId);
+    if (!channelOwner) {
+      throw new Error("Channel owner not found");
+    }
+
+    // Check if the subscriber is already subscribed
+    const isSubscribed = channelOwner.channel.subscribers.some(
+      (subscriber) => String(subscriber.user) === String(subscriberId)
+    );
+
+    if (isSubscribed) {
+      return { message: "Already subscribed to this channel" };
+    }
+
+    // If not subscribed, add the subscriber
+    channelOwner.channel.subscribers.push({
+      user: subscriberId,
+      timestamp: Date.now(),
+    });
+
+    await channelOwner.save();
+    return { message: "Subscribed to the channel successfully" };
+  } catch (err) {
+    throw new Error(err.message);
+  }
+}
+
+async function unsubscribeFromChannel(channelOwnerId, subscriberId) {
+  try {
+    const channelOwner = await userModel.findById(channelOwnerId);
+    if (!channelOwner) {
+      throw new Error("Channel owner not found");
+    }
+
+    // Find the index of the subscriber with the given user ID
+    const subscriberIndex = channelOwner.channel.subscribers.findIndex(
+      (subscriber) => String(subscriber.user) === String(subscriberId)
+    );
+
+    // Check if the user is not subscribed
+    if (subscriberIndex === -1) {
+      return { message: "Not subscribed to this channel" };
+    }
+
+    // If subscribed, remove the subscriber from the array
+    channelOwner.channel.subscribers.splice(subscriberIndex, 1);
+
+    await channelOwner.save();
+    return { message: "Unsubscribed from the channel successfully" };
   } catch (err) {
     throw new Error(err.message);
   }
@@ -70,4 +127,6 @@ async function addViewToVideo(videoId, userId) {
 module.exports = {
   addLikeToVideo,
   addViewToVideo,
+  subscribeToChannel,
+  unsubscribeFromChannel,
 };

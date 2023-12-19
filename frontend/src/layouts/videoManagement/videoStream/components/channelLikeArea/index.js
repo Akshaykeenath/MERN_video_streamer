@@ -9,6 +9,7 @@ import { Link } from "react-router-dom";
 import { videoReactions } from "services/videoManagement/likeCommentViews";
 import { formatCountToKilos } from "functions/general/count";
 import proPic from "assets/images/propicWhite.png";
+import { subscribeToChannel } from "services/videoManagement/likeCommentViews";
 
 function ChannelLikeArea({ video }) {
   const [controller, dispatch] = useMaterialUIController();
@@ -18,6 +19,9 @@ function ChannelLikeArea({ video }) {
   const [componentLoaded, setComponentLoaded] = useState(false);
   const [likesCount, setLikesCount] = useState(0);
   const [dislikesCount, setDislikesCount] = useState(0);
+  const [subscribed, setSubscribed] = useState(video.isSubscribed);
+  const [subscribersCount, setSubscribersCount] = useState(video.uploader.channel.subscribers);
+
   const channelName = video.uploader.fname + " " + video.uploader.lname;
   const channelPic =
     video.uploader &&
@@ -27,7 +31,8 @@ function ChannelLikeArea({ video }) {
     video.uploader.channel.img[0].url
       ? video.uploader.channel.img[0].url
       : proPic;
-  const { addLikeToVideo, response, error } = videoReactions();
+  const { addLikeToVideo } = videoReactions();
+  const { addSubscribe } = subscribeToChannel();
 
   useEffect(() => {
     // This useEffect will only run after the component has loaded
@@ -45,6 +50,29 @@ function ChannelLikeArea({ video }) {
       }
     }
   }, [like, dislike]);
+
+  useEffect(() => {
+    // This useEffect will only run after the component has loaded
+    if (componentLoaded) {
+      if (subscribed && componentLoaded) {
+        setOtherNotification(dispatch, "Subscribed");
+        addSubscribe(video.uploader._id, "true");
+        if (video.isSubscribed) {
+          setSubscribersCount(Number(video.uploader.channel.subscribers));
+        } else {
+          setSubscribersCount(Number(video.uploader.channel.subscribers) + 1);
+        }
+      } else {
+        setOtherNotification(dispatch, "Unsubscribed");
+        addSubscribe(video.uploader._id, "false");
+        if (video.isSubscribed) {
+          setSubscribersCount(Number(video.uploader.channel.subscribers) - 1);
+        } else {
+          setSubscribersCount(Number(video.uploader.channel.subscribers));
+        }
+      }
+    }
+  }, [subscribed]);
 
   useEffect(() => {
     setLikesCount(video.likes);
@@ -87,6 +115,9 @@ function ChannelLikeArea({ video }) {
     setOtherNotification(dispatch, "Coppied to clipboard");
   };
 
+  const handleSubscribe = () => {
+    setSubscribed(!subscribed);
+  };
   return (
     <Grid container width="100%" direction="row" justifyContent="space-between" alignItems="center">
       {/* Channel Area  */}
@@ -116,11 +147,32 @@ function ChannelLikeArea({ video }) {
               </Grid>
               <Grid item mt={-1}>
                 <MDTypography color="text" variant="button">
-                  100k Subscribers
+                  {formatCountToKilos(subscribersCount)} Subscribers
                 </MDTypography>
               </Grid>
             </Grid>
           </Grid>
+          {!video.isOwner && (
+            <Grid item>
+              {subscribed ? (
+                <MDButton
+                  color={darkMode ? "light" : "dark"}
+                  variant={darkMode ? "gradient" : "contained"}
+                  circular
+                  onClick={handleSubscribe}
+                >
+                  subscribed &nbsp;
+                  <Icon baseClassName="material-icons" fontSize="small">
+                    check
+                  </Icon>
+                </MDButton>
+              ) : (
+                <MDButton color="info" variant="contained" circular onClick={handleSubscribe}>
+                  Subscribe
+                </MDButton>
+              )}
+            </Grid>
+          )}
         </Grid>
       </Grid>
       {/* End Channel Area  */}

@@ -1,4 +1,5 @@
 const VideoModel = require("../../models/videoModel");
+const userModel = require("../../models/userModel");
 const Fuse = require("fuse.js");
 
 async function getVideoById(videoId) {
@@ -193,9 +194,75 @@ async function getSearchVideoResults(searchQuery) {
   }
 }
 
+async function getSubscribedChannels(userId) {
+  if (userId) {
+    const channels = await userModel.find({
+      "channel.subscribers.user": userId,
+    });
+    const sanitizedChannels = channels.map((channel) => ({
+      _id: channel._id,
+      name: channel.fname + " " + channel.lname,
+      subscribers: channel.channel.subscribers.length,
+      img: channel.channel.img,
+    }));
+    return sanitizedChannels;
+  }
+}
+
+async function getSubscribedVideos(userId) {
+  const channels = await getSubscribedChannels(userId);
+  const channelIds = channels.map((channel) => channel._id);
+  const videos = await VideoModel.find({
+    uploader: { $in: channelIds },
+  })
+    .sort({ timestamp: -1 })
+    .populate({
+      path: "uploader",
+      model: "userdata",
+      select: "fname lname uname email channel",
+    });
+  const sanitizedVideos = videos.map((video) => ({
+    _id: video._id,
+    title: video.title,
+    desc: video.desc,
+    tags: video.tags,
+    privacy: video.privacy,
+    video: video.video,
+    poster: video.poster,
+    uploader: video.uploader,
+    views: video.views.length,
+    timestamp: video.timestamp,
+  }));
+  return sanitizedVideos;
+}
+
+// to delete (not used currently anywhere) area : subscription
+async function getChannelIdFromVideoId(videoId) {
+  try {
+    const video = await VideoModel.findById(videoId).populate({
+      path: "uploader",
+      model: "userdata",
+    });
+
+    if (!video) {
+      throw new Error("Video not found");
+    }
+
+    // Assuming the uploader field is populated with the user data
+    const channelId = video.uploader.channel; // Assuming the channel ID is stored in the user's channel field
+
+    return { channelId };
+  } catch (err) {
+    throw new Error(err.message);
+  }
+}
+
 module.exports = {
   getVideoById,
   updateVideo,
   getRelatedVideos,
   getSearchVideoResults,
+  getChannelIdFromVideoId,
+  getSubscribedChannels,
+  getSubscribedVideos,
 };

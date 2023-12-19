@@ -5,9 +5,6 @@ export function videoReactions() {
   const [response, setResponse] = useState(null);
   const [error, setError] = useState(null);
   useEffect(() => {
-    if (response) {
-      console.log(response);
-    }
     if (error) {
       console.log(error);
     }
@@ -29,4 +26,31 @@ export function videoReactions() {
   };
 
   return { addLikeToVideo, response, error };
+}
+
+export function subscribeToChannel() {
+  const [response, setResponse] = useState(null);
+  const [error, setError] = useState(null);
+  useEffect(() => {
+    if (error) {
+      console.log(error);
+    }
+  }, [error]);
+
+  const addSubscribe = async (channelId, subscribe) => {
+    const data = {
+      channelId: channelId,
+      subscribe: subscribe,
+    };
+    await myaxios
+      .post("/private/video/subscribe", data)
+      .then((response) => {
+        setResponse(response);
+      })
+      .catch((err) => {
+        setError(err);
+      });
+  };
+
+  return { addSubscribe, response, error };
 }

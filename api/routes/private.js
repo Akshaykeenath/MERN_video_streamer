@@ -9,6 +9,11 @@ const {
 const {
   getChannelDataById,
 } = require("../functions/userManagement/channelDetails");
+const { getUserDetails } = require("../functions/userManagement/userDetails");
+const {
+  getSubscribedChannels,
+  getSubscribedVideos,
+} = require("../functions/videoManagement/videoDetails");
 
 router.get("/", (req, res, next) => {
   res.status(200).json({
@@ -17,24 +22,41 @@ router.get("/", (req, res, next) => {
 });
 
 router.get("/myhome", async (req, res, next) => {
+  const token = req.headers.authorization;
   const videos = await getTrendingVideos();
+  let subscribedChannels, subscribedVideos;
+  try {
+    const user = await getUserDetails(token);
+    if (user) {
+      subscribedChannels = await getSubscribedChannels(user._id);
+      subscribedVideos = await getSubscribedVideos(user._id);
+    }
+  } catch (err) {
+    res.status(500).json({
+      message: "Internal server error",
+      error: err,
+    });
+  }
 
   return res.status(200).json({
     trending: videos,
+    subscribedChannels: subscribedChannels,
+    subscribedVideos: subscribedVideos,
   });
 });
 
 router.get("/channel/watch/:channelId", async (req, res, next) => {
   const channelId = req.params.channelId;
-
+  const token = req.headers.authorization;
   try {
-    if (!channelId) {
+    const user = await getUserDetails(token);
+    if (!channelId || !user) {
       return res.status(400).json({
-        message: "Channel Id not found in request",
+        message: "Channel Id or user not found in request",
       });
     }
 
-    const data = await getChannelDataById(channelId);
+    const data = await getChannelDataById(channelId, user._id);
 
     if (data.status) {
       return res.status(data.statusCode).json({
