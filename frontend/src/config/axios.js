@@ -2,7 +2,6 @@
 import axios from "axios";
 
 const getCurrentUrl = () => {
-  console.log("called url : ", window.location.pathname);
   return window.location.pathname;
 };
 

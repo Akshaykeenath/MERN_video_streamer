@@ -84,7 +84,7 @@ function Home() {
         />
       ) : (
         loading && (
-          <Grid container alignItems="center" justifyContent="center" sx={{ height: "100vh" }}>
+          <Grid container alignItems="center" justifyContent="center" sx={{ height: "80vh" }}>
             <Grid item>
               <CircularProgress color="secondary" />
             </Grid>

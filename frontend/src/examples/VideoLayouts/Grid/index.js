@@ -7,12 +7,11 @@ import PropTypes from "prop-types";
 import MDPagination from "components/MDPagination";
 import { useState } from "react";
 
-function VideoGridLayout({ videos, title }) {
+function VideoGridLayout({ videos, title, perPage = 6 }) {
   const [currentPage, setCurrentPage] = useState(1);
   const isXs = useMediaQuery((theme) => theme.breakpoints.down("lg"));
   const isLg = useMediaQuery((theme) => theme.breakpoints.up("lg"));
 
-  const perPage = 6; // Number of videos per page
   const totalPage = Math.ceil(videos.length / perPage);
   const pages = Array.from({ length: totalPage }, (_, index) => index + 1);
 
@@ -52,41 +51,43 @@ function VideoGridLayout({ videos, title }) {
       </Grid>
 
       {/* Page numbers */}
-      <MDPagination size="small" color="error" variant="gradient">
-        <MDPagination
-          item
-          onClick={() => {
-            if (currentPage > 1) {
-              setCurrentPage(currentPage - 1);
-            }
-          }}
-        >
-          <Icon>keyboard_arrow_left</Icon>
-        </MDPagination>
-
-        {pages.map((number) => (
+      {videos.length > perPage && (
+        <MDPagination size="small" color="error" variant="gradient">
           <MDPagination
             item
-            key={number}
-            active={number === currentPage}
             onClick={() => {
-              setCurrentPage(number);
+              if (currentPage > 1) {
+                setCurrentPage(currentPage - 1);
+              }
             }}
           >
-            {number}
+            <Icon>keyboard_arrow_left</Icon>
           </MDPagination>
-        ))}
-        <MDPagination
-          item
-          onClick={() => {
-            if (currentPage < totalPage) {
-              setCurrentPage(currentPage + 1);
-            }
-          }}
-        >
-          <Icon>keyboard_arrow_right</Icon>
+
+          {pages.map((number) => (
+            <MDPagination
+              item
+              key={number}
+              active={number === currentPage}
+              onClick={() => {
+                setCurrentPage(number);
+              }}
+            >
+              {number}
+            </MDPagination>
+          ))}
+          <MDPagination
+            item
+            onClick={() => {
+              if (currentPage < totalPage) {
+                setCurrentPage(currentPage + 1);
+              }
+            }}
+          >
+            <Icon>keyboard_arrow_right</Icon>
+          </MDPagination>
         </MDPagination>
-      </MDPagination>
+      )}
     </MDBox>
   );
 }
@@ -107,6 +108,7 @@ VideoGridLayout.propTypes = {
     variant: PropTypes.string,
     text: PropTypes.string.isRequired,
   }),
+  perPage: PropTypes.number,
   videos: PropTypes.arrayOf(
     PropTypes.shape({
       video: PropTypes.shape({

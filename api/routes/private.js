@@ -45,6 +45,27 @@ router.get("/myhome", async (req, res, next) => {
   });
 });
 
+router.get("/mysubscriptions", async (req, res, next) => {
+  const token = req.headers.authorization;
+  let subscribedChannels, subscribedVideos;
+  try {
+    const user = await getUserDetails(token);
+    if (user) {
+      subscribedChannels = await getSubscribedChannels(user._id);
+      subscribedVideos = await getSubscribedVideos(user._id);
+    }
+  } catch (err) {
+    res.status(500).json({
+      message: "Internal server error",
+      error: err,
+    });
+  }
+  return res.status(200).json({
+    subscribedChannels: subscribedChannels,
+    subscribedVideos: subscribedVideos,
+  });
+});
+
 router.get("/channel/watch/:channelId", async (req, res, next) => {
   const channelId = req.params.channelId;
   const token = req.headers.authorization;

@@ -214,6 +214,7 @@ async function getSubscribedVideos(userId) {
   const channelIds = channels.map((channel) => channel._id);
   const videos = await VideoModel.find({
     uploader: { $in: channelIds },
+    privacy: "public",
   })
     .sort({ timestamp: -1 })
     .populate({

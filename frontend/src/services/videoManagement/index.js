@@ -225,6 +225,22 @@ export function getHomeData() {
   return { response, error };
 }
 
+export function getSubscriptionData() {
+  const [response, setResponse] = useState(null);
+  const [error, setError] = useState(null);
+
+  const fetchData = async () => {
+    try {
+      const res = await myaxios.get("/private/mysubscriptions");
+      setResponse(res.data);
+    } catch (err) {
+      setError(err);
+    }
+  };
+
+  return { fetchData, response, error };
+}
+
 export function getSearchVideoResults() {
   const [response, setResponse] = useState(null);
   const [error, setError] = useState(null);

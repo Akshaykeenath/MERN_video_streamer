@@ -32,6 +32,7 @@ import SignUp from "layouts/authentication/sign-up";
 // @mui icons
 import Icon from "@mui/material/Icon";
 import Home from "layouts/home";
+import Subscriptions from "layouts/subscriptions";
 import VerificationArea from "layouts/authentication/verification";
 import VideoUpload from "layouts/videoManagement/videoUploads";
 import VideoPageStudio from "layouts/videoManagement/videoPageStudio";
@@ -48,6 +49,15 @@ const routes = [
     icon: <Icon fontSize="small">home</Icon>,
     route: "/",
     component: <Home />,
+    protected: true,
+  },
+  {
+    type: "collapse",
+    name: "Subscriptions",
+    key: "subscriptions",
+    icon: <Icon fontSize="small">subscriptions</Icon>,
+    route: "/subscriptions",
+    component: <Subscriptions />,
     protected: true,
   },
   {
