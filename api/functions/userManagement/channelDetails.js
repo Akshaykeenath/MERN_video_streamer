@@ -63,4 +63,97 @@ async function getChannelDataById(channelId, userId) {
   }
 }
 
-module.exports = { getChannelDataById };
+async function getDashboardData(userId) {
+  if (userId) {
+    try {
+      const user = await userModel.findById(userId);
+      const videos = await videoModel.find({ uploader: userId });
+      const subscribers = user.channel.subscribers;
+      let totalViews = 0;
+      let totalLikes = 0;
+
+      for (const video of videos) {
+        totalViews += video.viewsCount || 0;
+        totalLikes += video.likesCount || 0;
+      }
+      const allViews = [];
+      const allLikes = [];
+
+      // Loop through each video
+      videos.forEach((video) => {
+        video.views.forEach((view) => {
+          allViews.push(view);
+        });
+
+        video.likes.forEach((like) => {
+          allLikes.push(like);
+        });
+      });
+
+      // Sort the arrays based on the timestamp in ascending order
+      allViews.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+      allLikes.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+
+      const data = {
+        statisticsCardData: {
+          subscribers: subscribers.length,
+          videos: videos.length,
+          totalViews: totalViews,
+          totalLikes: totalLikes,
+        },
+        rawData: {
+          allViews: allViews,
+          allLikes: allLikes,
+          subscribers: subscribers,
+        },
+        processedData: {
+          likes: countLikesByDay(allLikes),
+          views: countLikesByDay(allViews),
+          subscribers: countLikesByDay(subscribers),
+        },
+      };
+
+      return data;
+    } catch (error) {
+      console.error("Error fetching dashboard data:", error);
+      throw error;
+    }
+  }
+}
+
+function countLikesByDay(data) {
+  // Create an object to store counts for each day
+  const dayCounts = {};
+
+  // Loop through the data and count likes for each day
+  data.forEach((item) => {
+    const date = new Date(item.timestamp).toISOString().split("T")[0];
+
+    if (!dayCounts[date]) {
+      dayCounts[date] = 1;
+    } else {
+      dayCounts[date]++;
+    }
+  });
+
+  // Get the range of dates from the first day to today
+  const startDate = new Date(Object.keys(dayCounts)[0]);
+  const endDate = new Date();
+
+  // Create an array with counts for each day, filling in missing days with 0
+  const result = [];
+  let currentDate = startDate;
+
+  while (currentDate <= endDate) {
+    const dateStr = currentDate.toISOString().split("T")[0];
+    const count = dayCounts[dateStr] || 0;
+
+    result.push({ date: dateStr, count });
+
+    currentDate.setDate(currentDate.getDate() + 1);
+  }
+
+  return result;
+}
+
+module.exports = { getChannelDataById, getDashboardData };

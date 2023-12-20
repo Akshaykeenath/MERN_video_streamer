@@ -8,6 +8,7 @@ const {
 } = require("../functions/videoManagement/trendingVideos");
 const {
   getChannelDataById,
+  getDashboardData,
 } = require("../functions/userManagement/channelDetails");
 const { getUserDetails } = require("../functions/userManagement/userDetails");
 const {
@@ -64,6 +65,24 @@ router.get("/mysubscriptions", async (req, res, next) => {
     subscribedChannels: subscribedChannels,
     subscribedVideos: subscribedVideos,
   });
+});
+
+router.get("/mydashboard", async (req, res, next) => {
+  const token = req.headers.authorization;
+  try {
+    const user = await getUserDetails(token);
+    if (user) {
+      const data = await getDashboardData(user._id);
+      res.status(200).json({
+        message: data,
+      });
+    }
+  } catch (err) {
+    res.status(500).json({
+      message: "Internal server error",
+      error: err,
+    });
+  }
 });
 
 router.get("/channel/watch/:channelId", async (req, res, next) => {

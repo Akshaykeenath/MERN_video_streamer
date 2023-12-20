@@ -36,14 +36,25 @@ import Projects from "layouts/dashboard/components/Projects";
 import OrdersOverview from "layouts/dashboard/components/OrdersOverview";
 import { useEffect } from "react";
 import { useRouteRedirect } from "services/redirection";
+import { getDashboardData } from "services/userManagement";
 
 function Dashboard() {
   const redirect = useRouteRedirect();
+  const { fetchData, response, error } = getDashboardData();
   const { sales, tasks } = reportsLineChartData;
 
-  // useEffect(() => {
-  //   redirect("checkAuth");
-  // }, []);
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    if (response) {
+      console.log(response);
+    }
+    if (error) {
+      console.log(error);
+    }
+  }, [response, error]);
 
   return (
     <DashboardLayout>

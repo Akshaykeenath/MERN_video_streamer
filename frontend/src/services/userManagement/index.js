@@ -169,3 +169,20 @@ export const apiUpdateUser = async (data) => {
     return { status: "error", message: err };
   }
 };
+
+export function getDashboardData() {
+  const [response, setResponse] = useState(null);
+  const [error, setError] = useState(null);
+  const fetchData = () => {
+    myaxios
+      .get("/private/mydashboard")
+      .then((res) => {
+        setResponse(res.data);
+      })
+      .catch((err) => {
+        setError(err);
+      });
+  };
+
+  return { fetchData, response, error };
+}
