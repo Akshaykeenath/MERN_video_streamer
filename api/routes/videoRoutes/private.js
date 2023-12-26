@@ -16,7 +16,7 @@ const {
   updateVideo,
   getRelatedVideos,
   getSearchVideoResults,
-  getChannelIdFromVideoId,
+  getMyVideos,
 } = require("../../functions/videoManagement/videoDetails");
 
 // current link : /private/video
@@ -76,23 +76,18 @@ router.get("/my", async (req, res, next) => {
   const token = req.headers.authorization;
   const user = await getUserDetails(token);
   if (user) {
-    const userId = user._id;
-    videoModel
-      .find({ uploader: userId })
-      .sort({ timestamp: -1 })
-      .exec()
-      .then((videos) => {
-        res.status(200).json({
-          videos: videos,
-        });
-      })
-      .catch((err) => {
-        // Handle error
-        console.error(err);
-        res.status(500).json({
-          message: err,
-        });
+    try {
+      const videos = await getMyVideos(user);
+
+      res.status(200).json({
+        videos: videos,
       });
+    } catch (err) {
+      // Handle error
+      res.status(500).json({
+        message: err.message || "Internal Server Error",
+      });
+    }
   }
 });
 

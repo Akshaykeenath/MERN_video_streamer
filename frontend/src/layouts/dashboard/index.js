@@ -32,14 +32,13 @@ import getChartData from "layouts/dashboard/data/reportsBarChartData";
 import reportsLineChartData from "layouts/dashboard/data/reportsLineChartData";
 
 // Dashboard components
-import Projects from "layouts/dashboard/components/Projects";
-import OrdersOverview from "layouts/dashboard/components/OrdersOverview";
 import { useEffect, useMemo, useState } from "react";
 import { useRouteRedirect } from "services/redirection";
 import { getDashboardData } from "services/userManagement";
 import { Typography } from "@mui/material";
 import { getRelativeTime } from "functions/general/time";
 import { analyzeStatisticsCardData } from "functions/general/graphDatas";
+import VideoListDashboard from "./components/VideoListDashboard";
 
 function Dashboard() {
   const redirect = useRouteRedirect();
@@ -50,14 +49,7 @@ function Dashboard() {
   const [statisticsCardData2, setStatisticsCardData2] = useState(null);
   const [currentTime, setCurrentTime] = useState(null);
   const [graphData, setGraphData] = useState(null);
-
-  const getAbbreviatedDay = (dateString) => {
-    const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-    const myDate = new Date(dateString);
-    const dayOfWeek = myDate.getDay();
-    const abbreviatedDayString = days[dayOfWeek];
-    return abbreviatedDayString;
-  };
+  const [videoList, setVideoList] = useState(null);
 
   useEffect(() => {
     fetchData();
@@ -71,11 +63,13 @@ function Dashboard() {
       document.title = "KeTube";
     };
   }, []);
+
   useEffect(() => {
     if (graphData) {
       fetchChartData(graphData);
     }
   }, [graphData]);
+
   useEffect(() => {
     if (response) {
       console.log(response);
@@ -86,16 +80,14 @@ function Dashboard() {
         setStatisticsCardData2(analyzeStatisticsCardData(response.message.processedData));
         setGraphData(response.message.processedData);
       }
+      if (response.message.videoList) {
+        setVideoList(response.message.videoList);
+      }
     }
     if (error) {
       console.log(error);
     }
   }, [response, error]);
-  useEffect(() => {
-    if (statisticsCardData2) {
-      console.log(statisticsCardData2);
-    }
-  }, [statisticsCardData2]);
 
   return (
     <DashboardLayout>
@@ -239,12 +231,12 @@ function Dashboard() {
         {/* End Charts */}
         <MDBox>
           <Grid container spacing={3}>
-            <Grid item xs={12} md={6} lg={8}>
-              <Projects />
+            <Grid item xs={12} md={12} lg={12}>
+              {videoList && <VideoListDashboard videoList={videoList} />}
             </Grid>
-            <Grid item xs={12} md={6} lg={4}>
+            {/* <Grid item xs={12} md={6} lg={4}>
               <OrdersOverview />
-            </Grid>
+            </Grid> */}
           </Grid>
         </MDBox>
       </MDBox>

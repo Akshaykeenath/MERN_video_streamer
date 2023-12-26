@@ -1,5 +1,6 @@
 const userModel = require("../../models/userModel");
 const videoModel = require("../../models/videoModel");
+const { getMyVideos } = require("../videoManagement/videoDetails");
 
 async function getChannelDataById(channelId, userId) {
   try {
@@ -67,6 +68,7 @@ async function getDashboardData(userId) {
   if (userId) {
     try {
       const user = await userModel.findById(userId);
+      const videoList = await getMyVideos(user);
       const videos = await videoModel.find({ uploader: userId });
       const subscribers = user.channel.subscribers;
       let totalViews = 0;
@@ -106,6 +108,7 @@ async function getDashboardData(userId) {
           views: countLikesByDay(allViews),
           subscribers: countLikesByDay(subscribers),
         },
+        videoList: videoList.slice(0, 11),
       };
 
       return data;

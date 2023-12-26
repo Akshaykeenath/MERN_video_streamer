@@ -237,24 +237,35 @@ async function getSubscribedVideos(userId) {
   return sanitizedVideos;
 }
 
-// to delete (not used currently anywhere) area : subscription
-async function getChannelIdFromVideoId(videoId) {
+async function getMyVideos(user) {
   try {
-    const video = await VideoModel.findById(videoId).populate({
-      path: "uploader",
-      model: "userdata",
-    });
+    const userId = user._id;
+    const videos = await VideoModel.find({ uploader: userId })
+      .sort({ timestamp: -1 })
+      .exec();
 
-    if (!video) {
-      throw new Error("Video not found");
-    }
-
-    // Assuming the uploader field is populated with the user data
-    const channelId = video.uploader.channel; // Assuming the channel ID is stored in the user's channel field
-
-    return { channelId };
+    const filteredVideos = videos.map((video) => ({
+      comments: video.comments,
+      desc: video.desc,
+      dislikesCount: video.dislikesCount,
+      id: video.id,
+      likesCount: video.likesCount,
+      poster: video.poster,
+      privacy: video.privacy,
+      tags: video.tags,
+      timestamp: video.timestamp,
+      title: video.title,
+      trendingScore: video.trendingScore,
+      uploader: video.uploader,
+      video: video.video,
+      viewsCount: video.viewsCount,
+      _id: video._id,
+    }));
+    return filteredVideos;
   } catch (err) {
-    throw new Error(err.message);
+    // Handle error
+    console.error(err);
+    throw err; // Rethrow the error to be handled by the calling function
   }
 }
 
@@ -263,7 +274,7 @@ module.exports = {
   updateVideo,
   getRelatedVideos,
   getSearchVideoResults,
-  getChannelIdFromVideoId,
   getSubscribedChannels,
   getSubscribedVideos,
+  getMyVideos,
 };
