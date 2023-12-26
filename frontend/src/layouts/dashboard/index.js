@@ -232,7 +232,7 @@ function Dashboard() {
         <MDBox>
           <Grid container spacing={3}>
             <Grid item xs={12} md={12} lg={12}>
-              {videoList && <VideoListDashboard videoList={videoList} />}
+              {videoList && videoList.length > 0 && <VideoListDashboard videoList={videoList} />}
             </Grid>
             {/* <Grid item xs={12} md={6} lg={4}>
               <OrdersOverview />
