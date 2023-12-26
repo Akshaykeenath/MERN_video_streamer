@@ -63,8 +63,13 @@ function Dashboard() {
     fetchData();
     const currentTimestampString = new Date().toISOString();
     setCurrentTime(currentTimestampString);
-    const inputDate = "2023-12-26";
-    console.log("day of the week : ", getAbbreviatedDay(inputDate));
+    // Set the title when the component mounts
+    document.title = "KeTube Studio";
+
+    // Optionally, you can return a cleanup function to reset the title when the component unmounts
+    return () => {
+      document.title = "KeTube";
+    };
   }, []);
   useEffect(() => {
     if (graphData) {

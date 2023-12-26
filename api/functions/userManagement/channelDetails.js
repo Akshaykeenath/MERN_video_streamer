@@ -101,11 +101,6 @@ async function getDashboardData(userId) {
           totalViews: totalViews,
           totalLikes: totalLikes,
         },
-        rawData: {
-          allViews: allViews,
-          allLikes: allLikes,
-          subscribers: subscribers,
-        },
         processedData: {
           likes: countLikesByDay(allLikes),
           views: countLikesByDay(allViews),

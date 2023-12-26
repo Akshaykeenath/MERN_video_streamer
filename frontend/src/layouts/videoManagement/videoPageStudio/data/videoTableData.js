@@ -4,7 +4,7 @@ import MDTypography from "components/MDTypography";
 import MDAvatar from "components/MDAvatar";
 import MDBadge from "components/MDBadge";
 
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { getMyvideoData } from "services/videoManagement";
 import { useEffect } from "react";
 import PropTypes from "prop-types";
@@ -14,6 +14,7 @@ import { Grid, Icon, Tooltip } from "@mui/material";
 import { useMaterialUIController, setNotification } from "context";
 
 export default function data({ refreshData, onVideoDataCallback }) {
+  const navigate = useNavigate();
   const [controller, dispatch] = useMaterialUIController();
 
   const { response, error } = getMyvideoData(refreshData);
@@ -32,6 +33,10 @@ export default function data({ refreshData, onVideoDataCallback }) {
       id: id,
     };
     onVideoDataCallback(data);
+  };
+
+  const handleViewClick = (id) => {
+    navigate(`/video/${id}`);
   };
 
   useEffect(() => {
@@ -137,6 +142,19 @@ export default function data({ refreshData, onVideoDataCallback }) {
                     iconOnly
                   >
                     <Icon>clear</Icon>
+                  </MDButton>
+                </Tooltip>
+              </Grid>
+              <Grid item>
+                <Tooltip title="View">
+                  <MDButton
+                    variant="outlined"
+                    onClick={() => handleViewClick(video._id)}
+                    circular
+                    color="success"
+                    iconOnly
+                  >
+                    <Icon>visibility</Icon>
                   </MDButton>
                 </Tooltip>
               </Grid>

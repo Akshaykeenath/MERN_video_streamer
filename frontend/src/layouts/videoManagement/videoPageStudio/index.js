@@ -9,11 +9,21 @@ import MDButton from "components/MDButton";
 import { useRouteRedirect } from "services/redirection";
 import Footer from "examples/Footer";
 import VideoEdit from "./components/videoEdit";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function VideoPageStudio() {
   const redirect = useRouteRedirect();
   const [editVideo, setEditVideo] = useState(null);
+  useEffect(() => {
+    // Set the title when the component mounts
+    document.title = "KeTube Studio";
+
+    // Optionally, you can return a cleanup function to reset the title when the component unmounts
+    return () => {
+      document.title = "KeTube";
+    };
+  }, []);
+
   const handleVideoListAction = (data) => {
     // Implement your logic here based on the 'data' received
     console.log("Handling video list action:", data);

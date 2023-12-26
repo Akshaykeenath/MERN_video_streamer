@@ -38,6 +38,9 @@ import brandDark from "assets/images/brand_dark.png";
 import { KEAlert, KEAlertOther } from "components/KEAlert/index";
 import StudioSidenav from "examples/Sidenav/StudioSidenav";
 import { useRouteRedirect } from "services/redirection";
+import { Fab } from "@mui/material";
+import MDButton from "components/MDButton";
+import FloatingUploadVideoButton from "examples/Items/FloatingUploadButton";
 
 export default function App() {
   const [controller, dispatch] = useMaterialUIController();
@@ -160,6 +163,7 @@ export default function App() {
         {getRoutes(routes)}
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
+      <FloatingUploadVideoButton />
       <KEAlert />
       <KEAlertOther />
     </ThemeProvider>

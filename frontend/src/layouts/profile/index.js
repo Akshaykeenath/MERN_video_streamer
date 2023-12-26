@@ -64,6 +64,16 @@ function Overview() {
   const [userPic, setUserPic] = useState(null);
 
   useEffect(() => {
+    // Set the title when the component mounts
+    document.title = "KeTube Studio";
+
+    // Optionally, you can return a cleanup function to reset the title when the component unmounts
+    return () => {
+      document.title = "KeTube";
+    };
+  }, []);
+
+  useEffect(() => {
     if (response) {
       const userData = response.message;
       setUser(userData);

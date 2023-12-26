@@ -34,6 +34,8 @@ function VideoUpload() {
   const [uploadProgress, setUploadProgress] = useState(0);
   const isXs = useMediaQuery((theme) => theme.breakpoints.down("md"));
   const isMd = useMediaQuery((theme) => theme.breakpoints.up("md"));
+  const [prevUrl, setPrevUrl] = useState(null);
+  const location = useLocation();
 
   useEffect(() => {
     // Set the title when the component mounts
@@ -125,6 +127,14 @@ function VideoUpload() {
     }
   };
 
+  const handleBackClick = () => {
+    if (location.state && location.state.prevUrl) {
+      navigate(location.state.prevUrl);
+    } else {
+      redirect("videoDetailsStudio");
+    }
+  };
+
   const steps = ["Upload Video", "Enter Details", "Publish"];
 
   return (
@@ -173,7 +183,7 @@ function VideoUpload() {
                     variant="gradient"
                     color="secondary"
                     circular
-                    onClick={() => redirect("videoDetailsStudio")}
+                    onClick={() => handleBackClick()}
                   >
                     Back
                   </MDButton>

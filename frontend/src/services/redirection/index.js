@@ -26,10 +26,16 @@ function isPathProtected(currentPath) {
   return route && route.protected;
 }
 
+const getCurrentUrl = () => {
+  const location = useLocation();
+  return location.pathname + location.search + location.hash;
+};
+
 export function useRouteRedirect() {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const [controller, dispatch] = useMaterialUIController();
+  const prevUrl = getCurrentUrl();
   const redirect = async (location) => {
     // Make the function async
     switch (location) {
@@ -79,7 +85,7 @@ export function useRouteRedirect() {
         navigate("/studio/videos");
         break;
       case "videoUpload":
-        navigate("/studio/videos/upload");
+        navigate("/studio/videos/upload", { state: { prevUrl: prevUrl } });
         break;
       default:
         console.log("redirect default");

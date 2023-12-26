@@ -44,7 +44,10 @@ function VideoViewMaster() {
   useEffect(() => {
     if (response && response.video) {
       setLoading(false);
-      if (response.video.privacy === "public") {
+      if (
+        response.video.privacy === "public" ||
+        (response.video.privacy === "private" && response.video.isOwner)
+      ) {
         console.log("Response :", response.video);
         const mappedVideos = response.video.video.map((videoItem) => ({
           url: videoItem.url,

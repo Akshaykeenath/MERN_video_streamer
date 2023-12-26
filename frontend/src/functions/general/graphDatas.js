@@ -45,7 +45,7 @@ export function analyzeStatisticsCardData(data) {
           break;
         case "day":
           thisDurationCount =
-            dataArray.length >= 2
+            dataArray.length >= 1
               ? dataArray.slice(-2).reduce((acc, entry) => acc + entry.count, 0)
               : 0;
           lastDurationCount = dataArray.length >= 2 ? dataArray[dataArray.length - 2].count : 0;
@@ -100,7 +100,7 @@ export function setReportChartDataWeek(data) {
     const currentDate = new Date(dataSlice[0]?.date || new Date());
     for (let i = 0; i < missingCount; i++) {
       const previousDate = new Date(currentDate);
-      previousDate.setDate(currentDate.getDate() - 1);
+      previousDate.setDate(currentDate.getDate() - (i + 1));
 
       dataSlice.unshift({
         date: previousDate.toISOString().split("T")[0],
