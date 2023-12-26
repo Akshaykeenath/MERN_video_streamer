@@ -1,19 +1,45 @@
-/**
-=========================================================
-* Material Dashboard 2 React - v2.2.0
-=========================================================
+import { setReportChartDataWeek } from "functions/general/graphDatas";
+import { useState } from "react";
 
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
+export default function getAllChartData() {
+  const [subscribersChartData, setSubscribersChartData] = useState({
+    labels: ["M", "T", "W", "T", "F", "S", "S"],
+    datasets: { label: "Subscribers", data: [0, 0, 0, 0, 0, 0, 0] },
+  });
+  const [viewsChartData, setViewsChartData] = useState({
+    labels: ["M", "T", "W", "T", "F", "S", "S"],
+    datasets: { label: "Views", data: [0, 0, 0, 0, 0, 0, 0] },
+  });
+  const [likesChartData, setLikesChartData] = useState({
+    labels: ["M", "T", "W", "T", "F", "S", "S"],
+    datasets: { label: "Interactions", data: [0, 0, 0, 0, 0, 0, 0] },
+  });
 
-Coded by www.creative-tim.com
+  const fetchChartData = (data) => {
+    if (data.subscribers && data.subscribers.length > 0) {
+      const { datesArray, countsArray, cumulativeSumArray } = setReportChartDataWeek(
+        data.subscribers
+      );
+      setSubscribersChartData({
+        labels: datesArray,
+        datasets: { label: "Subscribers", data: countsArray },
+      });
+    }
+    if (data.views && data.views.length > 0) {
+      const { datesArray, countsArray, cumulativeSumArray } = setReportChartDataWeek(data.views);
+      setViewsChartData({
+        labels: datesArray,
+        datasets: { label: "Views", data: cumulativeSumArray },
+      });
+    }
+    if (data.likes && data.likes.length > 0) {
+      const { datesArray, countsArray, cumulativeSumArray } = setReportChartDataWeek(data.likes);
+      setLikesChartData({
+        labels: datesArray,
+        datasets: { label: "Interactions", data: cumulativeSumArray },
+      });
+    }
+  };
 
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
-export default {
-  labels: ["M", "T", "W", "T", "F", "S", "S"],
-  datasets: { label: "Sales", data: [50, 20, 10, 22, 50, 10, 40] },
-};
+  return { fetchChartData, subscribersChartData, viewsChartData, likesChartData };
+}

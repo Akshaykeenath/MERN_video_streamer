@@ -28,38 +28,75 @@ import ReportsLineChart from "examples/Charts/LineCharts/ReportsLineChart";
 import ComplexStatisticsCard from "examples/Cards/StatisticsCards/ComplexStatisticsCard";
 
 // Data
-import reportsBarChartData from "layouts/dashboard/data/reportsBarChartData";
+import getChartData from "layouts/dashboard/data/reportsBarChartData";
 import reportsLineChartData from "layouts/dashboard/data/reportsLineChartData";
 
 // Dashboard components
 import Projects from "layouts/dashboard/components/Projects";
 import OrdersOverview from "layouts/dashboard/components/OrdersOverview";
-import { useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouteRedirect } from "services/redirection";
 import { getDashboardData } from "services/userManagement";
+import { Typography } from "@mui/material";
+import { getRelativeTime } from "functions/general/time";
+import { analyzeStatisticsCardData } from "functions/general/graphDatas";
 
 function Dashboard() {
   const redirect = useRouteRedirect();
+  const { fetchChartData, subscribersChartData, viewsChartData, likesChartData } = getChartData();
   const { fetchData, response, error } = getDashboardData();
   const { sales, tasks } = reportsLineChartData;
+  const [statisticsCardData, setStatisticsCardData] = useState(null);
+  const [statisticsCardData2, setStatisticsCardData2] = useState(null);
+  const [currentTime, setCurrentTime] = useState(null);
+  const [graphData, setGraphData] = useState(null);
+
+  const getAbbreviatedDay = (dateString) => {
+    const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    const myDate = new Date(dateString);
+    const dayOfWeek = myDate.getDay();
+    const abbreviatedDayString = days[dayOfWeek];
+    return abbreviatedDayString;
+  };
 
   useEffect(() => {
     fetchData();
+    const currentTimestampString = new Date().toISOString();
+    setCurrentTime(currentTimestampString);
+    const inputDate = "2023-12-26";
+    console.log("day of the week : ", getAbbreviatedDay(inputDate));
   }, []);
-
+  useEffect(() => {
+    if (graphData) {
+      fetchChartData(graphData);
+    }
+  }, [graphData]);
   useEffect(() => {
     if (response) {
       console.log(response);
+      if (response.message.statisticsCardData) {
+        setStatisticsCardData(response.message.statisticsCardData);
+      }
+      if (response.message.processedData) {
+        setStatisticsCardData2(analyzeStatisticsCardData(response.message.processedData));
+        setGraphData(response.message.processedData);
+      }
     }
     if (error) {
       console.log(error);
     }
   }, [response, error]);
+  useEffect(() => {
+    if (statisticsCardData2) {
+      console.log(statisticsCardData2);
+    }
+  }, [statisticsCardData2]);
 
   return (
     <DashboardLayout>
       <DashboardNavbar />
       <MDBox py={3}>
+        {/* StatisticsCards  */}
         <Grid container spacing={3}>
           <Grid item xs={12} md={6} lg={3}>
             <MDBox mb={1.5}>
@@ -67,11 +104,11 @@ function Dashboard() {
                 color="dark"
                 icon="video_call"
                 title="Videos"
-                count={281}
+                count={statisticsCardData ? statisticsCardData.videos : ""}
                 percentage={{
                   color: "success",
-                  amount: "+55%",
-                  label: "than lask week",
+                  amount: "",
+                  label: currentTime && "Updated " + getRelativeTime(currentTime).toLowerCase(),
                 }}
               />
             </MDBox>
@@ -81,11 +118,20 @@ function Dashboard() {
               <ComplexStatisticsCard
                 icon="person_add"
                 title="Subscribers"
-                count="2,300"
+                count={statisticsCardData2 ? statisticsCardData2.subscribers.totalCount : ""}
                 percentage={{
-                  color: "success",
-                  amount: "+3%",
-                  label: "than last month",
+                  color:
+                    statisticsCardData2 && statisticsCardData2.subscribers.percentageDifference > 0
+                      ? "success"
+                      : "error",
+                  amount: statisticsCardData2
+                    ? statisticsCardData2.subscribers.percentageDifference + "%"
+                    : "",
+                  label:
+                    statisticsCardData2 &&
+                    (statisticsCardData2.subscribers.duration === "day"
+                      ? "than yesterday"
+                      : "than last " + statisticsCardData2.subscribers.duration),
                 }}
               />
             </MDBox>
@@ -96,11 +142,20 @@ function Dashboard() {
                 color="success"
                 icon="visibility"
                 title="Total Views"
-                count="34k"
+                count={statisticsCardData2 ? statisticsCardData2.views.totalCount : ""}
                 percentage={{
-                  color: "success",
-                  amount: "+1%",
-                  label: "than yesterday",
+                  color:
+                    statisticsCardData2 && statisticsCardData2.views.percentageDifference > 0
+                      ? "success"
+                      : "error",
+                  amount: statisticsCardData2
+                    ? statisticsCardData2.views.percentageDifference + "%"
+                    : "",
+                  label:
+                    statisticsCardData2 &&
+                    (statisticsCardData2.views.duration === "day"
+                      ? "than yesterday"
+                      : "than last " + statisticsCardData2.views.duration),
                 }}
               />
             </MDBox>
@@ -111,57 +166,72 @@ function Dashboard() {
                 color="primary"
                 icon="favorite"
                 title="User Interactions"
-                count="+91"
+                count={statisticsCardData2 ? statisticsCardData2.likes.totalCount : ""}
                 percentage={{
-                  color: "success",
-                  amount: "",
-                  label: "Just updated",
+                  color:
+                    statisticsCardData2 && statisticsCardData2.likes.percentageDifference > 0
+                      ? "success"
+                      : "error",
+                  amount: statisticsCardData2
+                    ? statisticsCardData2.likes.percentageDifference + "%"
+                    : "",
+                  label:
+                    statisticsCardData2 &&
+                    (statisticsCardData2.likes.duration === "day"
+                      ? "than yesterday"
+                      : "than last " + statisticsCardData2.likes.duration),
                 }}
               />
             </MDBox>
           </Grid>
         </Grid>
+        {/* End statisticsCards  */}
+
+        {/* Charts  */}
         <MDBox mt={4.5}>
           <Grid container spacing={3}>
             <Grid item xs={12} md={6} lg={4}>
               <MDBox mb={3}>
-                <ReportsBarChart
-                  color="info"
-                  title="website views"
-                  description="Last Campaign Performance"
-                  date="campaign sent 2 days ago"
-                  chart={reportsBarChartData}
-                />
+                {subscribersChartData && (
+                  <ReportsBarChart
+                    color="info"
+                    title="subscribers"
+                    description="Last weeks subscribers count"
+                    date={"Updated " + getRelativeTime(currentTime).toLowerCase()}
+                    chart={subscribersChartData}
+                  />
+                )}
               </MDBox>
             </Grid>
             <Grid item xs={12} md={6} lg={4}>
               <MDBox mb={3}>
-                <ReportsLineChart
-                  color="success"
-                  title="daily sales"
-                  description={
-                    <>
-                      (<strong>+15%</strong>) increase in today sales.
-                    </>
-                  }
-                  date="updated 4 min ago"
-                  chart={sales}
-                />
+                {viewsChartData && (
+                  <ReportsLineChart
+                    color="success"
+                    title="Views"
+                    description="Last weeks views data"
+                    date={"Updated " + getRelativeTime(currentTime).toLowerCase()}
+                    chart={viewsChartData}
+                  />
+                )}
               </MDBox>
             </Grid>
             <Grid item xs={12} md={6} lg={4}>
               <MDBox mb={3}>
-                <ReportsLineChart
-                  color="dark"
-                  title="completed tasks"
-                  description="Last Campaign Performance"
-                  date="just updated"
-                  chart={tasks}
-                />
+                {likesChartData && (
+                  <ReportsLineChart
+                    color="primary"
+                    title="Likes and dislikes"
+                    description="Likes and dislikes of last week"
+                    date={"Updated " + getRelativeTime(currentTime).toLowerCase()}
+                    chart={likesChartData}
+                  />
+                )}
               </MDBox>
             </Grid>
           </Grid>
         </MDBox>
+        {/* End Charts */}
         <MDBox>
           <Grid container spacing={3}>
             <Grid item xs={12} md={6} lg={8}>
