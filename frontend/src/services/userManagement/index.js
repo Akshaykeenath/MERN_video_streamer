@@ -186,3 +186,20 @@ export function getDashboardData() {
 
   return { fetchData, response, error };
 }
+
+export function getAnalyticsData() {
+  const [response, setResponse] = useState(null);
+  const [error, setError] = useState(null);
+  const fetchData = () => {
+    myaxios
+      .get("/private/analytics/channel")
+      .then((res) => {
+        setResponse(res.data);
+      })
+      .catch((err) => {
+        setError(err);
+      });
+  };
+
+  return { fetchData, response, error };
+}

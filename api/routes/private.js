@@ -9,6 +9,7 @@ const {
 const {
   getChannelDataById,
   getDashboardData,
+  getAnalyticsDataChannel,
 } = require("../functions/userManagement/channelDetails");
 const { getUserDetails } = require("../functions/userManagement/userDetails");
 const {
@@ -73,6 +74,24 @@ router.get("/mydashboard", async (req, res, next) => {
     const user = await getUserDetails(token);
     if (user) {
       const data = await getDashboardData(user._id);
+      res.status(200).json({
+        message: data,
+      });
+    }
+  } catch (err) {
+    res.status(500).json({
+      message: "Internal server error",
+      error: err,
+    });
+  }
+});
+
+router.get("/analytics/channel", async (req, res, next) => {
+  const token = req.headers.authorization;
+  try {
+    const user = await getUserDetails(token);
+    if (user) {
+      const data = await getAnalyticsDataChannel(user._id);
       res.status(200).json({
         message: data,
       });

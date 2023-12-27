@@ -40,6 +40,7 @@ import VideoViewMaster from "layouts/videoManagement/videoStream";
 import EditProfile from "layouts/profile/editProfile";
 import Channel from "layouts/channel";
 import SearchResults from "layouts/searchResults";
+import Analytics from "layouts/analytics";
 
 const routes = [
   {
@@ -103,6 +104,15 @@ const routes = [
     icon: <Icon fontSize="small">video_call</Icon>,
     route: "/studio/videos/upload",
     component: <VideoUpload />,
+    protected: true,
+  },
+  {
+    type: "collapse",
+    name: "Analytics",
+    key: "analytics",
+    icon: <Icon fontSize="small">insert_chart_outlined</Icon>,
+    route: "/studio/analytics",
+    component: <Analytics />,
     protected: true,
   },
   {

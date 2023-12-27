@@ -179,6 +179,17 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
         }
       />
       <List>{renderRoutes}</List>
+      <MDBox py={2} mt="auto">
+        <Divider
+          light={
+            (!darkMode && !whiteSidenav && !transparentSidenav) ||
+            (darkMode && !transparentSidenav && whiteSidenav)
+          }
+        />
+        <NavLink key="studio" to="/studio/dashboard">
+          <SidenavCollapse name="Ketube Studio" icon="video_call" active={true} />
+        </NavLink>
+      </MDBox>
     </SidenavRoot>
   );
 }

@@ -119,6 +119,54 @@ async function getDashboardData(userId) {
   }
 }
 
+async function getAnalyticsDataChannel(userId) {
+  if (userId) {
+    try {
+      const user = await userModel.findById(userId);
+      const videoList = await getMyVideos(user);
+      const videos = await videoModel.find({ uploader: userId });
+      const subscribers = user.channel.subscribers;
+      let totalViews = 0;
+      let totalLikes = 0;
+
+      for (const video of videos) {
+        totalViews += video.viewsCount || 0;
+        totalLikes += video.likesCount || 0;
+      }
+      const allViews = [];
+      const allLikes = [];
+
+      // Loop through each video
+      videos.forEach((video) => {
+        video.views.forEach((view) => {
+          allViews.push(view);
+        });
+
+        video.likes.forEach((like) => {
+          allLikes.push(like);
+        });
+      });
+
+      // Sort the arrays based on the timestamp in ascending order
+      allViews.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+      allLikes.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+
+      const data = {
+        chartData: {
+          likes: countLikesAndDislikesByDay(allLikes),
+          views: countLikesByDay(allViews),
+          subscribers: countLikesByDay(subscribers),
+        },
+        videoList: videoList.slice(0, 11),
+      };
+      return data;
+    } catch (error) {
+      console.error("Error fetching dashboard data:", error);
+      throw error;
+    }
+  }
+}
+
 function countLikesByDay(data) {
   // Create an object to store counts for each day
   const dayCounts = {};
@@ -154,4 +202,51 @@ function countLikesByDay(data) {
   return result;
 }
 
-module.exports = { getChannelDataById, getDashboardData };
+function countLikesAndDislikesByDay(data) {
+  // Create an object to store counts for each day
+  const dayCounts = { likes: {}, dislikes: {} };
+
+  // Loop through the data and count likes and dislikes for each day
+  data.forEach((item) => {
+    const date = new Date(item.timestamp).toISOString().split("T")[0];
+
+    if (!dayCounts.likes[date] && item.type === "like") {
+      dayCounts.likes[date] = 1;
+    } else if (item.type === "like") {
+      dayCounts.likes[date]++;
+    }
+
+    if (!dayCounts.dislikes[date] && item.type === "dislike") {
+      dayCounts.dislikes[date] = 1;
+    } else if (item.type === "dislike") {
+      dayCounts.dislikes[date]++;
+    }
+  });
+
+  // Get the range of dates from the first day to today
+  const startDate = new Date(Object.keys(dayCounts.likes)[0]);
+  const endDate = new Date();
+
+  // Create an array with counts for each day, filling in missing days with 0
+  const result = [];
+  let currentDate = startDate;
+
+  while (currentDate <= endDate) {
+    const dateStr = currentDate.toISOString().split("T")[0];
+    const likeCount = dayCounts.likes[dateStr] || 0;
+    const dislikeCount = dayCounts.dislikes[dateStr] || 0;
+    const count = likeCount + dislikeCount;
+
+    result.push({ date: dateStr, likeCount, dislikeCount, count });
+
+    currentDate.setDate(currentDate.getDate() + 1);
+  }
+
+  return result;
+}
+
+module.exports = {
+  getChannelDataById,
+  getDashboardData,
+  getAnalyticsDataChannel,
+};

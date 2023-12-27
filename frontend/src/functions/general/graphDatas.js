@@ -89,9 +89,32 @@ const getAbbreviatedDay = (dateString) => {
   return abbreviatedDayString;
 };
 
-export function setReportChartDataWeek(data) {
+const getAbbreviatedMonthAndDate = (dateString) => {
+  const months = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
+  const myDate = new Date(dateString);
+  const month = months[myDate.getMonth()];
+  const date = myDate.getDate();
+  const formattedDate = `${month} ${date}`;
+  return formattedDate;
+};
+
+export function setReportChartData(data, duration = 7) {
+  const negDuration = 0 - duration;
   // Ensure that data has at least 7 items
-  const dataSlice = data.slice(-7);
+  const dataSlice = data.slice(negDuration);
   const dataLength = dataSlice.length;
 
   // If data has less than 7 items, fill in the missing dates with 0 counts
@@ -110,13 +133,21 @@ export function setReportChartDataWeek(data) {
   }
 
   // Separate dates and counts into two arrays
-  const datesArray = dataSlice.map((item) => getAbbreviatedDay(item.date));
+  const datesArray = dataSlice.map((item) => {
+    if (dataSlice.length <= 7) {
+      return getAbbreviatedDay(item.date);
+    } else if (dataSlice.length <= 30) {
+      return getAbbreviatedMonthAndDate(item.date);
+    } else {
+      return String(item.date);
+    }
+  });
   const countsArray = dataSlice.map((item) => item.count);
 
   // Calculate cumulative sum
   let cumulativeSum = 0;
-  if (data.length > 7) {
-    cumulativeSum = data.slice(0, -7).reduce((acc, entry) => acc + entry.count, 0);
+  if (data.length > duration) {
+    cumulativeSum = data.slice(0, negDuration).reduce((acc, entry) => acc + entry.count, 0);
   }
   const cumulativeSumArray = countsArray.map((count) => {
     cumulativeSum += count;
@@ -125,4 +156,16 @@ export function setReportChartDataWeek(data) {
 
   // You can return the arrays or use them as needed in your application
   return { datesArray, countsArray, cumulativeSumArray };
+}
+
+export function setPieChartDataLike(data, duration = 7) {
+  const negDuration = 0 - duration;
+  // Ensure that data has at least 7 items
+  const dataSlice = data.slice(negDuration);
+
+  const likeCount = dataSlice.reduce((acc, entry) => acc + entry.likeCount, 0);
+  const dislikeCount = dataSlice.reduce((acc, entry) => acc + entry.dislikeCount, 0);
+
+  // You can return the arrays or use them as needed in your application
+  return { likeCount, dislikeCount };
 }

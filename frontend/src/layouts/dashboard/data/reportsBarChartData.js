@@ -1,4 +1,4 @@
-import { setReportChartDataWeek } from "functions/general/graphDatas";
+import { setReportChartData } from "functions/general/graphDatas";
 import { useState } from "react";
 
 export default function getAllChartData() {
@@ -17,23 +17,21 @@ export default function getAllChartData() {
 
   const fetchChartData = (data) => {
     if (data.subscribers && data.subscribers.length > 0) {
-      const { datesArray, countsArray, cumulativeSumArray } = setReportChartDataWeek(
-        data.subscribers
-      );
+      const { datesArray, countsArray, cumulativeSumArray } = setReportChartData(data.subscribers);
       setSubscribersChartData({
         labels: datesArray,
         datasets: { label: "Subscribers", data: countsArray },
       });
     }
     if (data.views && data.views.length > 0) {
-      const { datesArray, countsArray, cumulativeSumArray } = setReportChartDataWeek(data.views);
+      const { datesArray, countsArray, cumulativeSumArray } = setReportChartData(data.views);
       setViewsChartData({
         labels: datesArray,
         datasets: { label: "Views", data: cumulativeSumArray },
       });
     }
     if (data.likes && data.likes.length > 0) {
-      const { datesArray, countsArray, cumulativeSumArray } = setReportChartDataWeek(data.likes);
+      const { datesArray, countsArray, cumulativeSumArray } = setReportChartData(data.likes, 7);
       setLikesChartData({
         labels: datesArray,
         datasets: { label: "Interactions", data: cumulativeSumArray },
