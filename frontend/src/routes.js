@@ -22,7 +22,6 @@
 // @mui icons
 import { CircularProgress, Grid } from "@mui/material";
 import Icon from "@mui/material/Icon";
-
 import React, { Suspense, lazy } from "react";
 
 // Lazy load layouts
@@ -42,7 +41,8 @@ const VideoViewMaster = lazy(() => import("layouts/videoManagement/videoStream")
 const EditProfile = lazy(() => import("layouts/profile/editProfile"));
 const Channel = lazy(() => import("layouts/channel"));
 const SearchResults = lazy(() => import("layouts/searchResults"));
-const Analytics = lazy(() => import("layouts/analytics"));
+const AnalyticsChannel = lazy(() => import("layouts/analytics/channelPage"));
+const AnalyticsVideo = lazy(() => import("layouts/analytics/videoPage"));
 
 const CenteredLoading = () => {
   return (
@@ -165,7 +165,17 @@ const routes = [
     route: "/studio/analytics",
     component: (
       <Suspense fallback={<CenteredLoading />}>
-        <Analytics />
+        <AnalyticsChannel />
+      </Suspense>
+    ),
+    protected: true,
+  },
+  {
+    key: "analytics",
+    route: "/studio/analytics/video",
+    component: (
+      <Suspense fallback={<CenteredLoading />}>
+        <AnalyticsVideo />
       </Suspense>
     ),
     protected: true,

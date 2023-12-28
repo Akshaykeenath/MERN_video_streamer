@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 
 // @mui material components
 import Card from "@mui/material/Card";
@@ -13,12 +13,34 @@ import MDTypography from "components/MDTypography";
 // Material Dashboard 2 React examples
 import DataTable from "examples/Tables/DataTable";
 import PropTypes from "prop-types";
+import { encodeUrlVideoId } from "functions/general/encription";
 
 // Data
 import data from "layouts/dashboard/components/VideoListDashboard/data";
+import { useLocation, useNavigate } from "react-router-dom";
+
+const getCurrentUrl = () => {
+  const location = useLocation();
+  return location.pathname + location.search + location.hash;
+};
 
 function VideoListDashboard({ videoList }) {
-  const { columns, rows } = useMemo(() => data({ videoList }), [videoList]);
+  const navigate = useNavigate();
+  const prevUrl = getCurrentUrl();
+  const handleVideoListAction = useCallback((funcData) => {
+    console.log("Values sent from onVideoListAction:", funcData);
+    if (funcData && funcData.action === "view") {
+      const encodedVideoID = encodeUrlVideoId(funcData.id);
+      navigate(`/studio/analytics/video?video_id=${encodedVideoID}`, {
+        state: { prevUrl: prevUrl },
+      });
+    }
+  });
+
+  const { columns, rows } = useMemo(
+    () => data({ videoList, onVideoListAction: handleVideoListAction }),
+    [videoList]
+  );
   const [menu, setMenu] = useState(null);
 
   const openMenu = ({ currentTarget }) => setMenu(currentTarget);

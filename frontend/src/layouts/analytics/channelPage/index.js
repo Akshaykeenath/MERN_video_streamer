@@ -1,18 +1,3 @@
-/**
-=========================================================
-* Material Dashboard 2 React - v2.2.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
 // @mui material components
 import Grid from "@mui/material/Grid";
 
@@ -28,12 +13,13 @@ import Footer from "examples/Footer";
 import { useEffect, useMemo, useState } from "react";
 import { useRouteRedirect } from "services/redirection";
 import VideoListAnalytics from "./components/VideoListAnalytics";
-import ChannelGraphsAnalytics from "./components/ChannelGraphsAnalytics";
 import { getAnalyticsData } from "services/userManagement";
 import { CircularProgress } from "@mui/material";
 import { useMaterialUIController, setNotification } from "context";
+import ChannelGraphsAnalytics from "./components/ChannelGraphsAnalytics";
+import MDTypography from "components/MDTypography";
 
-function Analytics() {
+function AnalyticsChannel() {
   const redirect = useRouteRedirect();
   const [controller, dispatch] = useMaterialUIController();
   const { fetchData, response, error } = getAnalyticsData();
@@ -80,7 +66,12 @@ function Analytics() {
   return (
     <DashboardLayout>
       <DashboardNavbar />
-      <MDBox py={3}>
+      <MDBox pl={1}>
+        <MDTypography color="info" variant="h4">
+          Channel analytics
+        </MDTypography>
+      </MDBox>
+      <MDBox py={1}>
         {loading && (
           <MDBox>
             <Grid container alignItems="center" justifyContent="center" sx={{ height: "80vh" }}>
@@ -115,4 +106,4 @@ function Analytics() {
   );
 }
 
-export default Analytics;
+export default AnalyticsChannel;

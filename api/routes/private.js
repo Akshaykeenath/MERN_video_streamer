@@ -10,6 +10,7 @@ const {
   getChannelDataById,
   getDashboardData,
   getAnalyticsDataChannel,
+  getAnalyticsDataVideo,
 } = require("../functions/userManagement/channelDetails");
 const { getUserDetails } = require("../functions/userManagement/userDetails");
 const {
@@ -94,6 +95,34 @@ router.get("/analytics/channel", async (req, res, next) => {
       const data = await getAnalyticsDataChannel(user._id);
       res.status(200).json({
         message: data,
+      });
+    }
+  } catch (err) {
+    res.status(500).json({
+      message: "Internal server error",
+      error: err,
+    });
+  }
+});
+
+router.get("/analytics/video/:videoId", async (req, res, next) => {
+  const videoId = req.params.videoId;
+  const token = req.headers.authorization;
+  try {
+    const user = await getUserDetails(token);
+    if (videoId) {
+      const data = await getAnalyticsDataVideo(videoId);
+      if (String(data.videoData.uploader) !== String(user._id)) {
+        res.status(400).json({
+          message: "User not permited to access the video",
+        });
+      }
+      res.status(200).json({
+        message: data,
+      });
+    } else {
+      res.status(400).json({
+        message: "Video Id is not found on request",
       });
     }
   } catch (err) {

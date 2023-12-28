@@ -84,6 +84,9 @@ export function useRouteRedirect() {
       case "videoDetailsStudio":
         navigate("/studio/videos");
         break;
+      case "videoAnalyticsChannel":
+        navigate("/studio/analytics");
+        break;
       case "videoUpload":
         navigate("/studio/videos/upload", { state: { prevUrl: prevUrl } });
         break;

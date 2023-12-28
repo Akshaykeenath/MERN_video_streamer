@@ -15,7 +15,7 @@ import PropTypes from "prop-types";
 import { ButtonGroup, Grid, Tab, Tabs } from "@mui/material";
 import MDButton from "components/MDButton";
 import VerticalBarChart from "examples/Charts/BarCharts/VerticalBarChart";
-import getAllChartData from "layouts/analytics/components/ChannelGraphsAnalytics/data";
+import getAllChartData from "layouts/analytics/channelPage/components/ChannelGraphsAnalytics/data";
 import DefaultLineChart from "examples/Charts/LineCharts/DefaultLineChart";
 import PieChart from "examples/Charts/PieChart";
 import DefaultDoughnutChart from "examples/Charts/DoughnutCharts/DefaultDoughnutChart";
@@ -55,12 +55,6 @@ function ChannelGraphsAnalytics({ graphData }) {
       setGraphDescription("Lifetime data");
     }
   }, [graphDuration]);
-
-  useEffect(() => {
-    if (subscribersChartData && viewsChartData && likesChartData) {
-      console.log("Chart Datas : ", subscribersChartData, viewsChartData, likesChartData);
-    }
-  }, [subscribersChartData, viewsChartData, likesChartData]);
 
   const renderMenu = (
     <Menu

@@ -203,3 +203,26 @@ export function getAnalyticsData() {
 
   return { fetchData, response, error };
 }
+
+export function getAnalyticsDataVideo() {
+  const [response, setResponse] = useState(null);
+  const [error, setError] = useState(null);
+  const fetchData = (videoId) => {
+    const isValidObjectId = /^[0-9a-fA-F]{24}$/.test(videoId);
+
+    if (!isValidObjectId) {
+      setError({ response: { data: { status: "error", message: "Video Not Found" } } });
+      return;
+    }
+    myaxios
+      .get(`/private/analytics/video/${videoId}`)
+      .then((res) => {
+        setResponse(res.data);
+      })
+      .catch((err) => {
+        setError(err);
+      });
+  };
+
+  return { fetchData, response, error };
+}

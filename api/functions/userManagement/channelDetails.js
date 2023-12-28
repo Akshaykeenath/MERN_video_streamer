@@ -167,6 +167,49 @@ async function getAnalyticsDataChannel(userId) {
   }
 }
 
+async function getAnalyticsDataVideo(videoId) {
+  if (videoId) {
+    try {
+      const video = await videoModel.findById(videoId);
+      if (!video) {
+        throw new Error("Video not found");
+      }
+      const allViews = video.views ? video.views : [];
+      const allLikes = video.likes ? video.likes : [];
+
+      // Sort the arrays based on the timestamp in ascending order
+      allViews.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+      allLikes.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+      const filteredVideo = {
+        desc: video.desc,
+        dislikesCount: video.dislikesCount,
+        id: video.id,
+        likesCount: video.likesCount,
+        poster: video.poster,
+        privacy: video.privacy,
+        timestamp: video.timestamp,
+        title: video.title,
+        uploader: video.uploader,
+        video: video.video,
+        viewsCount: video.viewsCount,
+        _id: video._id,
+      };
+      const data = {
+        chartData: {
+          likes: countLikesAndDislikesByDay(allLikes),
+          views: countLikesByDay(allViews),
+        },
+        videoData: filteredVideo,
+        rawData: allLikes,
+      };
+      return data;
+    } catch (error) {
+      console.error("Error fetching dashboard data:", error);
+      throw error;
+    }
+  }
+}
+
 function countLikesByDay(data) {
   // Create an object to store counts for each day
   const dayCounts = {};
@@ -183,7 +226,7 @@ function countLikesByDay(data) {
   });
 
   // Get the range of dates from the first day to today
-  const startDate = new Date(Object.keys(dayCounts)[0]);
+  const startDate = getMinDate(dayCounts);
   const endDate = new Date();
 
   // Create an array with counts for each day, filling in missing days with 0
@@ -200,6 +243,14 @@ function countLikesByDay(data) {
   }
 
   return result;
+}
+
+// Helper function to get the minimum date from a set of dates
+function getMinDate(dateSet) {
+  const dates = Object.keys(dateSet);
+  return dates.length > 0
+    ? new Date(Math.min(...dates.map((date) => new Date(date))))
+    : null;
 }
 
 function countLikesAndDislikesByDay(data) {
@@ -223,8 +274,13 @@ function countLikesAndDislikesByDay(data) {
     }
   });
 
-  // Get the range of dates from the first day to today
-  const startDate = new Date(Object.keys(dayCounts.likes)[0]);
+  // Get the range of dates from the earliest day to today
+  const startDateLikes = getMinDate(dayCounts.likes);
+  const startDateDislikes = getMinDate(dayCounts.dislikes);
+  const startDate =
+    startDateLikes && startDateDislikes
+      ? new Date(Math.min(startDateLikes, startDateDislikes))
+      : startDateLikes || startDateDislikes || new Date();
   const endDate = new Date();
 
   // Create an array with counts for each day, filling in missing days with 0
@@ -249,4 +305,5 @@ module.exports = {
   getChannelDataById,
   getDashboardData,
   getAnalyticsDataChannel,
+  getAnalyticsDataVideo,
 };

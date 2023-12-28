@@ -11,16 +11,30 @@ import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 
 // Material Dashboard 2 React examples
-import DataTable from "examples/Tables/DataTable";
 import PropTypes from "prop-types";
 
 // Data
-import data from "layouts/analytics/components/VideoListAnalytics/data";
+import data from "layouts/analytics/channelPage/components/VideoListAnalytics/data";
 import VideoTable from "examples/Tables/VideoTable";
+import { useLocation, useNavigate } from "react-router-dom";
+import { encodeUrlVideoId } from "functions/general/encription";
+
+const getCurrentUrl = () => {
+  const location = useLocation();
+  return location.pathname + location.search + location.hash;
+};
 
 function VideoListAnalytics({ videoList }) {
+  const prevUrl = getCurrentUrl();
+  const navigate = useNavigate();
+
   const handleVideoListAction = useCallback((funcData) => {
-    console.log("Values sent from onVideoListAction:", funcData);
+    if (funcData && funcData.action === "view") {
+      const encodedVideoID = encodeUrlVideoId(funcData.id);
+      navigate(`/studio/analytics/video?video_id=${encodedVideoID}`, {
+        state: { prevUrl: prevUrl },
+      });
+    }
   });
 
   const { columns, rows } = useMemo(
