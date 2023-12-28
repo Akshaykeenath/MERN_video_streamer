@@ -19,28 +19,47 @@
   10. The `title` key is only for the item with the type of `title` and its used for the title text on the Sidenav.
   10. The `component` key is used to store the component of its route.
 */
-
-// Material Dashboard 2 React layouts
-import Dashboard from "layouts/dashboard";
-import Tables from "layouts/tables";
-import Billing from "layouts/billing";
-import Notifications from "layouts/notifications";
-import Profile from "layouts/profile";
-import SignIn from "layouts/authentication/sign-in";
-import SignUp from "layouts/authentication/sign-up";
-
 // @mui icons
+import { CircularProgress, Grid } from "@mui/material";
 import Icon from "@mui/material/Icon";
-import Home from "layouts/home";
-import Subscriptions from "layouts/subscriptions";
-import VerificationArea from "layouts/authentication/verification";
-import VideoUpload from "layouts/videoManagement/videoUploads";
-import VideoPageStudio from "layouts/videoManagement/videoPageStudio";
-import VideoViewMaster from "layouts/videoManagement/videoStream";
-import EditProfile from "layouts/profile/editProfile";
-import Channel from "layouts/channel";
-import SearchResults from "layouts/searchResults";
-import Analytics from "layouts/analytics";
+
+import React, { Suspense, lazy } from "react";
+
+// Lazy load layouts
+const Dashboard = lazy(() => import("layouts/dashboard"));
+const Tables = lazy(() => import("layouts/tables"));
+const Billing = lazy(() => import("layouts/billing"));
+const Notifications = lazy(() => import("layouts/notifications"));
+const Profile = lazy(() => import("layouts/profile"));
+const SignIn = lazy(() => import("layouts/authentication/sign-in"));
+const SignUp = lazy(() => import("layouts/authentication/sign-up"));
+const Home = lazy(() => import("layouts/home"));
+const Subscriptions = lazy(() => import("layouts/subscriptions"));
+const VerificationArea = lazy(() => import("layouts/authentication/verification"));
+const VideoUpload = lazy(() => import("layouts/videoManagement/videoUploads"));
+const VideoPageStudio = lazy(() => import("layouts/videoManagement/videoPageStudio"));
+const VideoViewMaster = lazy(() => import("layouts/videoManagement/videoStream"));
+const EditProfile = lazy(() => import("layouts/profile/editProfile"));
+const Channel = lazy(() => import("layouts/channel"));
+const SearchResults = lazy(() => import("layouts/searchResults"));
+const Analytics = lazy(() => import("layouts/analytics"));
+
+const CenteredLoading = () => {
+  return (
+    <Grid
+      container
+      spacing={0}
+      direction="column"
+      alignItems="center"
+      justifyContent="center"
+      style={{ minHeight: "100vh" }}
+    >
+      <Grid item>
+        <CircularProgress color="inherit" />
+      </Grid>
+    </Grid>
+  );
+};
 
 const routes = [
   {
@@ -49,7 +68,11 @@ const routes = [
     key: "",
     icon: <Icon fontSize="small">home</Icon>,
     route: "/",
-    component: <Home />,
+    component: (
+      <Suspense fallback={<CenteredLoading />}>
+        <Home />
+      </Suspense>
+    ),
     protected: true,
   },
   {
@@ -58,25 +81,41 @@ const routes = [
     key: "subscriptions",
     icon: <Icon fontSize="small">subscriptions</Icon>,
     route: "/subscriptions",
-    component: <Subscriptions />,
+    component: (
+      <Suspense fallback={<CenteredLoading />}>
+        <Subscriptions />
+      </Suspense>
+    ),
     protected: true,
   },
   {
     key: "videoMaster",
     route: "/video/:videoId",
-    component: <VideoViewMaster />,
+    component: (
+      <Suspense fallback={<CenteredLoading />}>
+        <VideoViewMaster />
+      </Suspense>
+    ),
     protected: true,
   },
   {
     key: "channel",
     route: "/channel/:channelId",
-    component: <Channel />,
+    component: (
+      <Suspense fallback={<CenteredLoading />}>
+        <Channel />
+      </Suspense>
+    ),
     protected: true,
   },
   {
     key: "searchResults",
     route: "/results",
-    component: <SearchResults />,
+    component: (
+      <Suspense fallback={<CenteredLoading />}>
+        <SearchResults />
+      </Suspense>
+    ),
     protected: true,
   },
   // Studio Area
@@ -87,7 +126,11 @@ const routes = [
     key: "dashboard",
     icon: <Icon fontSize="small">dashboard</Icon>,
     route: "/studio/dashboard",
-    component: <Dashboard />,
+    component: (
+      <Suspense fallback={<CenteredLoading />}>
+        <Dashboard />
+      </Suspense>
+    ),
     protected: true,
   },
   {
@@ -96,14 +139,22 @@ const routes = [
     key: "videos",
     icon: <Icon fontSize="small">video_call</Icon>,
     route: "/studio/videos",
-    component: <VideoPageStudio />,
+    component: (
+      <Suspense fallback={<CenteredLoading />}>
+        <VideoPageStudio />
+      </Suspense>
+    ),
     protected: true,
   },
   {
     key: "videos",
     icon: <Icon fontSize="small">video_call</Icon>,
     route: "/studio/videos/upload",
-    component: <VideoUpload />,
+    component: (
+      <Suspense fallback={<CenteredLoading />}>
+        <VideoUpload />
+      </Suspense>
+    ),
     protected: true,
   },
   {
@@ -112,7 +163,11 @@ const routes = [
     key: "analytics",
     icon: <Icon fontSize="small">insert_chart_outlined</Icon>,
     route: "/studio/analytics",
-    component: <Analytics />,
+    component: (
+      <Suspense fallback={<CenteredLoading />}>
+        <Analytics />
+      </Suspense>
+    ),
     protected: true,
   },
   {
@@ -121,7 +176,11 @@ const routes = [
     key: "tables",
     icon: <Icon fontSize="small">table_view</Icon>,
     route: "/tables",
-    component: <Tables />,
+    component: (
+      <Suspense fallback={<CenteredLoading />}>
+        <Tables />
+      </Suspense>
+    ),
   },
   {
     type: "collapse",
@@ -129,7 +188,11 @@ const routes = [
     key: "billing",
     icon: <Icon fontSize="small">receipt_long</Icon>,
     route: "/billing",
-    component: <Billing />,
+    component: (
+      <Suspense fallback={<CenteredLoading />}>
+        <Billing />
+      </Suspense>
+    ),
   },
   {
     type: "collapse",
@@ -137,7 +200,11 @@ const routes = [
     key: "notifications",
     icon: <Icon fontSize="small">notifications</Icon>,
     route: "/notifications",
-    component: <Notifications />,
+    component: (
+      <Suspense fallback={<CenteredLoading />}>
+        <Notifications />
+      </Suspense>
+    ),
   },
   {
     type: "collapse",
@@ -145,7 +212,11 @@ const routes = [
     key: "profile",
     icon: <Icon fontSize="small">person</Icon>,
     route: "/studio/profile",
-    component: <Profile />,
+    component: (
+      <Suspense fallback={<CenteredLoading />}>
+        <Profile />
+      </Suspense>
+    ),
     protected: true,
   },
   {
@@ -157,17 +228,29 @@ const routes = [
   {
     key: "signin",
     route: "/authentication/sign-in",
-    component: <SignIn />,
+    component: (
+      <Suspense fallback={<CenteredLoading />}>
+        <SignIn />
+      </Suspense>
+    ),
   },
   {
     key: "signup",
     route: "/authentication/sign-up",
-    component: <SignUp />,
+    component: (
+      <Suspense fallback={<CenteredLoading />}>
+        <SignUp />
+      </Suspense>
+    ),
   },
   {
     key: "verify",
     route: "/authentication/verify",
-    component: <VerificationArea />,
+    component: (
+      <Suspense fallback={<CenteredLoading />}>
+        <VerificationArea />
+      </Suspense>
+    ),
   },
 ];
 
