@@ -18,6 +18,7 @@ import { CircularProgress } from "@mui/material";
 import { useMaterialUIController, setNotification } from "context";
 import ChannelGraphsAnalytics from "./components/ChannelGraphsAnalytics";
 import MDTypography from "components/MDTypography";
+import MDAlert from "components/MDAlert";
 
 function AnalyticsChannel() {
   const redirect = useRouteRedirect();
@@ -27,6 +28,7 @@ function AnalyticsChannel() {
   const [videoList, setVideoList] = useState(null);
   const [graphData, setGraphData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [noData, setNoData] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -63,6 +65,22 @@ function AnalyticsChannel() {
     }
   }, [response, error]);
 
+  useEffect(() => {
+    if (graphData) {
+      if (!graphData.likes && !graphData.views && !graphData.subscribers) {
+        setNoData(true);
+      }
+    }
+  }, [graphData]);
+
+  const alertContent = () => (
+    <MDTypography variant="body2" color="white">
+      You dont have enough data to display{" "}
+      <MDTypography component="a" variant="body2" fontWeight="medium" color="white">
+        Channel Analytics
+      </MDTypography>
+    </MDTypography>
+  );
   return (
     <DashboardLayout>
       <DashboardNavbar />
@@ -71,6 +89,11 @@ function AnalyticsChannel() {
           Channel analytics
         </MDTypography>
       </MDBox>
+      {noData && (
+        <MDAlert color="error" dismissible>
+          {alertContent()}
+        </MDAlert>
+      )}
       <MDBox py={1}>
         {loading && (
           <MDBox>

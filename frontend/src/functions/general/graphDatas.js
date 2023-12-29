@@ -8,7 +8,11 @@ export function analyzeStatisticsCardData(data) {
   for (const category in data) {
     if (data.hasOwnProperty(category)) {
       const categoryData = data[category];
-
+      console.log("category in func : ", categoryData);
+      if (categoryData === null) {
+        // Skip the current iteration if categoryData is null
+        continue;
+      }
       // Ensure categoryData is an array
       const dataArray = Array.isArray(categoryData) ? categoryData : [categoryData];
       if (dataArray.length >= 60) {

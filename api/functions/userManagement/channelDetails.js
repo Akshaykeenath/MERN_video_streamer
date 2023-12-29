@@ -200,7 +200,6 @@ async function getAnalyticsDataVideo(videoId) {
           views: countLikesByDay(allViews),
         },
         videoData: filteredVideo,
-        rawData: allLikes,
       };
       return data;
     } catch (error) {
@@ -213,6 +212,9 @@ async function getAnalyticsDataVideo(videoId) {
 function countLikesByDay(data) {
   // Create an object to store counts for each day
   const dayCounts = {};
+  if (data.length === 0) {
+    return null;
+  }
 
   // Loop through the data and count likes for each day
   data.forEach((item) => {
@@ -255,6 +257,10 @@ function getMinDate(dateSet) {
 
 function countLikesAndDislikesByDay(data) {
   // Create an object to store counts for each day
+  if (data.length === 0) {
+    return null;
+  }
+
   const dayCounts = { likes: {}, dislikes: {} };
 
   // Loop through the data and count likes and dislikes for each day

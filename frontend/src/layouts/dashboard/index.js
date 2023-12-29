@@ -39,6 +39,8 @@ import { Typography } from "@mui/material";
 import { getRelativeTime } from "functions/general/time";
 import { analyzeStatisticsCardData } from "functions/general/graphDatas";
 import VideoListDashboard from "./components/VideoListDashboard";
+import MDTypography from "components/MDTypography";
+import MDAlert from "components/MDAlert";
 
 function Dashboard() {
   const redirect = useRouteRedirect();
@@ -50,6 +52,7 @@ function Dashboard() {
   const [currentTime, setCurrentTime] = useState(null);
   const [graphData, setGraphData] = useState(null);
   const [videoList, setVideoList] = useState(null);
+  const [noData, setNoData] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -67,6 +70,14 @@ function Dashboard() {
   useEffect(() => {
     if (graphData) {
       fetchChartData(graphData);
+    }
+  }, [graphData]);
+
+  useEffect(() => {
+    if (graphData) {
+      if (!graphData.likes && !graphData.views && !graphData.subscribers) {
+        setNoData(true);
+      }
     }
   }, [graphData]);
 
@@ -89,9 +100,23 @@ function Dashboard() {
     }
   }, [response, error]);
 
+  const alertContent = () => (
+    <MDTypography variant="body2" color="white">
+      You dont have enough data to display{" "}
+      <MDTypography component="a" variant="body2" fontWeight="medium" color="white">
+        Channel Analytics
+      </MDTypography>
+    </MDTypography>
+  );
+
   return (
     <DashboardLayout>
       <DashboardNavbar />
+      {noData && (
+        <MDAlert color="error" dismissible>
+          {alertContent()}
+        </MDAlert>
+      )}
       <MDBox py={3}>
         {/* StatisticsCards  */}
         <Grid container spacing={3}>
@@ -115,17 +140,27 @@ function Dashboard() {
               <ComplexStatisticsCard
                 icon="person_add"
                 title="Subscribers"
-                count={statisticsCardData2 ? statisticsCardData2.subscribers.totalCount : ""}
+                count={
+                  statisticsCardData2
+                    ? statisticsCardData2.subscribers
+                      ? statisticsCardData2.subscribers.totalCount
+                      : 0
+                    : ""
+                }
                 percentage={{
                   color:
-                    statisticsCardData2 && statisticsCardData2.subscribers.percentageDifference > 0
+                    statisticsCardData2 &&
+                    statisticsCardData2.subscribers &&
+                    statisticsCardData2.subscribers.percentageDifference > 0
                       ? "success"
                       : "error",
-                  amount: statisticsCardData2
-                    ? statisticsCardData2.subscribers.percentageDifference + "%"
-                    : "",
+                  amount:
+                    statisticsCardData2 && statisticsCardData2.subscribers
+                      ? statisticsCardData2.subscribers.percentageDifference + "%"
+                      : "",
                   label:
                     statisticsCardData2 &&
+                    statisticsCardData2.subscribers &&
                     (statisticsCardData2.subscribers.duration === "day"
                       ? "than yesterday"
                       : "than last " + statisticsCardData2.subscribers.duration),
@@ -139,17 +174,27 @@ function Dashboard() {
                 color="success"
                 icon="visibility"
                 title="Total Views"
-                count={statisticsCardData2 ? statisticsCardData2.views.totalCount : ""}
+                count={
+                  statisticsCardData2
+                    ? statisticsCardData2.views
+                      ? statisticsCardData2.views.totalCount
+                      : 0
+                    : ""
+                }
                 percentage={{
                   color:
-                    statisticsCardData2 && statisticsCardData2.views.percentageDifference > 0
+                    statisticsCardData2 &&
+                    statisticsCardData2.views &&
+                    statisticsCardData2.views.percentageDifference > 0
                       ? "success"
                       : "error",
-                  amount: statisticsCardData2
-                    ? statisticsCardData2.views.percentageDifference + "%"
-                    : "",
+                  amount:
+                    statisticsCardData2 && statisticsCardData2.views
+                      ? statisticsCardData2.views.percentageDifference + "%"
+                      : "",
                   label:
                     statisticsCardData2 &&
+                    statisticsCardData2.views &&
                     (statisticsCardData2.views.duration === "day"
                       ? "than yesterday"
                       : "than last " + statisticsCardData2.views.duration),
@@ -163,17 +208,27 @@ function Dashboard() {
                 color="primary"
                 icon="favorite"
                 title="User Interactions"
-                count={statisticsCardData2 ? statisticsCardData2.likes.totalCount : ""}
+                count={
+                  statisticsCardData2
+                    ? statisticsCardData2.likes
+                      ? statisticsCardData2.likes.totalCount
+                      : 0
+                    : ""
+                }
                 percentage={{
                   color:
-                    statisticsCardData2 && statisticsCardData2.likes.percentageDifference > 0
+                    statisticsCardData2 &&
+                    statisticsCardData2.likes &&
+                    statisticsCardData2.likes.percentageDifference > 0
                       ? "success"
                       : "error",
-                  amount: statisticsCardData2
-                    ? statisticsCardData2.likes.percentageDifference + "%"
-                    : "",
+                  amount:
+                    statisticsCardData2 && statisticsCardData2.likes
+                      ? statisticsCardData2.likes.percentageDifference + "%"
+                      : "",
                   label:
                     statisticsCardData2 &&
+                    statisticsCardData2.likes &&
                     (statisticsCardData2.likes.duration === "day"
                       ? "than yesterday"
                       : "than last " + statisticsCardData2.likes.duration),
