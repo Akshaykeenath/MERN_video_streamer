@@ -13,6 +13,20 @@ const {
 } = require("../functions/verification/emailVerification");
 const { getUserDetails } = require("../functions/userManagement/userDetails");
 
+router.get("/", (req, res) => {
+  const token = req.headers.authorization;
+  const response = verifyToken(token);
+  if (response.error) {
+    res.status(401).json({
+      error: "not authorised",
+    });
+  } else {
+    res.status(200).json({
+      message: "authorised",
+    });
+  }
+});
+
 router.post("/login", (req, res) => {
   const user = {
     uname: req.body.uname,
@@ -55,16 +69,90 @@ router.post("/login", (req, res) => {
     });
 });
 
-router.get("/", (req, res) => {
-  const token = req.headers.authorization;
-  const response = verifyToken(token);
-  if (response.error) {
-    res.status(401).json({
-      error: "not authorised",
+router.post("/password/reset", async (req, res) => {
+  const password = req.body.password;
+  const token = req.body.token;
+  try {
+    const user = token ? await getUserDetails(token) : null;
+    if (user && password) {
+      const hashedPassword = await hashPassword(password);
+      const updateStatus = await userModel.findByIdAndUpdate(
+        user._id,
+        { password: hashedPassword },
+        { new: true }
+      );
+      if (updateStatus) {
+        res.status(200).json({
+          message: "Password reset successfull",
+        });
+      }
+    } else {
+      let missingParameter = [];
+      if (!password) {
+        missingParameter.push("Password");
+      }
+      if (!user) {
+        missingParameter.push("token");
+      }
+      res.status(400).json({
+        message: "missing parameters",
+        missingParameter: missingParameter,
+      });
+    }
+  } catch (err) {
+    res.status(500).json({
+      message: "Internal Server Error",
+      error: err,
     });
-  } else {
-    res.status(200).json({
-      message: "authorised",
+  }
+});
+
+router.post("/password/change", async (req, res) => {
+  const newPassword = req.body.newPassword;
+  const oldPassword = req.body.oldPassword;
+  const token = req.headers.authorization;
+
+  if (!newPassword || !oldPassword) {
+    const missingParameter = [];
+    if (!newPassword) missingParameter.push("newPassword");
+    if (!oldPassword) missingParameter.push("oldPassword");
+
+    return res.status(400).json({
+      message: "Missing parameters",
+      missingParameter: missingParameter,
+    });
+  }
+
+  try {
+    const response = verifyToken(token);
+    if (response.error) {
+      const route = req.headers.frontendurl;
+      return res.status(401).json({ message: "Unauthorized", route: route });
+    }
+    const user = await getUserDetails(token);
+    const hashedPasswordNew = await hashPassword(newPassword);
+    const isMatch = await verifyPassword(oldPassword, user.password);
+    if (isMatch) {
+      const updateStatus = await userModel.findByIdAndUpdate(
+        user._id,
+        { password: hashedPasswordNew },
+        { new: true }
+      );
+
+      if (updateStatus) {
+        return res.status(200).json({
+          message: "Password reset successful",
+        });
+      }
+    } else {
+      return res.status(401).json({
+        message: "Password does not match",
+      });
+    }
+  } catch (err) {
+    return res.status(500).json({
+      message: "Internal Server Error",
+      error: err,
     });
   }
 });
