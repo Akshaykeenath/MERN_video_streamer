@@ -10,6 +10,7 @@ const {
 } = require("../functions/encrypt");
 const {
   sendVerificationMail,
+  sendResetPasswordMail,
 } = require("../functions/verification/emailVerification");
 const { getUserDetails } = require("../functions/userManagement/userDetails");
 
@@ -97,6 +98,38 @@ router.post("/password/reset", async (req, res) => {
       res.status(400).json({
         message: "missing parameters",
         missingParameter: missingParameter,
+      });
+    }
+  } catch (err) {
+    res.status(500).json({
+      message: "Internal Server Error",
+      error: err,
+    });
+  }
+});
+
+router.post("/password/reset/send-mail", async (req, res) => {
+  const email = req.body.email;
+  const frontendUrl = req.get("Referer");
+  try {
+    if (email && frontendUrl) {
+      const user = await userModel.findOne({ email: email });
+      if (!user) {
+        throw new Error("No such user found");
+      }
+      const response = await sendResetPasswordMail(user, frontendUrl);
+      if (response.status !== 200) {
+        throw new Error(response.message);
+      }
+      if (response) {
+        res.status(200).json({
+          message: "Mail send successfully",
+        });
+      }
+    } else {
+      res.status(400).json({
+        message: "missing parameters",
+        missingParameter: "email",
       });
     }
   } catch (err) {

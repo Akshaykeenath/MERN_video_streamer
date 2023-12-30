@@ -40,6 +40,12 @@ async function generateIdentifierUrl(baseUrl, user, type) {
   return IdUrl;
 }
 
+async function generatePasswordResetUrl(baseUrl, user, type) {
+  const token = generateToken(user);
+  const IdUrl = `${baseUrl}authentication/reset-password?type=${type}&token=${token}`;
+  return IdUrl;
+}
+
 async function sendVerificationMail(user, frontendUrl) {
   const IdUrl = await generateIdentifierUrl(frontendUrl, user, "email");
   const mailOptions = {
@@ -54,4 +60,23 @@ async function sendVerificationMail(user, frontendUrl) {
   return response;
 }
 
-module.exports = { sendEmail, generateIdentifierUrl, sendVerificationMail };
+async function sendResetPasswordMail(user, frontendUrl) {
+  const IdUrl = await generatePasswordResetUrl(frontendUrl, user, "email");
+  const mailOptions = {
+    from: process.env.APP_MAIL_ID,
+    to: user.email,
+    subject: "Password Reset",
+    body: `Hi ${user.fname},<br>To reset your password please click <a href="${IdUrl}">here</a>`,
+  };
+
+  // Continue with sending the email
+  const response = await sendEmail(mailOptions);
+  return response;
+}
+
+module.exports = {
+  sendEmail,
+  generateIdentifierUrl,
+  sendVerificationMail,
+  sendResetPasswordMail,
+};

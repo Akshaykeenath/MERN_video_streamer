@@ -31,6 +31,8 @@ const Billing = lazy(() => import("layouts/billing"));
 const Notifications = lazy(() => import("layouts/notifications"));
 const Profile = lazy(() => import("layouts/profile"));
 const SignIn = lazy(() => import("layouts/authentication/sign-in"));
+const ResetPasswordMail = lazy(() => import("layouts/authentication/reset-password/cover"));
+const ResetPasswordModify = lazy(() => import("layouts/authentication/reset-password/modify"));
 const SignUp = lazy(() => import("layouts/authentication/sign-up"));
 const Home = lazy(() => import("layouts/home"));
 const Subscriptions = lazy(() => import("layouts/subscriptions"));
@@ -259,6 +261,24 @@ const routes = [
     component: (
       <Suspense fallback={<CenteredLoading />}>
         <VerificationArea />
+      </Suspense>
+    ),
+  },
+  {
+    key: "forget-password",
+    route: "/authentication/reset-password-mail",
+    component: (
+      <Suspense fallback={<CenteredLoading />}>
+        <ResetPasswordMail />
+      </Suspense>
+    ),
+  },
+  {
+    key: "reset-password",
+    route: "/authentication/reset-password",
+    component: (
+      <Suspense fallback={<CenteredLoading />}>
+        <ResetPasswordModify />
       </Suspense>
     ),
   },

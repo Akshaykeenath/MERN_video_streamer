@@ -247,3 +247,25 @@ export function apiChangePassword() {
 
   return { ChangePasswordSend, response, error };
 }
+
+export function apiSendResetPasswordMail() {
+  const [response, setResponse] = useState(null);
+  const [error, setError] = useState(null);
+  const sendResetMail = (email) => {
+    if (email) {
+      const data = {
+        email: email,
+      };
+      myaxios
+        .post("/auth/password/reset/send-mail", data)
+        .then((res) => {
+          setResponse(res.data);
+        })
+        .catch((err) => {
+          setError(err);
+        });
+    }
+  };
+
+  return { sendResetMail, response, error };
+}

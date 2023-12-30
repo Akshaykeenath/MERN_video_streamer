@@ -42,6 +42,9 @@ export function useRouteRedirect() {
       case "login":
         navigate("/authentication/sign-in");
         break;
+      case "forgetPasswordMail":
+        navigate("/authentication/reset-password-mail");
+        break;
       case "profile":
         navigate("/studio/profile");
         break;

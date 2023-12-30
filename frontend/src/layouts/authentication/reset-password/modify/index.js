@@ -19,52 +19,8 @@ import { useMaterialUIController, setNotification } from "context";
 
 function Cover() {
   const [controller, dispatch] = useMaterialUIController();
+  const [newPassword, setNewPassword] = useState("");
 
-  const { sendResetMail, response, error } = apiSendResetPasswordMail();
-  const [email, setEmail] = useState("");
-  const [emailError, setEmailError] = useState("");
-  const [disableReset, setDisableReset] = useState(true);
-
-  useEffect(() => {
-    if (response) {
-      const noti = {
-        message: "Mail Send Successfully",
-        color: "success",
-      };
-      setNotification(dispatch, noti);
-    }
-    if (error) {
-      const noti = {
-        message: "Failed to send mail",
-        color: "error",
-      };
-      setNotification(dispatch, noti);
-    }
-  });
-
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      const isValidEmail = emailRegex.test(email);
-      if (isValidEmail) {
-        setEmailError(null);
-        setDisableReset(false);
-      } else {
-        setEmailError("");
-        setDisableReset(true);
-      }
-    }, 1000);
-    return () => {
-      clearTimeout(timeoutId);
-    };
-  }, [email]);
-
-  const handleResetClick = () => {
-    if (email.length > 0 && !emailError) {
-      sendResetMail(email);
-      setDisableReset(true);
-    }
-  };
   return (
     <CoverLayout coverHeight="50vh" image={bgImage}>
       <Card>
@@ -82,32 +38,17 @@ function Cover() {
           <MDTypography variant="h3" fontWeight="medium" color="white" mt={1}>
             Reset Password
           </MDTypography>
-          <MDTypography display="block" variant="button" color="white" my={1}>
-            You will receive an e-mail in maximum 60 seconds
-          </MDTypography>
         </MDBox>
         <MDBox pt={4} pb={3} px={3}>
           <MDBox component="form" role="form">
             <MDBox mb={4}>
-              <MDInput
-                type="email"
-                label="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                error={emailError !== null && emailError.length > 0}
-                success={emailError === null}
-                variant="standard"
-                fullWidth
-              />
+              <MDInput type="password" label="New Password" variant="standard" fullWidth />
+            </MDBox>
+            <MDBox mb={4}>
+              <MDInput type="password" label="Re Enter Password" variant="standard" fullWidth />
             </MDBox>
             <MDBox mt={4} mb={1}>
-              <MDButton
-                variant="gradient"
-                color="info"
-                fullWidth
-                disabled={disableReset}
-                onClick={handleResetClick}
-              >
+              <MDButton variant="gradient" color="info" fullWidth>
                 reset
               </MDButton>
             </MDBox>
