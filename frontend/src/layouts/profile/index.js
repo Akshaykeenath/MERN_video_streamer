@@ -17,51 +17,34 @@ Coded by www.creative-tim.com
 import Grid from "@mui/material/Grid";
 import Divider from "@mui/material/Divider";
 
-// @mui icons
-import FacebookIcon from "@mui/icons-material/Facebook";
-import TwitterIcon from "@mui/icons-material/Twitter";
-import InstagramIcon from "@mui/icons-material/Instagram";
-
 // Material Dashboard 2 React components
 import MDBox from "components/MDBox";
-import MDTypography from "components/MDTypography";
 
 // Material Dashboard 2 React example components
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 import ProfileInfoCard from "examples/Cards/InfoCards/ProfileInfoCard";
-import ProfilesList from "examples/Lists/ProfilesList";
-import DefaultProjectCard from "examples/Cards/ProjectCards/DefaultProjectCard";
 
 // Overview page components
 import Header from "layouts/profile/components/Header";
 import PlatformSettings from "layouts/profile/components/PlatformSettings";
 
-// Data
-import profilesListData from "layouts/profile/data/profilesListData";
-
-// Images
-import homeDecor1 from "assets/images/home-decor-1.jpg";
-import homeDecor2 from "assets/images/home-decor-2.jpg";
-import homeDecor3 from "assets/images/home-decor-3.jpg";
-import homeDecor4 from "assets/images/home-decor-4.jpeg";
-import team1 from "assets/images/team-1.jpg";
-import team2 from "assets/images/team-2.jpg";
-import team3 from "assets/images/team-3.jpg";
-import team4 from "assets/images/team-4.jpg";
-import burceMars from "assets/images/bruce-mars.jpg";
 import proPic from "assets/images/propicWhite.png";
 import { useEffect, useState } from "react";
 import { apiGetMyProfileData } from "services/userManagement";
 import { CircularProgress, useMediaQuery } from "@mui/material";
+import ChangePassword from "./components/ChangePassword";
+import { setNotification, useMaterialUIController } from "context";
 
 function Overview() {
   const isLg = useMediaQuery((theme) => theme.breakpoints.up("lg"));
+  const [controller, dispatch] = useMaterialUIController();
   const [currentTab, setCurrentTab] = useState(0);
   const [user, setUser] = useState(null);
   const { response, error } = apiGetMyProfileData();
   const [userPic, setUserPic] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     // Set the title when the component mounts
@@ -77,9 +60,15 @@ function Overview() {
     if (response) {
       const userData = response.message;
       setUser(userData);
+      setLoading(false);
     }
     if (error) {
-      console.log("error : ", error);
+      setLoading(false);
+      const noti = {
+        message: "An Error occured",
+        color: "error",
+      };
+      setNotification(dispatch, noti);
     }
   }, [response, error]);
 
@@ -133,18 +122,21 @@ function Overview() {
               )}
               {(currentTab === 1 || isLg) && (
                 <Grid item xs={12} lg={4}>
-                  <ProfilesList title="conversations" profiles={profilesListData} shadow={false} />
+                  {/* <ProfilesList title="conversations" profiles={profilesListData} shadow={false} /> */}
+                  <ChangePassword />
                 </Grid>
               )}
             </Grid>
           </MDBox>
         </Header>
       ) : (
-        <Grid container height="77vh" direction="row" justifyContent="center" alignItems="center">
-          <Grid item>
-            <CircularProgress color="text" />
+        loading && (
+          <Grid container height="77vh" direction="row" justifyContent="center" alignItems="center">
+            <Grid item>
+              <CircularProgress color="text" />
+            </Grid>
           </Grid>
-        </Grid>
+        )
       )}
       <Footer />
     </DashboardLayout>

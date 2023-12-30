@@ -226,3 +226,24 @@ export function getAnalyticsDataVideo() {
 
   return { fetchData, response, error };
 }
+
+export function apiChangePassword() {
+  const [response, setResponse] = useState(null);
+  const [error, setError] = useState(null);
+  const ChangePasswordSend = (oldPassword, newPassword) => {
+    const data = {
+      newPassword: newPassword,
+      oldPassword: oldPassword,
+    };
+    myaxios
+      .post("/auth/password/change", data)
+      .then((res) => {
+        setResponse(res.data);
+      })
+      .catch((err) => {
+        setError(err);
+      });
+  };
+
+  return { ChangePasswordSend, response, error };
+}
