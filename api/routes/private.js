@@ -25,26 +25,34 @@ router.get("/", (req, res, next) => {
 });
 
 router.get("/myhome", async (req, res, next) => {
-  const token = req.headers.authorization;
-  const videos = await getTrendingVideos();
-  let subscribedChannels, subscribedVideos;
+  let videos;
   try {
-    const user = await getUserDetails(token);
-    if (user) {
-      subscribedChannels = await getSubscribedChannels(user._id);
-      subscribedVideos = await getSubscribedVideos(user._id);
-    }
+    videos = await getTrendingVideos();
   } catch (err) {
     res.status(500).json({
       message: "Internal server error",
       error: err,
     });
   }
-
   return res.status(200).json({
     trending: videos,
-    subscribedChannels: subscribedChannels,
-    subscribedVideos: subscribedVideos,
+  });
+});
+
+router.get("/mytrending", async (req, res, next) => {
+  let videosRecent, videosAlltime;
+  try {
+    videosRecent = await getTrendingVideos();
+    videosAlltime = await getTrendingVideos("alltime");
+  } catch (err) {
+    res.status(500).json({
+      message: "Internal server error",
+      error: err,
+    });
+  }
+  return res.status(200).json({
+    trendingRecent: videosRecent,
+    trendingAlltime: videosAlltime,
   });
 });
 

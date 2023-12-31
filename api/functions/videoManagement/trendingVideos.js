@@ -1,6 +1,6 @@
 const VideoModel = require("../../models/videoModel");
 
-async function getTrendingVideos() {
+async function getTrendingVideos(duration = "recent") {
   const tVideos = await VideoModel.find({ privacy: "public" })
     .populate({
       path: "uploader",
@@ -22,13 +22,17 @@ async function getTrendingVideos() {
       title: vid.title,
       desc: vid.desc,
       trendingScore: vid.trendingScore,
+      trendingScoreAllTime: vid.trendingScoreAllTime,
     };
     newVideos.push(newVid);
   });
 
   // Sort the newVideos array based on trendingScore in descending order
-  newVideos.sort((a, b) => b.trendingScore - a.trendingScore);
-
+  if (duration === "recent") {
+    newVideos.sort((a, b) => b.trendingScore - a.trendingScore);
+  } else {
+    newVideos.sort((a, b) => b.trendingScoreAllTime - a.trendingScoreAllTime);
+  }
   // Take only the top 10 videos
   const top10Videos = newVideos.slice(0, 10);
   return top10Videos;

@@ -65,9 +65,9 @@ videoSchema.virtual("likesCount").get(function () {
 });
 
 // virtual property to get trending score
-// videoSchema.virtual("trendingScore").get(function () {
-//   return this.likesCount + this.viewsCount - this.dislikesCount;
-// });
+videoSchema.virtual("trendingScoreAllTime").get(function () {
+  return this.likesCount + this.viewsCount - this.dislikesCount;
+});
 videoSchema.virtual("trendingScore").get(function () {
   const thirtyDaysAgo = new Date();
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);

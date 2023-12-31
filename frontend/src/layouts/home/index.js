@@ -78,7 +78,7 @@ function Home() {
       <StudioNavbar />
       {response ? (
         <VideoGridLayout
-          title={{ color: sidenavColor, text: "trending videos", variant: "h3" }}
+          title={{ color: sidenavColor, text: "trending videos", variant: "h4" }}
           videos={videoData}
         />
       ) : (

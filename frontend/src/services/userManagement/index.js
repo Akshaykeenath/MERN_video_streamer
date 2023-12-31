@@ -78,7 +78,7 @@ export function apiDeAuth() {
 }
 
 // Function for registration
-export function apiRegister(e) {
+export async function apiRegister(e) {
   const data = {
     fname: e.fname,
     lname: e.lname,
@@ -88,15 +88,13 @@ export function apiRegister(e) {
     pass: e.pass,
   };
 
-  return axios
-    .post(`${url}/auth/register`, data)
-    .then((response) => {
-      return response;
-    })
-    .catch((error) => {
-      console.log(error);
-      return error.response;
-    });
+  try {
+    const response = await axios.post(`${url}/auth/register`, data);
+    return response;
+  } catch (error) {
+    console.log(error);
+    return error.response;
+  }
 }
 
 export function apiGetMyProfileData(refreshData) {

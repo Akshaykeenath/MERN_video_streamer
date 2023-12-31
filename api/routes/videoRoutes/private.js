@@ -78,7 +78,6 @@ router.get("/my", async (req, res, next) => {
   if (user) {
     try {
       const videos = await getMyVideos(user);
-
       res.status(200).json({
         videos: videos,
       });

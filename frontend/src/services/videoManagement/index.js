@@ -225,6 +225,24 @@ export function getHomeData() {
   return { response, error };
 }
 
+export function getTrendingPageData() {
+  const [response, setResponse] = useState(null);
+  const [error, setError] = useState(null);
+
+  const fetchData = () => {
+    myaxios
+      .get(`/private/mytrending`)
+      .then((res) => {
+        setResponse(res.data);
+      })
+      .catch((err) => {
+        setError(err);
+      });
+  };
+
+  return { fetchData, response, error };
+}
+
 export function getSubscriptionData() {
   const [response, setResponse] = useState(null);
   const [error, setError] = useState(null);

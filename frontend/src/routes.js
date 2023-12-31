@@ -22,6 +22,7 @@
 // @mui icons
 import { CircularProgress, Grid } from "@mui/material";
 import Icon from "@mui/material/Icon";
+import Trending from "layouts/trending";
 import React, { Suspense, lazy } from "react";
 
 // Lazy load layouts
@@ -70,6 +71,19 @@ const routes = [
     component: (
       <Suspense fallback={<CenteredLoading />}>
         <Home />
+      </Suspense>
+    ),
+    protected: true,
+  },
+  {
+    type: "collapse",
+    name: "Trending",
+    key: "trending",
+    icon: <Icon fontSize="small">trending_up</Icon>,
+    route: "/trending",
+    component: (
+      <Suspense fallback={<CenteredLoading />}>
+        <Trending />
       </Suspense>
     ),
     protected: true,
