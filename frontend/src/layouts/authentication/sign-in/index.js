@@ -213,7 +213,22 @@ function Basic() {
                 {loading ? "Signing in..." : "Sign in"}
               </MDButton>
             </MDBox>
-            <MDBox mt={3} mb={1} textAlign="center">
+            <MDBox mt={2} textAlign="center">
+              <MDTypography variant="button" color="text">
+                Don&apos;t remember password?{" "}
+                <MDTypography
+                  component={Link}
+                  to="/authentication/reset-password-mail"
+                  variant="button"
+                  color="info"
+                  fontWeight="medium"
+                  textGradient
+                >
+                  Forgot password
+                </MDTypography>
+              </MDTypography>
+            </MDBox>
+            <MDBox mb={1} textAlign="center">
               <MDTypography variant="button" color="text">
                 Don&apos;t have an account?{" "}
                 <MDTypography

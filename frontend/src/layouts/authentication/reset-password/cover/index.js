@@ -16,9 +16,11 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { apiSendResetPasswordMail } from "services/userManagement";
 import { useMaterialUIController, setNotification } from "context";
+import { useRouteRedirect } from "services/redirection";
 
 function Cover() {
   const [controller, dispatch] = useMaterialUIController();
+  const redirect = useRouteRedirect();
 
   const { sendResetMail, response, error } = apiSendResetPasswordMail();
   const [email, setEmail] = useState("");
@@ -27,20 +29,11 @@ function Cover() {
 
   useEffect(() => {
     if (response) {
-      const noti = {
-        message: "Mail Send Successfully",
-        color: "success",
-      };
-      setNotification(dispatch, noti);
+      console.log(response);
     }
     if (error) {
-      const noti = {
-        message: "Failed to send mail",
-        color: "error",
-      };
-      setNotification(dispatch, noti);
     }
-  });
+  }, [response, error]);
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -63,6 +56,14 @@ function Cover() {
     if (email.length > 0 && !emailError) {
       sendResetMail(email);
       setDisableReset(true);
+      const noti = {
+        message: "Mail Send Successfully",
+        color: "success",
+      };
+      setNotification(dispatch, noti);
+      setTimeout(() => {
+        redirect("login");
+      }, 3000);
     }
   };
   return (

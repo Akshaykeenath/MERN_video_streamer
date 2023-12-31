@@ -269,3 +269,26 @@ export function apiSendResetPasswordMail() {
 
   return { sendResetMail, response, error };
 }
+
+export function apiSendResetPasswordModify() {
+  const [response, setResponse] = useState(null);
+  const [error, setError] = useState(null);
+  const sendModifiedPassword = (password, token) => {
+    if (password && token) {
+      const data = {
+        password: password,
+        token: token,
+      };
+      myaxios
+        .post("/auth/password/reset", data)
+        .then((res) => {
+          setResponse(res.data);
+        })
+        .catch((err) => {
+          setError(err);
+        });
+    }
+  };
+
+  return { sendModifiedPassword, response, error };
+}

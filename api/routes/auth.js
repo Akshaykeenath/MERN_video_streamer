@@ -75,6 +75,11 @@ router.post("/password/reset", async (req, res) => {
   const token = req.body.token;
   try {
     const user = token ? await getUserDetails(token) : null;
+    if (!user) {
+      return res.status(401).json({
+        message: "Token Expired",
+      });
+    }
     if (user && password) {
       const hashedPassword = await hashPassword(password);
       const updateStatus = await userModel.findByIdAndUpdate(
@@ -92,7 +97,7 @@ router.post("/password/reset", async (req, res) => {
       if (!password) {
         missingParameter.push("Password");
       }
-      if (!user) {
+      if (!token) {
         missingParameter.push("token");
       }
       res.status(400).json({
