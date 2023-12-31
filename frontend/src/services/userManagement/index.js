@@ -290,3 +290,20 @@ export function apiSendResetPasswordModify() {
 
   return { sendModifiedPassword, response, error };
 }
+
+export function apiMyLikedVideos() {
+  const [response, setResponse] = useState(null);
+  const [error, setError] = useState(null);
+  const getMyLikedVideos = () => {
+    myaxios
+      .get("/private/mylikedvideos")
+      .then((res) => {
+        setResponse(res.data);
+      })
+      .catch((err) => {
+        setError(err);
+      });
+  };
+
+  return { getMyLikedVideos, response, error };
+}

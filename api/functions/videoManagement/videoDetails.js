@@ -237,6 +237,38 @@ async function getSubscribedVideos(userId) {
   return sanitizedVideos;
 }
 
+async function getMyLikedVideos(userId) {
+  const videos = await VideoModel.find({
+    likes: {
+      $elemMatch: {
+        user: userId,
+        type: "like",
+      },
+    },
+  })
+    .sort({ "likes.timestamp": -1 }) // Sort based on the timestamp of the like
+    .populate({
+      path: "uploader",
+      model: "userdata",
+      select: "fname lname uname email channel",
+    });
+
+  const sanitizedVideos = videos.map((vid) => ({
+    _id: vid._id,
+    poster: vid.poster,
+    timestamp: vid.timestamp,
+    uploader: vid.uploader,
+    video: vid.video,
+    viewsCount: vid.viewsCount,
+    title: vid.title,
+    desc: vid.desc,
+    trendingScore: vid.trendingScore,
+    trendingScoreAllTime: vid.trendingScoreAllTime,
+  }));
+
+  return sanitizedVideos;
+}
+
 async function getMyVideos(user) {
   try {
     const userId = user._id;
@@ -277,4 +309,5 @@ module.exports = {
   getSubscribedChannels,
   getSubscribedVideos,
   getMyVideos,
+  getMyLikedVideos,
 };

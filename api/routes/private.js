@@ -16,6 +16,7 @@ const { getUserDetails } = require("../functions/userManagement/userDetails");
 const {
   getSubscribedChannels,
   getSubscribedVideos,
+  getMyLikedVideos,
 } = require("../functions/videoManagement/videoDetails");
 
 router.get("/", (req, res, next) => {
@@ -75,6 +76,34 @@ router.get("/mysubscriptions", async (req, res, next) => {
     subscribedChannels: subscribedChannels,
     subscribedVideos: subscribedVideos,
   });
+});
+
+router.get("/mylikedvideos", async (req, res, next) => {
+  const token = req.headers.authorization;
+  let subscribedChannels, subscribedVideos;
+
+  try {
+    const user = await getUserDetails(token);
+    if (!user) {
+      return res.status(401).json({
+        message: "Error in fetching user details",
+      });
+    }
+    const videos = await getMyLikedVideos(user._id);
+
+    if (videos) {
+      return res.status(200).json({
+        likedVideos: videos,
+        subscribedChannels: subscribedChannels,
+        subscribedVideos: subscribedVideos,
+      });
+    }
+  } catch (err) {
+    return res.status(500).json({
+      message: "Internal server error",
+      error: err,
+    });
+  }
 });
 
 router.get("/mydashboard", async (req, res, next) => {

@@ -43,6 +43,7 @@ const Channel = lazy(() => import("layouts/channel"));
 const SearchResults = lazy(() => import("layouts/searchResults"));
 const AnalyticsChannel = lazy(() => import("layouts/analytics/channelPage"));
 const AnalyticsVideo = lazy(() => import("layouts/analytics/videoPage"));
+const LikedVideosPage = lazy(() => import("layouts/likedVideos"));
 
 const CenteredLoading = () => {
   return (
@@ -97,6 +98,19 @@ const routes = [
     component: (
       <Suspense fallback={<CenteredLoading />}>
         <Subscriptions />
+      </Suspense>
+    ),
+    protected: true,
+  },
+  {
+    type: "collapse",
+    name: "Liked Videos",
+    key: "likedvideos",
+    icon: <Icon fontSize="small">favorite</Icon>,
+    route: "/likedvideos",
+    component: (
+      <Suspense fallback={<CenteredLoading />}>
+        <LikedVideosPage />
       </Suspense>
     ),
     protected: true,
