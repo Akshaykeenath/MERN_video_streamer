@@ -17,6 +17,7 @@ const {
   getRelatedVideos,
   getSearchVideoResults,
   getMyVideos,
+  getAllVideos,
 } = require("../../functions/videoManagement/videoDetails");
 
 // current link : /private/video
@@ -87,6 +88,22 @@ router.get("/my", async (req, res, next) => {
         message: err.message || "Internal Server Error",
       });
     }
+  }
+});
+
+router.get("/all", async (req, res, next) => {
+  try {
+    const videos = await getAllVideos();
+    if (videos) {
+      return res.status(200).json({
+        allVideos: videos,
+      });
+    }
+  } catch (err) {
+    return res.status(500).json({
+      message: "Internal server error",
+      error: err,
+    });
   }
 });
 

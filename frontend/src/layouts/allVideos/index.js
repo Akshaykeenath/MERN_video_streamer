@@ -2,21 +2,21 @@
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import StudioNavbar from "examples/Navbars/StudioNavbar";
 import { useEffect, useState } from "react";
-import { CircularProgress, Grid } from "@mui/material";
+import { CircularProgress, Grid, Icon } from "@mui/material";
 import { useMaterialUIController, setNotification } from "context";
-import { getTrendingPageData } from "services/videoManagement";
 import VideoList from "examples/VideoLayouts/List";
+import MDTypography from "components/MDTypography";
+import { apiGetAllVideosData } from "services/userManagement";
 
-function Trending() {
+function AllVideosPage() {
   const [controller, dispatch] = useMaterialUIController();
   const { sidenavColor } = controller;
 
-  const { fetchData, response, error } = getTrendingPageData();
+  const { getAllVideosData, response, error } = apiGetAllVideosData();
   const [loading, setLoading] = useState(true);
-  const [videoDataRecent, setVideoDataRecent] = useState([]);
-  const [videoDataAlltime, setVideoDataAlltime] = useState([]);
+  const [videoDataAll, setVideoDataAll] = useState([]);
   useEffect(() => {
-    fetchData();
+    getAllVideosData();
   }, []);
 
   useEffect(() => {
@@ -29,11 +29,8 @@ function Trending() {
       setLoading(false);
     } else if (response) {
       console.log(response);
-      if (response.trendingRecent) {
-        setVideoDataRecent(response.trendingRecent);
-      }
-      if (response.trendingAlltime) {
-        setVideoDataAlltime(response.trendingAlltime);
+      if (response.allVideos) {
+        setVideoDataAll(response.allVideos);
       }
       setLoading(false);
     }
@@ -42,21 +39,28 @@ function Trending() {
   return (
     <DashboardLayout>
       <StudioNavbar />
-      {videoDataRecent.length > 0 && (
+      {videoDataAll.length > 0 ? (
         <VideoList
-          title={{ color: sidenavColor, text: "Trending this month", variant: "h5" }}
-          videoList={videoDataRecent}
+          title={{ color: sidenavColor, text: "All Videos", variant: "h4" }}
+          videoList={videoDataAll}
         />
-      )}
-      {videoDataAlltime.length > 0 && (
-        <Grid container mt={2}>
-          <Grid item xs={12} md={10}>
-            <VideoList
-              title={{ color: sidenavColor, text: "All time favorites", variant: "h5" }}
-              videoList={videoDataAlltime}
-            />
+      ) : (
+        !loading && (
+          <Grid
+            container
+            direction="column"
+            alignItems="center"
+            justifyContent="center"
+            rowSpacing={2}
+            sx={{ height: "80vh" }}
+          >
+            <Grid item>
+              <MDTypography color="text" variant="h4">
+                No videos to show
+              </MDTypography>
+            </Grid>
           </Grid>
-        </Grid>
+        )
       )}
       {loading && (
         <Grid container alignItems="center" justifyContent="center" sx={{ height: "80vh" }}>
@@ -70,4 +74,4 @@ function Trending() {
   );
 }
 
-export default Trending;
+export default AllVideosPage;

@@ -269,6 +269,31 @@ async function getMyLikedVideos(userId) {
   return sanitizedVideos;
 }
 
+async function getAllVideos() {
+  const videos = await VideoModel.find({ privacy: "public" })
+    .sort({ timestamp: -1 }) // Sort based on the timestamp of the like
+    .populate({
+      path: "uploader",
+      model: "userdata",
+      select: "fname lname uname email channel",
+    });
+
+  const sanitizedVideos = videos.map((vid) => ({
+    _id: vid._id,
+    poster: vid.poster,
+    timestamp: vid.timestamp,
+    uploader: vid.uploader,
+    video: vid.video,
+    viewsCount: vid.viewsCount,
+    title: vid.title,
+    desc: vid.desc,
+    trendingScore: vid.trendingScore,
+    trendingScoreAllTime: vid.trendingScoreAllTime,
+  }));
+
+  return sanitizedVideos;
+}
+
 async function getMyVideos(user) {
   try {
     const userId = user._id;
@@ -310,4 +335,5 @@ module.exports = {
   getSubscribedVideos,
   getMyVideos,
   getMyLikedVideos,
+  getAllVideos,
 };

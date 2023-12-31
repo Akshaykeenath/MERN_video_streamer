@@ -94,8 +94,6 @@ router.get("/mylikedvideos", async (req, res, next) => {
     if (videos) {
       return res.status(200).json({
         likedVideos: videos,
-        subscribedChannels: subscribedChannels,
-        subscribedVideos: subscribedVideos,
       });
     }
   } catch (err) {

@@ -44,6 +44,7 @@ const SearchResults = lazy(() => import("layouts/searchResults"));
 const AnalyticsChannel = lazy(() => import("layouts/analytics/channelPage"));
 const AnalyticsVideo = lazy(() => import("layouts/analytics/videoPage"));
 const LikedVideosPage = lazy(() => import("layouts/likedVideos"));
+const AllVideosPage = lazy(() => import("layouts/allVideos"));
 
 const CenteredLoading = () => {
   return (
@@ -111,6 +112,19 @@ const routes = [
     component: (
       <Suspense fallback={<CenteredLoading />}>
         <LikedVideosPage />
+      </Suspense>
+    ),
+    protected: true,
+  },
+  {
+    type: "collapse",
+    name: "All Videos",
+    key: "allvideos",
+    icon: <Icon fontSize="small">smart_display</Icon>,
+    route: "/allvideos",
+    component: (
+      <Suspense fallback={<CenteredLoading />}>
+        <AllVideosPage />
       </Suspense>
     ),
     protected: true,

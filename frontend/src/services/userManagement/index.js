@@ -307,3 +307,20 @@ export function apiMyLikedVideos() {
 
   return { getMyLikedVideos, response, error };
 }
+
+export function apiGetAllVideosData() {
+  const [response, setResponse] = useState(null);
+  const [error, setError] = useState(null);
+  const getAllVideosData = () => {
+    myaxios
+      .get("/private/video/all")
+      .then((res) => {
+        setResponse(res.data);
+      })
+      .catch((err) => {
+        setError(err);
+      });
+  };
+
+  return { getAllVideosData, response, error };
+}
