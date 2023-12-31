@@ -18,7 +18,7 @@ import {
   setSidenavColor,
   setDarkMode,
 } from "context";
-import { IconButton } from "@mui/material";
+import { Grid, IconButton } from "@mui/material";
 import MDButton from "components/MDButton";
 
 function PlatformSettings() {
@@ -133,36 +133,47 @@ function PlatformSettings() {
               Sidenav Type
             </MDTypography>
           </MDBox>
-          <MDBox
-            display="flex"
-            flexDirection="row"
-            justifyContent="space-between"
+          <Grid
+            container
+            direction="row"
+            columnSpacing={1}
             alignItems="center"
             width="100%"
             mt={0.5}
           >
-            <MDButton
-              variant={!whiteSidenav && !transparentSidenav ? "gradient" : "outlined"}
-              color={darkMode ? (!whiteSidenav && !transparentSidenav ? "light" : "white") : "dark"}
-              onClick={handleDarkSideNav}
-            >
-              Dark
-            </MDButton>
-            <MDButton
-              variant={transparentSidenav ? "gradient" : "outlined"}
-              color={darkMode ? (transparentSidenav ? "light" : "white") : "dark"}
-              onClick={handleTransparentSideNav}
-            >
-              Transparent
-            </MDButton>
-            <MDButton
-              variant={whiteSidenav ? "gradient" : "outlined"}
-              color={darkMode ? (whiteSidenav ? "light" : "white") : "dark"}
-              onClick={handleWhiteSideNav}
-            >
-              White
-            </MDButton>
-          </MDBox>
+            <Grid item>
+              <MDButton
+                variant={!whiteSidenav && !transparentSidenav ? "gradient" : "outlined"}
+                color={
+                  darkMode ? (!whiteSidenav && !transparentSidenav ? "light" : "white") : "dark"
+                }
+                onClick={handleDarkSideNav}
+                size="small"
+              >
+                Dark
+              </MDButton>
+            </Grid>
+            <Grid item>
+              <MDButton
+                variant={transparentSidenav ? "gradient" : "outlined"}
+                color={darkMode ? (transparentSidenav ? "light" : "white") : "dark"}
+                onClick={handleTransparentSideNav}
+                size="small"
+              >
+                Transparent
+              </MDButton>
+            </Grid>
+            <Grid item>
+              <MDButton
+                variant={whiteSidenav ? "gradient" : "outlined"}
+                color={darkMode ? (whiteSidenav ? "light" : "white") : "dark"}
+                onClick={handleWhiteSideNav}
+                size="small"
+              >
+                White
+              </MDButton>
+            </Grid>
+          </Grid>
         </MDBox>
       </MDBox>
     </Card>

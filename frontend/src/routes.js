@@ -26,9 +26,6 @@ import React, { Suspense, lazy } from "react";
 
 // Lazy load layouts
 const Dashboard = lazy(() => import("layouts/dashboard"));
-const Tables = lazy(() => import("layouts/tables"));
-const Billing = lazy(() => import("layouts/billing"));
-const Notifications = lazy(() => import("layouts/notifications"));
 const Profile = lazy(() => import("layouts/profile"));
 const SignIn = lazy(() => import("layouts/authentication/sign-in"));
 const ResetPasswordMail = lazy(() => import("layouts/authentication/reset-password/cover"));
@@ -181,42 +178,6 @@ const routes = [
       </Suspense>
     ),
     protected: true,
-  },
-  {
-    type: "collapse",
-    name: "Tables",
-    key: "tables",
-    icon: <Icon fontSize="small">table_view</Icon>,
-    route: "/tables",
-    component: (
-      <Suspense fallback={<CenteredLoading />}>
-        <Tables />
-      </Suspense>
-    ),
-  },
-  {
-    type: "collapse",
-    name: "Billing",
-    key: "billing",
-    icon: <Icon fontSize="small">receipt_long</Icon>,
-    route: "/billing",
-    component: (
-      <Suspense fallback={<CenteredLoading />}>
-        <Billing />
-      </Suspense>
-    ),
-  },
-  {
-    type: "collapse",
-    name: "Notifications",
-    key: "notifications",
-    icon: <Icon fontSize="small">notifications</Icon>,
-    route: "/notifications",
-    component: (
-      <Suspense fallback={<CenteredLoading />}>
-        <Notifications />
-      </Suspense>
-    ),
   },
   {
     type: "collapse",
