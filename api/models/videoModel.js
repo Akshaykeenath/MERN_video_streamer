@@ -65,9 +65,30 @@ videoSchema.virtual("likesCount").get(function () {
 });
 
 // virtual property to get trending score
+// videoSchema.virtual("trendingScore").get(function () {
+//   return this.likesCount + this.viewsCount - this.dislikesCount;
+// });
 videoSchema.virtual("trendingScore").get(function () {
-  return this.likesCount + this.viewsCount - this.dislikesCount;
+  const thirtyDaysAgo = new Date();
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+  const likesLast30Days = this.likes.filter(
+    (like) => like.timestamp >= thirtyDaysAgo && like.type === "like"
+  );
+
+  const dislikesLast30Days = this.likes.filter(
+    (like) => like.timestamp >= thirtyDaysAgo && like.type === "dislike"
+  );
+
+  const viewsLast30Days = this.views.filter(
+    (view) => view.timestamp >= thirtyDaysAgo
+  );
+
+  return (
+    likesLast30Days.length + viewsLast30Days.length - dislikesLast30Days.length
+  );
 });
+
 // Virtual property to get dislikes count
 videoSchema.virtual("dislikesCount").get(function () {
   return (
