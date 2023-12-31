@@ -9,6 +9,7 @@ const KEVideoPlayerHover = ({ video, sx }) => {
   const playerRef = useRef(null);
   const [isHover, setIsHover] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
+  const timeoutRef = useRef(null);
 
   useEffect(() => {
     try {
@@ -41,24 +42,39 @@ const KEVideoPlayerHover = ({ video, sx }) => {
   }, []);
 
   useEffect(() => {
-    if (isHover) {
-      if (playerRef.current && playerRef.current.paused) {
-        try {
-          playerRef.current.decreaseVolume(1);
-          playerRef.current.play();
-        } catch (error) {
-          console.log("Error playing video:", error);
-        }
-      }
-    } else {
-      if (playerRef.current && playerRef.current.playing && isPlaying) {
-        try {
-          playerRef.current.pause();
-        } catch (error) {
-          console.log("Error pausing video:", error);
-        }
-      }
+    // Clear the existing timeout if isHover changes before the timeout completes
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
     }
+
+    // Set a new timeout for 500ms
+    timeoutRef.current = setTimeout(() => {
+      if (isHover) {
+        if (playerRef.current && playerRef.current.paused) {
+          try {
+            playerRef.current.decreaseVolume(1);
+            playerRef.current.play();
+          } catch (error) {
+            console.log("Error playing video:", error);
+          }
+        }
+      } else {
+        if (playerRef.current && playerRef.current.playing) {
+          try {
+            playerRef.current.pause();
+          } catch (error) {
+            console.log("Error pausing video:", error);
+          }
+        }
+      }
+    }, 1000);
+
+    // Clean up the timeout on component unmount
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
   }, [isHover]);
 
   const handleMouseEnter = async () => {

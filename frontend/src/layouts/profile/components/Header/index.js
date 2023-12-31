@@ -130,10 +130,10 @@ function Header({ onTabChange, name, username, proPic, children }) {
                     }
                   />
                   <Tab
-                    label="Message"
+                    label="Password"
                     icon={
                       <Icon fontSize="small" sx={{ mt: -0.25 }}>
-                        email
+                        enhanced_encryption
                       </Icon>
                     }
                   />

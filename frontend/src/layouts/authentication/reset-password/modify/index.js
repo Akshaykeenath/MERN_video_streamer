@@ -14,7 +14,6 @@ import CoverLayout from "layouts/authentication/components/CoverLayout";
 import bgImage from "assets/images/bg-reset-cover.jpeg";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { apiSendResetPasswordMail } from "services/userManagement";
 import { useMaterialUIController, setNotification } from "context";
 import { Icon, InputAdornment } from "@mui/material";
 import { apiSendResetPasswordModify } from "services/userManagement";

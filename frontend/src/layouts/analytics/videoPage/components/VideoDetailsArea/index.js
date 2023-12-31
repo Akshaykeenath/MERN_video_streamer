@@ -1,4 +1,4 @@
-import { Card, Grid, Icon, Tooltip } from "@mui/material";
+import { Card, Grid, Icon, Tooltip, useMediaQuery } from "@mui/material";
 import MDBadge from "components/MDBadge";
 import MDBox from "components/MDBox";
 import MDButton from "components/MDButton";
@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 
 function VideoDetailsArea({ videoData }) {
   const navigate = useNavigate();
+  const isMd = useMediaQuery((theme) => theme.breakpoints.up("md"));
   const [hover, setHover] = useState(false);
   const [height, setHeight] = useState(1);
   const cardRef = useRef(null);
@@ -123,7 +124,7 @@ function VideoDetailsArea({ videoData }) {
               </MDBox>
             </Grid>
             {/* Details area */}
-            <Grid item xs={6} md={8} height={`${height}px`}>
+            <Grid item xs={6} md={8} height={isMd ? `${height}px` : "100%"}>
               <Grid container direction="column" justifyContent="space-between" height="100%">
                 <Grid item>
                   <Grid container direction="column">

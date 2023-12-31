@@ -45,7 +45,6 @@ function Home() {
         const { channel, _id: channelUrl } = uploader;
         const channelPic =
           channel.img && channel.img[0] && channel.img[0].url ? channel.img[0].url : proPic;
-        console.log(currVideo);
         const videoUrl = videoArray[0].url;
         const posterUrl = poster[0].url;
 
