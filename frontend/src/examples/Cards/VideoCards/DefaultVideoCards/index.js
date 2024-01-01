@@ -55,21 +55,6 @@ function DefaultVideoCard({ video, title, channel, views, time, action }) {
             sx={{ maxHeight: "180px", maxWidth: "350px" }}
           />
         </MDBox>
-        <MDBox
-          borderRadius="lg"
-          shadow="md"
-          width="100%"
-          height="100%"
-          position="absolute"
-          left={0}
-          top="3%"
-          sx={{
-            backgroundImage: `url(${video.poster})`,
-            transform: "scale(0.94)",
-            filter: "blur(12px)",
-            backgroundSize: "cover",
-          }}
-        />
       </MDBox>
       <MDBox p={3} mt={-2} mb={-2}>
         <Grid

@@ -5,22 +5,32 @@ import { Icon, useMediaQuery } from "@mui/material";
 import { Grid } from "@mui/material";
 import PropTypes from "prop-types";
 import MDPagination from "components/MDPagination";
-import { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 
 function VideoGridLayout({ videos, title, perPage = 6 }) {
+  const [videosToDisplay, setVideosToDisplay] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const isXs = useMediaQuery((theme) => theme.breakpoints.down("lg"));
   const isLg = useMediaQuery((theme) => theme.breakpoints.up("lg"));
+  const [totalPage, setTotalPage] = useState(0);
+  const [pages, setPages] = useState(0);
 
-  const totalPage = Math.ceil(videos.length / perPage);
-  const pages = Array.from({ length: totalPage }, (_, index) => index + 1);
+  useEffect(() => {
+    setTotalPage(Math.ceil(videos.length / perPage));
+  }, [perPage, videos]);
 
-  // Calculate the starting and ending indices for the current page
-  const startIndex = (currentPage - 1) * perPage;
-  const endIndex = startIndex + perPage;
+  useEffect(() => {
+    setPages(Array.from({ length: totalPage }, (_, index) => index + 1));
+  }, [totalPage]);
 
-  // Filter the videos to display based on the current page
-  const videosToDisplay = videos.slice(startIndex, endIndex);
+  useEffect(() => {
+    // Calculate the starting and ending indices for the current page
+    const startIndex = (currentPage - 1) * perPage;
+    const endIndex = startIndex + perPage;
+
+    // Filter the videos to display based on the current page
+    setVideosToDisplay(videos.slice(startIndex, endIndex));
+  }, [currentPage, videos]);
 
   // Set justifyContent based on breakpoints
   let justifyContentValue = "flex-start"; // Default value
@@ -30,6 +40,17 @@ function VideoGridLayout({ videos, title, perPage = 6 }) {
     justifyContentValue = "space-evenly"; // For lg and up
   }
 
+  const RenderCurrentVideos = useMemo(() => {
+    return React.memo(() => (
+      <Grid container direction="row" justifyContent={justifyContentValue} mt={4} mb={2} rowGap={7}>
+        {videosToDisplay.map((video, index) => (
+          <Grid item key={index}>
+            <DefaultVideoCard {...video} />
+          </Grid>
+        ))}
+      </Grid>
+    ));
+  }, [videosToDisplay]);
   return (
     <MDBox>
       <MDTypography
@@ -42,14 +63,7 @@ function VideoGridLayout({ videos, title, perPage = 6 }) {
       >
         {title.text}
       </MDTypography>
-      <Grid container direction="row" justifyContent={justifyContentValue} mt={4} mb={2} rowGap={7}>
-        {videosToDisplay.map((video, index) => (
-          <Grid item key={index}>
-            <DefaultVideoCard {...video} />
-          </Grid>
-        ))}
-      </Grid>
-
+      <RenderCurrentVideos />
       {/* Page numbers */}
       {videos.length > perPage && (
         <MDPagination size="small" color="error" variant="gradient">
