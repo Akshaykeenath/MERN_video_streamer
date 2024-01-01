@@ -132,7 +132,8 @@ function VideoDetailsArea({ videoData }) {
                       <MDBox>
                         <Tooltip title={videoData.title} placement="top">
                           <MDTypography display="inline" variant="h5" fontWeight="bold">
-                            {videoData.title}
+                            {videoData.title.slice(0, 47) +
+                              (videoData.title.length >= 50 ? "..." : "")}
                           </MDTypography>
                         </Tooltip>
                       </MDBox>
@@ -176,7 +177,7 @@ function VideoDetailsArea({ videoData }) {
                     circular
                     onClick={() => handleViewVideoClick()}
                   >
-                    View Video
+                    Watch Video
                   </MDButton>
                 </Grid>
               </Grid>

@@ -4,7 +4,7 @@ import MDTypography from "components/MDTypography";
 import MDAvatar from "components/MDAvatar";
 import MDBadge from "components/MDBadge";
 
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { getMyvideoData } from "services/videoManagement";
 import { useEffect } from "react";
 import PropTypes from "prop-types";
@@ -12,6 +12,12 @@ import { getRelativeDate } from "functions/general/time";
 import MDButton from "components/MDButton";
 import { Grid, Icon, Tooltip } from "@mui/material";
 import { useMaterialUIController, setNotification } from "context";
+import { encodeUrlVideoId } from "functions/general/encription";
+
+const getCurrentUrl = () => {
+  const location = useLocation();
+  return location.pathname + location.search + location.hash;
+};
 
 export default function data({ refreshData, onVideoDataCallback }) {
   const navigate = useNavigate();
@@ -37,6 +43,15 @@ export default function data({ refreshData, onVideoDataCallback }) {
 
   const handleViewClick = (id) => {
     navigate(`/video/${id}`);
+  };
+
+  const prevUrl = getCurrentUrl();
+
+  const handleAnalyticsClick = (id) => {
+    const encodedVideoID = encodeUrlVideoId(id);
+    navigate(`/studio/analytics/video?video_id=${encodedVideoID}`, {
+      state: { prevUrl: prevUrl },
+    });
   };
 
   useEffect(() => {
@@ -72,7 +87,7 @@ export default function data({ refreshData, onVideoDataCallback }) {
       <MDAvatar src={image} name={name} size="sm" />
       <MDBox ml={2} lineHeight={1}>
         <MDTypography display="block" variant="button" fontWeight="medium">
-          {name}
+          {name.slice(0, 47) + (name.length >= 50 ? "..." : "")}
         </MDTypography>
       </MDBox>
     </MDBox>
@@ -146,7 +161,7 @@ export default function data({ refreshData, onVideoDataCallback }) {
                 </Tooltip>
               </Grid>
               <Grid item>
-                <Tooltip title="View">
+                <Tooltip title="Watch video">
                   <MDButton
                     variant="outlined"
                     onClick={() => handleViewClick(video._id)}
@@ -155,6 +170,19 @@ export default function data({ refreshData, onVideoDataCallback }) {
                     iconOnly
                   >
                     <Icon>visibility</Icon>
+                  </MDButton>
+                </Tooltip>
+              </Grid>
+              <Grid item>
+                <Tooltip title="Analytics">
+                  <MDButton
+                    variant="outlined"
+                    onClick={() => handleAnalyticsClick(video._id)}
+                    circular
+                    color="info"
+                    iconOnly
+                  >
+                    <Icon>assessment</Icon>
                   </MDButton>
                 </Tooltip>
               </Grid>

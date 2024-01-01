@@ -245,6 +245,7 @@ async function getMyLikedVideos(userId) {
         type: "like",
       },
     },
+    privacy: "public",
   })
     .sort({ "likes.timestamp": -1 }) // Sort based on the timestamp of the like
     .populate({

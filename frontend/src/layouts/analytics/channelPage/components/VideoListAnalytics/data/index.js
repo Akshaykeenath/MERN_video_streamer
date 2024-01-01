@@ -32,7 +32,7 @@ export default function data({ videoList, onVideoListAction }) {
             },
           }}
         >
-          {name}
+          {name.slice(0, 47) + (name.length >= 50 ? "..." : "")}
         </MDTypography>
       </MDBox>
     </MDBox>

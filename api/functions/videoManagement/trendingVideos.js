@@ -34,8 +34,8 @@ async function getTrendingVideos(duration = "recent") {
     newVideos.sort((a, b) => b.trendingScoreAllTime - a.trendingScoreAllTime);
   }
   // Take only the top 10 videos
-  const top10Videos = newVideos.slice(0, 10);
-  return top10Videos;
+  const top6Videos = newVideos.slice(0, 6);
+  return top6Videos;
 }
 
 module.exports = { getTrendingVideos };
