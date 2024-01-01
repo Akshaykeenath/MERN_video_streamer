@@ -20,6 +20,8 @@ Welcome to the MERN Video Streamer, a comprehensive video streaming application 
 
 - **Home Screen Accessibility:** All these features are conveniently accessible from the home screen, providing a user-friendly experience.
 
+- **Theme Customization:** Users can personalize their experience with the ability to switch between dark mode and light mode. Additionally, the application allows customization of colors, giving users the freedom to choose their preferred color scheme.
+
 **Tech Stack:**
 
 - MERN Stack (MongoDB, Express.js, React, Node.js)
@@ -46,67 +48,67 @@ Welcome to the MERN Video Streamer, a comprehensive video streaming application 
 
 <div style="display: flex; justify-content: space-between; align-items: center;">
   <div style="text-align: center; max-width: 48%;">
-    <img alt="screenshot1" src="https://github.com/Akshaykeenath/MERN_video_streamer/assets/47239801/fcc01782-f849-4c21-a5aa-eda73e9c40e5" style="max-width: 100%;" />
     <p>Registration Page</p>
+    <img alt="screenshot1" src="https://github.com/Akshaykeenath/MERN_video_streamer/assets/47239801/95d3d6a4-9a33-4cf2-8be4-bc6310f7b9fe" style="max-width: 100%;" />
   </div>
   <div style="text-align: center; max-width: 48%;">
-    <img alt="screenshot2" src="https://github.com/Akshaykeenath/MERN_video_streamer/assets/47239801/07b650a7-403d-441a-9ee6-df72251fc436" style="max-width: 100%;" />
     <p>Login Page</p>
+    <img alt="screenshot2" src="https://github.com/Akshaykeenath/MERN_video_streamer/assets/47239801/94211fc5-f48b-43bd-a5f8-91bcb55f591b" style="max-width: 100%;" />
   </div>
 </div>
 
 <div style="display: flex; justify-content: space-between; align-items: center;">
   <div style="text-align: center; max-width: 48%;">
-    <img alt="screenshot1" src="https://github.com/Akshaykeenath/MERN_video_streamer/assets/47239801/2bf7dad9-852b-4d25-95a2-f00ab94094d2" style="max-width: 100%;" />
     <p>Home Page - Light </p>
+    <img alt="screenshot1" src="https://github.com/Akshaykeenath/MERN_video_streamer/assets/47239801/b977af00-e58e-426f-8967-8289b4120a2d" style="max-width: 100%;" />
   </div>
   <div style="text-align: center; max-width: 48%;">
-    <img alt="screenshot2" src="https://github.com/Akshaykeenath/MERN_video_streamer/assets/47239801/23e472b7-3c98-477a-8a69-c5e2937c3469" style="max-width: 100%;" />
     <p>Home Page - Dark</p>
+    <img alt="screenshot2" src="https://github.com/Akshaykeenath/MERN_video_streamer/assets/47239801/3a6dabab-214f-407d-86ca-749b1ee6623f" style="max-width: 100%;" />
   </div>
 </div>
 
 <div style="display: flex; justify-content: space-between; align-items: center;">
   <div style="text-align: center; max-width: 48%;">
-    <img alt="screenshot1" src="https://github.com/Akshaykeenath/MERN_video_streamer/assets/47239801/0d435737-9ddc-4097-a998-ee9b6ddc4a0e" style="max-width: 100%;" />
     <p>Video Stream Page </p>
+    <img alt="screenshot1" src="https://github.com/Akshaykeenath/MERN_video_streamer/assets/47239801/963c0430-9c6c-4ce1-93a7-27249d9c33ca" style="max-width: 100%;" />
   </div>
   <div style="text-align: center; max-width: 48%;">
-    <img alt="screenshot2" src="https://github.com/Akshaykeenath/MERN_video_streamer/assets/47239801/e7eae77d-31f9-4bc3-87d4-5077ab67cc6d" style="max-width: 100%;" />
     <p>Liked Videos</p>
+    <img alt="screenshot2" src="https://github.com/Akshaykeenath/MERN_video_streamer/assets/47239801/37322e15-4101-4819-aba9-645f76466c46" style="max-width: 100%;" />
   </div>
 </div>
 
 <div style="display: flex; justify-content: space-between; align-items: center;">
   <div style="text-align: center; max-width: 48%;">
-    <img alt="screenshot1" src="https://github.com/Akshaykeenath/MERN_video_streamer/assets/47239801/9513f14f-e8ad-441e-a5ea-c13b51dd29c5" style="max-width: 100%;" />
     <p>Dashboard </p>
+    <img alt="screenshot1" src="https://github.com/Akshaykeenath/MERN_video_streamer/assets/47239801/49d902be-6a74-4e77-be0d-cf2d9aeab993" style="max-width: 100%;" />
   </div>
   <div style="text-align: center; max-width: 48%;">
-    <img alt="screenshot2" src="https://github.com/Akshaykeenath/MERN_video_streamer/assets/47239801/b7403e12-82d0-4fbf-9375-f1bf1d3be1b9" style="max-width: 100%;" />
     <p>Channel Page</p>
+    <img alt="screenshot2" src="https://github.com/Akshaykeenath/MERN_video_streamer/assets/47239801/6fb3d5e4-244a-46f3-840d-0572c03588bb" style="max-width: 100%;" />
   </div>
 </div>
 
 <div style="display: flex; justify-content: space-between; align-items: center;">
   <div style="text-align: center; max-width: 48%;">
-    <img alt="screenshot1" src="https://github.com/Akshaykeenath/MERN_video_streamer/assets/47239801/042d6b21-62c1-47fe-bf2d-f27bf762ec80" style="max-width: 100%;" />
     <p>Video Analytics Page Views </p>
+    <img alt="screenshot1" src="https://github.com/Akshaykeenath/MERN_video_streamer/assets/47239801/69b16362-799c-45f7-baaa-5ecc624e5243" style="max-width: 100%;" />
   </div>
   <div style="text-align: center; max-width: 48%;">
-    <img alt="screenshot2" src="https://github.com/Akshaykeenath/MERN_video_streamer/assets/47239801/2310a417-c90f-4f33-ac94-409ccf095a01" style="max-width: 100%;" />
     <p>Video Analytics Page Likes</p>
+    <img alt="screenshot2" src="https://github.com/Akshaykeenath/MERN_video_streamer/assets/47239801/c65e024e-5203-406a-a69f-9800753e27eb" style="max-width: 100%;" />
   </div>
 </div>
 
 <div style="display: flex; justify-content: space-between; align-items: center;">
   <div style="text-align: center; max-width: 48%;">
-    <img alt="screenshot1" src="https://github.com/Akshaykeenath/MERN_video_streamer/assets/47239801/5071eeb9-2a26-417e-9682-2fa626fd3c42" style="max-width: 100%;" />
     <p>Video Search Resuls </p>
+    <img alt="screenshot1" src="https://github.com/Akshaykeenath/MERN_video_streamer/assets/47239801/e0137e9f-d201-467b-99a5-5f738d5611bc" style="max-width: 100%;" />
   </div>
   <div style="text-align: center; max-width: 48%;">
-    <img alt="screenshot2" src="https://github.com/Akshaykeenath/MERN_video_streamer/assets/47239801/8066b746-6844-4edd-998b-5dc6259fa40a" style="max-width: 100%;" />
     <p>Video Edit Page</p>
+    <img alt="screenshot2" src="https://github.com/Akshaykeenath/MERN_video_streamer/assets/47239801/8e7d3f09-f1cb-4ec7-b953-f0d347b82062" style="max-width: 100%;" />
   </div>
 </div>
 
