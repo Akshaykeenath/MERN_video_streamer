@@ -140,7 +140,7 @@ export function setReportChartData(data, duration = 7) {
   const datesArray = dataSlice.map((item) => {
     if (dataSlice.length <= 7) {
       return getAbbreviatedDay(item.date);
-    } else if (dataSlice.length <= 30) {
+    } else if (dataSlice.length <= 365) {
       return getAbbreviatedMonthAndDate(item.date);
     } else {
       return String(item.date);

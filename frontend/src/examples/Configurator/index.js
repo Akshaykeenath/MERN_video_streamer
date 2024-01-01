@@ -224,6 +224,7 @@ function Configurator() {
               onClick={handleDarkSidenav}
               disabled={disabled}
               fullWidth
+              size="small"
               sx={
                 !transparentSidenav && !whiteSidenav
                   ? sidenavTypeActiveButtonStyles
@@ -239,12 +240,12 @@ function Configurator() {
                 onClick={handleTransparentSidenav}
                 disabled={disabled}
                 fullWidth
+                size="small"
                 sx={
                   transparentSidenav && !whiteSidenav
                     ? sidenavTypeActiveButtonStyles
                     : sidenavTypeButtonsStyles
                 }
-                size="small"
               >
                 Transparent
               </MDButton>
@@ -255,6 +256,7 @@ function Configurator() {
               onClick={handleWhiteSidenav}
               disabled={disabled}
               fullWidth
+              size="small"
               sx={
                 whiteSidenav && !transparentSidenav
                   ? sidenavTypeActiveButtonStyles
