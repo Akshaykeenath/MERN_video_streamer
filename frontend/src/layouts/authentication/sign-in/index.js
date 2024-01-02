@@ -53,8 +53,8 @@ function Basic() {
   const redirect = useRouteRedirect();
   const [controller, dispatch] = useMaterialUIController();
   const [rememberMe, setRememberMe] = useState(false);
-  const [password, setPassword] = useState("pass");
-  const [email, setEmail] = useState("guest");
+  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
   const [prevUrl, setPrevUrl] = useState(null);
   const history = createBrowserHistory();
   useEffect(() => {
