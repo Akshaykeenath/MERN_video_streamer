@@ -32,7 +32,7 @@ Welcome to the MERN Video Streamer, a comprehensive video streaming application 
 **HELPFUL LINKS**
 
 - View [Github Repository](https://github.com/Akshaykeenath)
-- View [Live Demo](https://ketube.netlify.app/){:target="_blank"}
+- View [Live Demo](https://ketube.netlify.app/)
 
 ## Table of Contents
 
