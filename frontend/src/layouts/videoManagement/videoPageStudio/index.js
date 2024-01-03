@@ -26,7 +26,6 @@ function VideoPageStudio() {
 
   const handleVideoListAction = (data) => {
     // Implement your logic here based on the 'data' received
-    console.log("Handling video list action:", data);
     if (data.action === "edit") {
       setEditVideo(data.id);
     }

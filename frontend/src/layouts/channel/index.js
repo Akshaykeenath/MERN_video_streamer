@@ -39,7 +39,6 @@ function Channel() {
     }
     if (error) {
       if (error.response && error.response.data) {
-        console.log("erooodddddddddd ", error.response.data);
         const noti = {
           message: error.response.data.message ? error.response.data.message : "An Error occured",
           color: "error",
@@ -56,14 +55,6 @@ function Channel() {
     }
   }, [response, error]);
 
-  useEffect(() => {
-    if (channelData) {
-      console.log(channelData);
-    }
-    if (videoData) {
-      console.log(videoData);
-    }
-  }, [channelData, videoData]);
   return (
     <DashboardLayout>
       <StudioNavbar />

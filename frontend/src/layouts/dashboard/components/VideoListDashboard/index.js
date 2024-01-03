@@ -28,7 +28,6 @@ function VideoListDashboard({ videoList }) {
   const navigate = useNavigate();
   const prevUrl = getCurrentUrl();
   const handleVideoListAction = useCallback((funcData) => {
-    console.log("Values sent from onVideoListAction:", funcData);
     if (funcData && funcData.action === "view") {
       const encodedVideoID = encodeUrlVideoId(funcData.id);
       navigate(`/studio/analytics/video?video_id=${encodedVideoID}`, {

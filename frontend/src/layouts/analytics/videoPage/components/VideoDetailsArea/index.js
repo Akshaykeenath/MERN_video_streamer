@@ -45,7 +45,6 @@ function VideoDetailsArea({ videoData }) {
   const poster = videoData.poster && videoData.poster[0].url;
 
   const handleViewVideoClick = () => {
-    console.log("click called");
     if (videoData._id) {
       navigate(`/video/${videoData._id}`);
     }

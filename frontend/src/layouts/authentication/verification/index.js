@@ -34,7 +34,6 @@ function VerificationArea() {
     try {
       const response = await sendMailVerification(data);
       if (response.status === 200) {
-        console.log(response.data.message);
         const noti = {
           message: response.data.message,
           color: "success",

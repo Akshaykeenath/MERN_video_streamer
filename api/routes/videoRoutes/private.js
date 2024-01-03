@@ -341,7 +341,6 @@ router.post("/update", async (req, res, next) => {
       res.status(400).json({ message: "Bad request" });
     }
   } catch (err) {
-    console.log(err);
     res.status(500).json({
       message: err,
     });

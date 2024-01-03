@@ -63,7 +63,6 @@ function AnalyticsVideo() {
 
   useEffect(() => {
     if (response) {
-      console.log(response);
       if (response.message.chartData) {
         setGraphData(response.message.chartData);
       }
@@ -73,7 +72,6 @@ function AnalyticsVideo() {
       setLoading(false);
     }
     if (error) {
-      console.log(error);
       if (error.response && error.response.data && error.response.data.message) {
         const noti = {
           message: error.response.data.message,

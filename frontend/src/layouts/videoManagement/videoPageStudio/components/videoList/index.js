@@ -18,7 +18,6 @@ function VideoList({ onVideoListAction }) {
 
   useEffect(() => {
     if (response) {
-      console.log("Video deleted successfully");
       const noti = {
         message: "Video deleted successfully",
         color: "success",

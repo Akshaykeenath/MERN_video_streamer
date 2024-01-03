@@ -237,7 +237,11 @@ const routes = [
   {
     key: "profile",
     route: "/studio/profile/edit",
-    component: <EditProfile />,
+    component: (
+      <Suspense fallback={<CenteredLoading />}>
+        <EditProfile />
+      </Suspense>
+    ),
     protected: true,
   },
   {

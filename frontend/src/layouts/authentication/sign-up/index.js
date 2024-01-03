@@ -1,18 +1,3 @@
-/**
-=========================================================
-* Material Dashboard 2 React - v2.2.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
 // react-router-dom components
 import { Link } from "react-router-dom";
 
@@ -120,7 +105,6 @@ function Cover() {
       !passwordError &&
       !rePasswordError
     ) {
-      console.log("Register Submitted");
       const data = {
         fname: fname,
         lname: lname,
@@ -138,7 +122,6 @@ function Cover() {
           };
           setNotification(dispatch, noti);
           redirect("login");
-          console.log("success ", response.data.message);
         } else {
           const noti = {
             message: response.data.error,

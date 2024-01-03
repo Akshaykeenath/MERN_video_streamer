@@ -28,14 +28,6 @@ function Cover() {
   const [disableReset, setDisableReset] = useState(true);
 
   useEffect(() => {
-    if (response) {
-      console.log(response);
-    }
-    if (error) {
-    }
-  }, [response, error]);
-
-  useEffect(() => {
     const timeoutId = setTimeout(() => {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       const isValidEmail = emailRegex.test(email);

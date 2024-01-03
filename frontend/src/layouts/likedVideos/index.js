@@ -29,7 +29,6 @@ function LikedVideosPage() {
       setNotification(dispatch, noti);
       setLoading(false);
     } else if (response) {
-      console.log(response);
       if (response.likedVideos) {
         setVideoDataLiked(response.likedVideos);
       }

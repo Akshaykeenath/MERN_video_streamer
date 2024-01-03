@@ -47,7 +47,6 @@ function Cover() {
 
   useEffect(() => {
     if (response) {
-      console.log(response);
       const noti = {
         message: "Password reset successfull",
         color: "success",

@@ -30,7 +30,6 @@ function Home() {
       setNotification(dispatch, noti);
       setLoading(false);
     } else if (response != null) {
-      console.log(response);
       const trendingVideos = response.trending;
       const mappedVideoData = trendingVideos.map((currVideo, index) => {
         const {

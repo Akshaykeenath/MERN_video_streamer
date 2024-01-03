@@ -28,7 +28,6 @@ function AllVideosPage() {
       setNotification(dispatch, noti);
       setLoading(false);
     } else if (response) {
-      console.log(response);
       if (response.allVideos) {
         setVideoDataAll(response.allVideos);
       }

@@ -45,7 +45,6 @@ function AnalyticsChannel() {
 
   useEffect(() => {
     if (response) {
-      console.log(response);
       if (response.message.videoList) {
         setVideoList(response.message.videoList);
       }
@@ -55,7 +54,6 @@ function AnalyticsChannel() {
       setLoading(false);
     }
     if (error) {
-      console.log(error);
       const noti = {
         message: "Error in Fetching data",
         color: "error",

@@ -29,7 +29,6 @@ function Subscriptions() {
 
   useEffect(() => {
     if (response) {
-      console.log(response);
       if (response.subscribedVideos.length === 0 && response.subscribedChannels.length === 0) {
         setEmptyPage(true);
       } else {

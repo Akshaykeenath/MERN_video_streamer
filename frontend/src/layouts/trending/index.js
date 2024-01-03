@@ -28,7 +28,6 @@ function Trending() {
       setNotification(dispatch, noti);
       setLoading(false);
     } else if (response) {
-      console.log(response);
       if (response.trendingRecent) {
         setVideoDataRecent(response.trendingRecent);
       }

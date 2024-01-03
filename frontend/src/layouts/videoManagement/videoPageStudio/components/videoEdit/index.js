@@ -43,7 +43,6 @@ function VideoEdit({ videoId, onBackClick }) {
   useEffect(() => {
     if (response && response.video) {
       setVideo(response.video);
-      console.log(response.video);
     }
     if (error) {
       const noti = {
